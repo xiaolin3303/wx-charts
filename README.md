@@ -40,9 +40,10 @@
 
 `dateItem.format` Function 自定义显示数据内容
 
-# example
+# Example
 
 ### pie chart
+
 ```javascript
 var Charts = require('charts.js');
 new Charts({
@@ -62,3 +63,104 @@ new Charts({
     dataLabel: false
 });
 ```
+![pieChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/pie.png)
+
+### line chart
+
+```javascript
+new Charts({
+    canvasId: 'lineCanvas',
+    type: 'line',
+    categories: ['2016-08', '2016-09', '2016-10', '2016-11', '2016-12', '2017'],
+    series: [{
+        data: [15, 20, 45, 37, 4, 80],
+        format: function (val) {
+            return val.toFixed(2) + '万';
+        }
+    }, {
+        data: [70, 40, 65, 100, 34, 18],
+        format: function (val) {
+            return val.toFixed(2) + '万';
+        }
+    }],
+    yAxisFormat: function (val) {
+        return val + '万';
+    },
+    width: 640,
+    height: 400
+});
+```
+
+![lineChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/line.png)
+
+### columnChart
+
+```javascript
+new Charts({
+    canvasId: 'columnCanvas',
+    type: 'column',
+    categories: ['2016-08', '2016-09', '2016-10', '2016-11', '2016-12', '2017'],
+    series: [{
+        data: [15, 20, 45, 37, 4, 80],
+        format: function (val) {
+            return val.toFixed(2) + '万';
+        }
+    }, {
+        data: [70, 40, 65, 100, 34, 18],
+        format: function (val) {
+            return val.toFixed(2) + '万';
+        }
+    }, {
+        data: [70, 40, 65, 100, 34, 18],
+        format: function (val) {
+            return val.toFixed(2) + '万';
+        }
+    }, {
+        data: [70, 40, 65, 100, 34, 18],
+        format: function (val) {
+            return val.toFixed(2) + '万';
+        }
+    }],
+    yAxisFormat: function (val) {
+        return val + '万';
+    },
+    width: 640,
+    height: 400,
+    dataLabel: false
+});
+```
+
+![columnChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/column.png)
+
+### areaChart
+
+```javascript
+new Charts({
+    canvasId: 'areaCanvas',
+    type: 'area',
+    categories: ['2016-08', '2016-09', '2016-10', '2016-11', '2016-12', '2017'],
+    series: [{
+        data: [70, 40, 65, 100, 34, 18],
+        format: function (val) {
+            return val.toFixed(2) + '万';
+        }
+    }, {
+        data: [15, 20, 45, 37, 4, 80],
+        format: function (val) {
+            return val.toFixed(2) + '万';
+        }
+    }],
+    yAxisFormat: function (val) {
+        return val + '万';
+    },
+    width: 640,
+    height: 400
+});
+```
+
+![areaChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/area.png)
+
+# TodoList
+
+- [ ] add legend
+- [ ] add animation
