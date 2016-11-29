@@ -9,10 +9,12 @@
 
 var Charts = function(opts) {
     this.opts = opts;
+    opts.legend = opts.legend === false ? false : true;
     this.config = {
         yAxisWidth: 50,
         yAxisSplit: 5,
         xAxisHeight: 30,
+        legendHeight: opts.legend ? 30 : 0,
         padding: 30,
         columePadding: 20,
         fontSize: 20,
@@ -43,6 +45,7 @@ var Charts = function(opts) {
             this.drawPieDataPoints(this.opts.series);
             break;
     }
+    this.drawLegend(this.opts.series);
     this.draw();
 }
 
@@ -92,17 +95,49 @@ Charts.prototype.mesureText = function(text) {
 Charts.prototype.getDataPoints = function(data, minRange, maxRange, xAxisPoints, eachSpacing) {
     var me = this;
     var points = [];
-    var validHeight = this.opts.height - 2 * this.config.padding - this.config.xAxisHeight;
+    var validHeight = this.opts.height - 2 * this.config.padding - this.config.xAxisHeight - this.config.legendHeight;
     data.forEach(function(item, index) {
         var point = {};
         point.x = xAxisPoints[index] + Math.round(eachSpacing / 2);
         var height = validHeight * (item - minRange) / (maxRange - minRange);
-        point.y = me.opts.height - me.config.xAxisHeight - Math.round(height) - me.config.padding;
+        point.y = me.opts.height - me.config.xAxisHeight - me.config.legendHeight - Math.round(height) - me.config.padding;
 
         points.push(point);
     });
 
     return points;
+}
+Charts.prototype.drawLegend= function(series) {
+    if (!this.opts.legend) {
+        return;
+    }
+    var me = this;
+    var context = this.context;
+    var padding = 10;
+    var width = 0;
+    series.forEach(function (item) {
+        item.name = item.name || 'undefined';
+        width += 2 * padding + me.mesureText(item.name) + 30;
+    });
+    var startX = (this.opts.width - width) / 2 + padding;
+    var startY = this.opts.height - this.config.legendHeight - 5;
+    
+    context.setFontSize(me.config.fontSize);
+    series.forEach(function (item) {
+        context.moveTo(startX, startY);
+        context.beginPath();
+        context.setFillStyle(item.color);
+        context.rect(startX, startY, 30, 20);
+        context.closePath();
+        context.fill();
+        startX += padding + 30;
+        context.beginPath();
+        context.setFillStyle('#333333');
+        context.fillText(item.name, startX, startY + 16);
+        context.closePath();
+        context.stroke();
+        startX += me.mesureText(item.name) + padding; 
+    });
 }
 Charts.prototype.drawPointText = function(points, series) {
     // 绘制数据文案
@@ -194,9 +229,9 @@ Charts.prototype.drawPieDataPoints = function(series) {
     series = this.getPieDataPoints(series);
     var centerPosition = {
         x: this.opts.width / 2,
-        y: this.opts.height / 2
+        y: (this.opts.height - 2 * this.config.padding - this.config.legendHeight) / 2 
     }
-    var radius = Math.min(centerPosition.x, centerPosition.y);
+    var radius = Math.min(centerPosition.x - this.config.padding, centerPosition.y);
     context.setStrokeStyle('#ffffff');
     context.setLineWidth(2)
     series.forEach(function(eachSeries) {
@@ -229,7 +264,7 @@ Charts.prototype.drawAreaDataPoints = function(series) {
     var data = series[0].data;
     var spacingValid = this.opts.width - 2 * this.config.padding - this.config.yAxisWidth;
     var eachSpacing = Math.floor(spacingValid / data.length);
-    var endY = this.opts.height - this.config.padding - this.config.xAxisHeight;
+    var endY = this.opts.height - this.config.padding - this.config.xAxisHeight - this.config.legendHeight;
 
     series.forEach(function(eachSeries, seriesIndex) {
         var data = eachSeries.data;
@@ -282,7 +317,7 @@ Charts.prototype.drawColumnDataPoints = function(series) {
         context.setFillStyle(eachSeries.color);
         points.forEach(function(item, index) {
             var startX = item.x - item.width / 2 + 1;
-            var height = me.opts.height - item.y - me.config.padding - me.config.xAxisHeight;
+            var height = me.opts.height - item.y - me.config.padding - me.config.xAxisHeight - me.config.legendHeight;
             context.moveTo(startX, item.y);
             context.rect(startX, item.y, item.width - 2, height);
         });
@@ -352,12 +387,12 @@ Charts.prototype.drawYAxis = function(series) {
         return (a.data ? a.data : a).concat(b.data);
     }, []);
 
-    var spacingValid = this.opts.height - 2 * this.config.padding - this.config.xAxisHeight;
+    var spacingValid = this.opts.height - 2 * this.config.padding - this.config.xAxisHeight - this.config.legendHeight;
     var eachSpacing = Math.floor(spacingValid / this.config.yAxisSplit);
     var startX = this.config.padding + this.config.yAxisWidth;
     var endX = this.opts.width - this.config.padding;
     var startY = this.config.padding;
-    var endY = this.opts.height - this.config.padding - this.config.xAxisHeight;
+    var endY = this.opts.height - this.config.padding - this.config.xAxisHeight - this.config.legendHeight;
 
     var points = [];
     var ranges = this.getYAxisTextList(data);
@@ -395,8 +430,8 @@ Charts.prototype.drawXAxis = function(categories) {
     var points = [];
     var startX = this.config.padding + this.config.yAxisWidth;
     var endX = this.opts.width - this.config.padding;
-    var startY = this.opts.height - this.config.padding - this.config.xAxisHeight;
-    var endY = this.opts.height - this.config.padding;
+    var startY = this.opts.height - this.config.padding - this.config.xAxisHeight - this.config.legendHeight;
+    var endY = this.opts.height - this.config.padding - this.config.legendHeight;
     categories.forEach(function(item, index) {
         points.push(startX + index * eachSpacing);
     });
