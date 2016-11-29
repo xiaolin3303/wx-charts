@@ -1,3 +1,12 @@
+/*!
+ * charts for WeChat small app v1.0
+ *
+ * Contact: https://github.com/xiaolin3303
+ * 2016-09-30
+ *
+ * Designed and built with all the love of Web
+ */
+
 var Charts = function(opts) {
 	this.opts = opts;
 	this.config = {
