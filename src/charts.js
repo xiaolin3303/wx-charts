@@ -2,7 +2,7 @@
  * charts for WeChat small app v1.0
  *
  * Contact: https://github.com/xiaolin3303
- * 2016-09-30
+ * 2016-11-28
  *
  * Designed and built with all the love of Web
  */
@@ -69,6 +69,8 @@ Charts.prototype.findRange = function(num, type) {
 
     return range;
 }
+
+// wx canvas 未实现mesureText方法, 此处自行实现
 Charts.prototype.mesureText = function(text) {
     var text = text.split('');
     var width = 0;
