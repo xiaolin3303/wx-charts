@@ -14,11 +14,11 @@
 
 `opts.canvasId` String **required** 微信小程序canvas-id
 
-`opts.width` Number **required** canvas宽度 单位为px
+`opts.width` Number **required** canvas宽度，单位为px
 
-`opts.height` Number **required** canvas高度 单位为px
+`opts.height` Number **required** canvas高度，单位为px
 
-`opts.type` String **required** 图表类型，可选值为`pie`, 'line', 'column', 'area'
+`opts.type` String **required** 图表类型，可选值为`pie`, `line`, `column`, `area`
 
 `opts.categories` Array **required** *(饼图不需要)* 数据类别分类
 
