@@ -50,12 +50,16 @@ new Charts({
     canvasId: 'pieCanvas',
     type: 'pie',
     series: [{
+        name: '成交量1',
         data: 15,
     }, {
+        name: '成交量2',
         data: 35,
     }, {
+        name: '成交量3',
         data: 78,
     }, {
+        name: '成交量4',
         data: 63,
     }],
     width: 640,
@@ -73,11 +77,13 @@ new Charts({
     type: 'line',
     categories: ['2016-08', '2016-09', '2016-10', '2016-11', '2016-12', '2017'],
     series: [{
+        name: '成交量1',
         data: [15, 20, 45, 37, 4, 80],
         format: function (val) {
             return val.toFixed(2) + '万';
         }
     }, {
+        name: '成交量2',
         data: [70, 40, 65, 100, 34, 18],
         format: function (val) {
             return val.toFixed(2) + '万';
@@ -101,25 +107,17 @@ new Charts({
     type: 'column',
     categories: ['2016-08', '2016-09', '2016-10', '2016-11', '2016-12', '2017'],
     series: [{
-        data: [15, 20, 45, 37, 4, 80],
-        format: function (val) {
-            return val.toFixed(2) + '万';
-        }
+        name: '成交量1',
+        data: [15, 20, 45, 37, 4, 80]
     }, {
-        data: [70, 40, 65, 100, 34, 18],
-        format: function (val) {
-            return val.toFixed(2) + '万';
-        }
+        name: '成交量2',
+        data: [70, 40, 65, 100, 34, 18]
     }, {
-        data: [70, 40, 65, 100, 34, 18],
-        format: function (val) {
-            return val.toFixed(2) + '万';
-        }
+        name: '成交量3',
+        data: [70, 40, 65, 100, 34, 18]
     }, {
-        data: [70, 40, 65, 100, 34, 18],
-        format: function (val) {
-            return val.toFixed(2) + '万';
-        }
+        name: '成交量4',
+        data: [70, 40, 65, 100, 34, 18]
     }],
     yAxisFormat: function (val) {
         return val + '万';
@@ -140,11 +138,13 @@ new Charts({
     type: 'area',
     categories: ['2016-08', '2016-09', '2016-10', '2016-11', '2016-12', '2017'],
     series: [{
+        name: '成交量1',
         data: [70, 40, 65, 100, 34, 18],
         format: function (val) {
             return val.toFixed(2) + '万';
         }
     }, {
+        name: '成交量2',
         data: [15, 20, 45, 37, 4, 80],
         format: function (val) {
             return val.toFixed(2) + '万';
@@ -162,5 +162,5 @@ new Charts({
 
 # TodoList
 
-- [ ] add legend
+- [x] add legend
 - [ ] add animation
