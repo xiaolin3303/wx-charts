@@ -108,28 +108,16 @@ new Charts({
     categories: ['2016-08', '2016-09', '2016-10', '2016-11', '2016-12', '2017'],
     series: [{
         name: '成交量1',
-        data: [15, 20, 45, 37, 4, 80],
-        format: function (val) {
-            return val.toFixed(2) + '万';
-        }
+        data: [15, 20, 45, 37, 4, 80]
     }, {
         name: '成交量2',
-        data: [70, 40, 65, 100, 34, 18],
-        format: function (val) {
-            return val.toFixed(2) + '万';
-        }
+        data: [70, 40, 65, 100, 34, 18]
     }, {
         name: '成交量3',
-        data: [70, 40, 65, 100, 34, 18],
-        format: function (val) {
-            return val.toFixed(2) + '万';
-        }
+        data: [70, 40, 65, 100, 34, 18]
     }, {
         name: '成交量4',
-        data: [70, 40, 65, 100, 34, 18],
-        format: function (val) {
-            return val.toFixed(2) + '万';
-        }
+        data: [70, 40, 65, 100, 34, 18]
     }],
     yAxisFormat: function (val) {
         return val + '万';
