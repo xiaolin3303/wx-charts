@@ -9,6 +9,8 @@
 - 柱状图 `column`
 - 区域图 `area`
 
+代码分析 [Here](https://segmentfault.com/a/1190000007649376)
+
 # 参数说明
 `opts` Object
 
