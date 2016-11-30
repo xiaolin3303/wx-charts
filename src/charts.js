@@ -60,6 +60,11 @@ Charts.prototype.fillSeriesColor = function() {
 }
 Charts.prototype.findRange = function(num, type) {
     type = type ? type : 'upper';
+    if (type === 'upper') {
+        num = Math.ceil(num);
+    } else {
+        num = Math.floor(num);
+    }
     var limit = 5;
     var range = num;
     while (range % limit !== 0) {
