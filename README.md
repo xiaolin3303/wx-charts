@@ -45,6 +45,8 @@
 
 `opts.yAxis.min` Number Y轴起始值
 
+`opts.yAxis.title` String Y轴title
+
 `opts.series` Array **required** 数据列表
 
 **数据列表每项结构定义**
@@ -109,8 +111,9 @@ new Charts({
         }
     }],
     yAxis: {
+        title: '成交金额 (万元)',
         format: function (val) {
-            return val + '万';
+            return val.toFixed(2);
         },
         min: 0
     },
