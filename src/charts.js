@@ -8,8 +8,10 @@
  */
 
 var Charts = function(opts) {
-    this.opts = opts;
+    opts.yAxis = opts.yAxis || {};
     opts.legend = opts.legend === false ? false : true;
+    this.opts = opts;
+
     this.config = {
         yAxisWidth: 50,
         yAxisSplit: 5,
@@ -27,18 +29,18 @@ var Charts = function(opts) {
     this.fillSeriesColor();
     switch (this.opts.type) {
         case 'line':
-            this.drawXAxis(this.opts.categories);
             this.drawYAxis(this.opts.series);
+            this.drawXAxis(this.opts.categories);
             this.drawLineDataPoints(this.opts.series);
             break;
         case 'column':
-            this.drawXAxis(this.opts.categories);
             this.drawYAxis(this.opts.series);
+            this.drawXAxis(this.opts.categories);
             this.drawColumnDataPoints(this.opts.series);
             break;
         case 'area':
-            this.drawXAxis(this.opts.categories);
             this.drawYAxis(this.opts.series);
+            this.drawXAxis(this.opts.categories);
             this.drawAreaDataPoints(this.opts.series);
             break;
         case 'pie':
@@ -58,28 +60,10 @@ Charts.prototype.fillSeriesColor = function() {
         }
     });
 }
-Charts.prototype.findRange = function(num, type) {
-    type = type ? type : 'upper';
-    if (type === 'upper') {
-        num = Math.ceil(num);
-    } else {
-        num = Math.floor(num);
-    }
-    var limit = 5;
-    var range = num;
-    while (range % limit !== 0) {
-        if (type === 'upper') {
-            range++;
-        } else {
-            range--;
-        }
-    }
-
-    return range;
-}
 
 // wx canvas 未实现mesureText方法, 此处自行实现
 Charts.prototype.mesureText = function(text) {
+    text = String(text);
     var text = text.split('');
     var width = 0;
     text.forEach(function(item) {
@@ -122,7 +106,7 @@ Charts.prototype.drawLegend= function(series) {
     var width = 0;
     series.forEach(function (item) {
         item.name = item.name || 'undefined';
-        width += 2 * padding + me.mesureText(item.name) + 30;
+        width += 2 * padding + me.mesureText(item.name) + 45;
     });
     var startX = (this.opts.width - width) / 2 + padding;
     var startY = this.opts.height - this.config.legendHeight - 5;
@@ -138,10 +122,10 @@ Charts.prototype.drawLegend= function(series) {
         startX += padding + 30;
         context.beginPath();
         context.setFillStyle('#333333');
-        context.fillText(item.name, startX, startY + 16);
+        context.fillText(item.name, startX, startY + 18);
         context.closePath();
         context.stroke();
-        startX += me.mesureText(item.name) + padding; 
+        startX += me.mesureText(item.name) + padding + 15; 
     });
 }
 Charts.prototype.drawPointText = function(points, series) {
@@ -369,11 +353,58 @@ Charts.prototype.drawLineDataPoints = function(series) {
         me.drawPointText(points, eachSeries);
     });
 }
+Charts.prototype.findRange = function(num, type, limit) {
+    limit = limit || 10;
+    type = type ? type : 'upper';
+    var multiple = 1;
+    while (limit < 1) {
+        limit *= 10;
+        multiple *= 10;
+    }
+    if (type === 'upper') {
+        num = Math.ceil(num * multiple);
+    } else {
+        num = Math.floor(num * multiple);
+    }
+    while (num % limit !== 0) {
+        if (type === 'upper') {
+            num++;
+        } else {
+            num--;
+        }
+    }
+
+    return num / multiple;
+}
+Charts.prototype.getDataRange = function(minData, maxData) {
+    var limit = 0;
+    var range = maxData - minData;
+    if (range >= 10000) {
+        limit = 1000;
+    } else if (range >= 1000) {
+        limit = 100;
+    } else if (range >= 100) {
+        limit = 10;
+    } else if (range >= 10) {
+        limit = 5;
+    } else if (range >= 1) {
+        limit = 1;
+    } else if (range >= 0.1) {
+        limit = 0.1;
+    } else {
+        limit = 0.01;
+    }
+    return {
+        minRange: this.findRange(minData, 'lower', limit),
+        maxRange: this.findRange(maxData, 'upper', limit)
+    }
+}
 Charts.prototype.getYAxisTextList = function(data) {
-    var minData = Math.min.apply(this, data);
+    var minData = typeof this.opts.yAxis.min === 'number' ? this.opts.yAxis.min : Math.min.apply(this, data);
     var maxData = Math.max.apply(this, data);
-    var minRange = this.findRange(minData, 'lower');
-    var maxRange = this.findRange(maxData, 'upper');
+    var dataRange = this.getDataRange(minData, maxData);
+    var minRange = dataRange.minRange;
+    var maxRange = dataRange.maxRange;
     this.chartData.minRange = minRange;
     this.chartData.maxRange = maxRange;
 
@@ -385,13 +416,31 @@ Charts.prototype.getYAxisTextList = function(data) {
     }
     return range.reverse();
 }
+Charts.prototype.util = {
+    toFixed: function (num, limit) {
+        limit = limit || 2;
+        if (this.isFloat(num)) {
+            num = num.toFixed(limit);
+        }
+        return num;
+    },
+    isFloat: function (num) {
+        return num % 1 !== 0;
+    }
+}
 Charts.prototype.drawYAxis = function(series) {
     var me = this;
     var context = this.context;
     var data = series.reduce(function(a, b) {
         return (a.data ? a.data : a).concat(b.data);
     }, []);
-
+    var ranges = this.getYAxisTextList(data);
+    ranges = ranges.map(function (item) {
+        item = me.util.toFixed(item, 2);
+        item =  me.opts.yAxis.format ? me.opts.yAxis.format(item) : item;
+        me.config.yAxisWidth = Math.max(me.config.yAxisWidth, me.mesureText(item) + 5);
+        return item;
+    });
     var spacingValid = this.opts.height - 2 * this.config.padding - this.config.xAxisHeight - this.config.legendHeight;
     var eachSpacing = Math.floor(spacingValid / this.config.yAxisSplit);
     var startX = this.config.padding + this.config.yAxisWidth;
@@ -400,7 +449,6 @@ Charts.prototype.drawYAxis = function(series) {
     var endY = this.opts.height - this.config.padding - this.config.xAxisHeight - this.config.legendHeight;
 
     var points = [];
-    var ranges = this.getYAxisTextList(data);
     for (var i = 0; i < this.config.yAxisSplit; i++) {
         points.push(this.config.padding + eachSpacing * i);
     }
@@ -419,8 +467,7 @@ Charts.prototype.drawYAxis = function(series) {
     context.setFillStyle('#666666')
     ranges.forEach(function(item, index) {
         var pos = points[index] ? points[index] : endY;
-        var formatVal = me.opts.yAxisFormat ? me.opts.yAxisFormat(item) : item;
-        context.fillText(formatVal, me.config.padding, pos + 10);
+        context.fillText(item, me.config.padding, pos + 10);
     });
     context.closePath();
     context.stroke();
