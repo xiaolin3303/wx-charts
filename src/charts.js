@@ -13,10 +13,11 @@ var Charts = function(opts) {
     this.opts = opts;
 
     this.config = {
-        yAxisWidth: 50,
+        yAxisWidth: 30,
         yAxisSplit: 5,
         xAxisHeight: 30,
         legendHeight: opts.legend ? 30 : 0,
+        yAxisTitleWidth: opts.yAxis.title ? 30 : 0,
         padding: 30,
         columePadding: 20,
         fontSize: 20,
@@ -77,6 +78,10 @@ Charts.prototype.mesureText = function(text) {
             width += 6.5;
         } else if (/[\u4e00-\u9fa5]/.test(item)) {
             width += 20;
+        } else if (/\(|\)/.test(item)) {
+            width += 7.45;
+        } else if (/\s/.test(item)) {
+            width += 5;
         }
     });
     return width;
@@ -437,10 +442,12 @@ Charts.prototype.drawYAxis = function(series) {
     var ranges = this.getYAxisTextList(data);
     ranges = ranges.map(function (item) {
         item = me.util.toFixed(item, 2);
-        item =  me.opts.yAxis.format ? me.opts.yAxis.format(item) : item;
+        item =  me.opts.yAxis.format ? me.opts.yAxis.format(Number(item)) : item;
         me.config.yAxisWidth = Math.max(me.config.yAxisWidth, me.mesureText(item) + 5);
         return item;
     });
+    this.config.yAxisWidth += this.config.yAxisTitleWidth;
+
     var spacingValid = this.opts.height - 2 * this.config.padding - this.config.xAxisHeight - this.config.legendHeight;
     var eachSpacing = Math.floor(spacingValid / this.config.yAxisSplit);
     var startX = this.config.padding + this.config.yAxisWidth;
@@ -467,12 +474,27 @@ Charts.prototype.drawYAxis = function(series) {
     context.setFillStyle('#666666')
     ranges.forEach(function(item, index) {
         var pos = points[index] ? points[index] : endY;
-        context.fillText(item, me.config.padding, pos + 10);
+        context.fillText(item, me.config.padding + me.config.yAxisTitleWidth, pos + 10);
     });
     context.closePath();
     context.stroke();
 
 }
+Charts.prototype.drawXAxisTitle = function(title) {
+    var context = this.context;
+    var startX = this.config.xAxisHeight + (this.opts.height - this.config.xAxisHeight - this.mesureText(title)) / 2;
+    context.save();
+    context.beginPath();
+    context.setFontSize(20);
+    context.setFillStyle('#333333');
+    context.translate(0, this.opts.height);
+    context.rotate(-90 * Math.PI / 180);
+    context.fillText(title, startX, 35);
+    context.stroke();
+    context.closePath();
+    context.restore();
+}
+
 Charts.prototype.drawXAxis = function(categories) {
     var me = this;
     var context = this.context;
@@ -511,6 +533,10 @@ Charts.prototype.drawXAxis = function(categories) {
     });
     context.closePath();
     context.stroke();
+
+    if (this.opts.yAxis.title) {  
+        this.drawXAxisTitle(this.opts.yAxis.title);
+    }
 }
 Charts.prototype.draw = function() {
     var context = this.context;
