@@ -37,9 +37,13 @@
 
 `opts.categories` Array **required** *(饼图不需要)* 数据类别分类
 
-`opts.yAxisFormat` Function Y轴显示自定义格式内容
-
 `opts.dataLabel` Boolean default `true` 是否在图表中显示数据内容值
+
+`opts.yAxis` Object Y轴配置
+
+`opts.yAxis.format` Function 自定义Y轴文案显示
+
+`opts.yAxis.min` Number Y轴起始值
 
 `opts.series` Array **required** 数据列表
 
@@ -90,22 +94,25 @@ new Charts({
 new Charts({
     canvasId: 'lineCanvas',
     type: 'line',
-    categories: ['2016-08', '2016-09', '2016-10', '2016-11', '2016-12', '2017'],
+    categories: ['2012', '2013', '2014', '2015', '2016', '2017'],
     series: [{
         name: '成交量1',
-        data: [15, 20, 45, 37, 4, 80],
+        data: [0.15, 0.2, 0.45, 0.37, 0.4, 0.8],
         format: function (val) {
             return val.toFixed(2) + '万';
         }
     }, {
         name: '成交量2',
-        data: [70, 40, 65, 100, 34, 18],
+        data: [0.30, 0.37, 0.65, 0.78, 0.69, 0.94],
         format: function (val) {
             return val.toFixed(2) + '万';
         }
     }],
-    yAxisFormat: function (val) {
-        return val + '万';
+    yAxis: {
+        format: function (val) {
+            return val + '万';
+        },
+        min: 0
     },
     width: 640,
     height: 400
@@ -134,8 +141,10 @@ new Charts({
         name: '成交量4',
         data: [70, 40, 65, 100, 34, 18]
     }],
-    yAxisFormat: function (val) {
-        return val + '万';
+    yAxis: {
+        format: function (val) {
+            return val + '万';
+        }
     },
     width: 640,
     height: 400,
@@ -165,8 +174,10 @@ new Charts({
             return val.toFixed(2) + '万';
         }
     }],
-    yAxisFormat: function (val) {
-        return val + '万';
+    yAxis: {
+        format: function (val) {
+            return val + '万';
+        }
     },
     width: 640,
     height: 400
