@@ -479,6 +479,9 @@ Charts.prototype.drawYAxis = function(series) {
     context.closePath();
     context.stroke();
 
+    if (this.opts.yAxis.title) {  
+        this.drawXAxisTitle(this.opts.yAxis.title);
+    }
 }
 Charts.prototype.drawXAxisTitle = function(title) {
     var context = this.context;
@@ -533,10 +536,6 @@ Charts.prototype.drawXAxis = function(categories) {
     });
     context.closePath();
     context.stroke();
-
-    if (this.opts.yAxis.title) {  
-        this.drawXAxisTitle(this.opts.yAxis.title);
-    }
 }
 Charts.prototype.draw = function() {
     var context = this.context;
