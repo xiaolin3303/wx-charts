@@ -24,6 +24,17 @@
 
 代码分析 [Here](https://segmentfault.com/a/1190000007649376)
 
+# 如何使用
+1、直接引用编译好的文件 `dist/charts.js`
+2、自行编译
+
+```
+git clone https://github.com/xiaolin3303/wx-charts.git
+npm install rollup -g
+npm install
+rollup -c or rollup --config rollup.config.prod.js
+```
+
 # 参数说明
 `opts` Object
 
