@@ -10,7 +10,7 @@ let Charts = function(opts) {
     config.legendHeight = opts.legend ? 30 : 0;
     config.yAxisTitleWidth = opts.yAxis.title ? 30 : 0;    
 
-	const context = wx.createContext();
+    const context = wx.createContext();
 
     drawCharts(opts.type, opts, config, context);
     drawLegend(opts.series, opts, config, context)

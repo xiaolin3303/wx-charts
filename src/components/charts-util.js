@@ -23,7 +23,7 @@ function findRange (num, type, limit) {
 }
 
 export function fillSeriesColor (series, config) {
-	let index = 0;
+    let index = 0;
     return series.map(function(item) {
         if (!item.color) {
             item.color = config.colors[index];
@@ -58,7 +58,7 @@ export function getDataRange (minData, maxData) {
 }
 
 export function mesureText (text) {
-	// wx canvas 未实现mesureText方法, 此处自行实现
+    // wx canvas 未实现mesureText方法, 此处自行实现
     text = String(text);
     var text = text.split('');
     var width = 0;
@@ -78,7 +78,7 @@ export function mesureText (text) {
         } else if (/\s/.test(item)) {
             width += 5;
         } else {
-        	width += 20;
+            width += 20;
         }
     });
     return width;

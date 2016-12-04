@@ -2,13 +2,13 @@ import { getDataRange } from './charts-util'
 import Util from '../util/util'
 import { mesureText } from './charts-util'
 
-function dataCombine (series) {
+function dataCombine(series) {
     return series.reduce(function(a, b) {
         return (a.data ? a.data : a).concat(b.data);
     }, []);
 }
 
-export function getPieDataPoints (series) {
+export function getPieDataPoints(series) {
     var count = 0;
     var _start_ = 0;
     series.forEach(function(item) {
@@ -25,7 +25,7 @@ export function getPieDataPoints (series) {
     return series;
 }
 
-export function fixColumeData (points, eachSpacing, columnLen, index, config) {
+export function fixColumeData(points, eachSpacing, columnLen, index, config) {
     return points.map(function(item) {
         item.width = (eachSpacing - 2 * config.columePadding) / columnLen;
         item.x = item.x - eachSpacing / 2 + config.columePadding + (index + 0.5) * item.width;
@@ -37,14 +37,14 @@ export function fixColumeData (points, eachSpacing, columnLen, index, config) {
     });
 }
 
-export function getXAxisPoints (categories, opts, config) {
-	let yAxisTotleWidth = config.yAxisWidth + config.yAxisTitleWidth;
+export function getXAxisPoints(categories, opts, config) {
+    let yAxisTotleWidth = config.yAxisWidth + config.yAxisTitleWidth;
     let spacingValid = opts.width - 2 * config.padding - yAxisTotleWidth;
     let eachSpacing = Math.floor(spacingValid / categories.length);
 
     let xAxisPoints = [];
     let startX = config.padding + yAxisTotleWidth;
-	let endX = opts.width - config.padding;
+    let endX = opts.width - config.padding;
     categories.forEach(function(item, index) {
         xAxisPoints.push(startX + index * eachSpacing);
     });
@@ -53,7 +53,7 @@ export function getXAxisPoints (categories, opts, config) {
     return { xAxisPoints, startX, endX, eachSpacing };
 }
 
-export function getDataPoints (data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config) {
+export function getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config) {
     let points = [];
     let validHeight = opts.height - 2 * config.padding - config.xAxisHeight - config.legendHeight;
     data.forEach(function(item, index) {
@@ -68,8 +68,8 @@ export function getDataPoints (data, minRange, maxRange, xAxisPoints, eachSpacin
     return points;
 }
 
-export function getYAxisTextList (series, opts, config) {
-	let data = dataCombine(series);
+export function getYAxisTextList(series, opts, config) {
+    let data = dataCombine(series);
     let minData = typeof opts.yAxis.min === 'number' ? opts.yAxis.min : Math.min.apply(this, data);
     let maxData = Math.max.apply(this, data);
     let dataRange = getDataRange(minData, maxData);
@@ -85,10 +85,10 @@ export function getYAxisTextList (series, opts, config) {
     return range.reverse();
 }
 
-export function calYAxisData (series, opts, config) {
-	let ranges = getYAxisTextList(series, opts, config);
-	let yAxisWidth = config.yAxisWidth;
-	let rangesFormat = ranges.map(function (item) {
+export function calYAxisData(series, opts, config) {
+    let ranges = getYAxisTextList(series, opts, config);
+    let yAxisWidth = config.yAxisWidth;
+    let rangesFormat = ranges.map(function(item) {
         item = Util.toFixed(item, 2);
         item = opts.yAxis.format ? opts.yAxis.format(Number(item)) : item;
         yAxisWidth = Math.max(yAxisWidth, mesureText(item) + 5);

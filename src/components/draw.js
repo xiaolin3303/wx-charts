@@ -19,8 +19,8 @@ function drawYAxisTitle (title, opts, config, context) {
 }
 
 export function drawColumnDataPoints (series, opts, config, context) {
-	let { ranges } = calYAxisData(series, opts, config);
-	let { xAxisPoints, eachSpacing } = getXAxisPoints(opts.categories, opts, config);
+    let { ranges } = calYAxisData(series, opts, config);
+    let { xAxisPoints, eachSpacing } = getXAxisPoints(opts.categories, opts, config);
     let minRange = ranges.pop();
     let maxRange = ranges.shift();
     let endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
@@ -47,14 +47,14 @@ export function drawColumnDataPoints (series, opts, config, context) {
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config);
         points = fixColumeData(points, eachSpacing, series.length, seriesIndex, config);
         if (opts.dataLabel !== false) {
-	        drawPointText(points, eachSeries);
+            drawPointText(points, eachSeries);
         }
     });
 }
 
 export function drawAreaDataPoints (series, opts, config, context) {
-	let { ranges } = calYAxisData(series, opts, config);
-	let { xAxisPoints, eachSpacing } = getXAxisPoints(opts.categories, opts, config);
+    let { ranges } = calYAxisData(series, opts, config);
+    let { xAxisPoints, eachSpacing } = getXAxisPoints(opts.categories, opts, config);
     let minRange = ranges.pop();
     let maxRange = ranges.shift();
     let endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
@@ -89,17 +89,17 @@ export function drawAreaDataPoints (series, opts, config, context) {
         drawPointShape(points, eachSeries.color, shape, context);
     });
     if (opts.dataLabel !== false) {
-	    series.forEach(function(eachSeries, seriesIndex) {
-	        let data = eachSeries.data;
-	        let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config);
-	        drawPointText(points, eachSeries, config, context);
-	    });
+        series.forEach(function(eachSeries, seriesIndex) {
+            let data = eachSeries.data;
+            let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config);
+            drawPointText(points, eachSeries, config, context);
+        });
     }
 }
 
 export function drawLineDataPoints (series, opts, config, context) {
-	let { ranges } = calYAxisData(series, opts, config);
-	let { xAxisPoints, eachSpacing } = getXAxisPoints(opts.categories, opts, config);
+    let { ranges } = calYAxisData(series, opts, config);
+    let { xAxisPoints, eachSpacing } = getXAxisPoints(opts.categories, opts, config);
     let minRange = ranges.pop();
     let maxRange = ranges.shift();
 
@@ -125,11 +125,11 @@ export function drawLineDataPoints (series, opts, config, context) {
         drawPointShape(points, eachSeries.color, shape, context);
     });
     if (opts.dataLabel !== false) {
-	    series.forEach(function(eachSeries, seriesIndex) {
-	        let data = eachSeries.data;
-	        let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config);
-	        drawPointText(points, eachSeries, config, context);
-	    });
+        series.forEach(function(eachSeries, seriesIndex) {
+            let data = eachSeries.data;
+            let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config);
+            drawPointText(points, eachSeries, config, context);
+        });
     }
 }
 

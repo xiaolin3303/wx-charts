@@ -3,8 +3,8 @@ import { calYAxisData } from './charts-data'
 import { fillSeriesColor } from './charts-util';
 
 export default function drawCharts (type, opts, config, context) {
-	let series = opts.series;
-	let categories = opts.categories;
+    let series = opts.series;
+    let categories = opts.categories;
     series = fillSeriesColor(series, config);
 
     let { yAxisWidth } = calYAxisData(series, opts, config);
