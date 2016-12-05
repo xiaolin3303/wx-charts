@@ -8,14 +8,14 @@ function dataCombine(series) {
     }, []);
 }
 
-export function getPieDataPoints(series) {
+export function getPieDataPoints(series, process = 1) {
     var count = 0;
     var _start_ = 0;
     series.forEach(function(item) {
         count += item.data;
     });
     series.forEach(function(item) {
-        item._proportion_ = item.data / count;
+        item._proportion_ = item.data / count * process;
     });
     series.forEach(function(item) {
         item._start_ = _start_;
@@ -53,15 +53,15 @@ export function getXAxisPoints(categories, opts, config) {
     return { xAxisPoints, startX, endX, eachSpacing };
 }
 
-export function getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config) {
+export function getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process = 1) {
     let points = [];
     let validHeight = opts.height - 2 * config.padding - config.xAxisHeight - config.legendHeight;
     data.forEach(function(item, index) {
         let point = {};
         point.x = xAxisPoints[index] + Math.round(eachSpacing / 2);
         let height = validHeight * (item - minRange) / (maxRange - minRange);
+        height *= process;
         point.y = opts.height - config.xAxisHeight - config.legendHeight - Math.round(height) - config.padding;
-
         points.push(point);
     });
 

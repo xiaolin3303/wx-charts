@@ -1,3 +1,4 @@
+
 /*
  * charts for WeChat small app v1.0
  *
@@ -154,13 +155,15 @@ function dataCombine(series) {
 }
 
 function getPieDataPoints(series) {
+    var process = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+
     var count = 0;
     var _start_ = 0;
     series.forEach(function (item) {
         count += item.data;
     });
     series.forEach(function (item) {
-        item._proportion_ = item.data / count;
+        item._proportion_ = item.data / count * process;
     });
     series.forEach(function (item) {
         item._start_ = _start_;
@@ -199,14 +202,16 @@ function getXAxisPoints(categories, opts, config) {
 }
 
 function getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config) {
+    var process = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 1;
+
     var points = [];
     var validHeight = opts.height - 2 * config.padding - config.xAxisHeight - config.legendHeight;
     data.forEach(function (item, index) {
         var point = {};
         point.x = xAxisPoints[index] + Math.round(eachSpacing / 2);
         var height = validHeight * (item - minRange) / (maxRange - minRange);
+        height *= process;
         point.y = opts.height - config.xAxisHeight - config.legendHeight - Math.round(height) - config.padding;
-
         points.push(point);
     });
 
@@ -310,6 +315,8 @@ function drawYAxisTitle(title, opts, config, context) {
 }
 
 function drawColumnDataPoints(series, opts, config, context) {
+    var process = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
+
     var _calYAxisData = calYAxisData(series, opts, config),
         ranges = _calYAxisData.ranges;
 
@@ -323,7 +330,7 @@ function drawColumnDataPoints(series, opts, config, context) {
 
     series.forEach(function (eachSeries, seriesIndex) {
         var data = eachSeries.data;
-        var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config);
+        var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
         points = fixColumeData(points, eachSpacing, series.length, seriesIndex, config);
 
         // 绘制柱状数据图
@@ -340,15 +347,17 @@ function drawColumnDataPoints(series, opts, config, context) {
     });
     series.forEach(function (eachSeries, seriesIndex) {
         var data = eachSeries.data;
-        var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config);
+        var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
         points = fixColumeData(points, eachSpacing, series.length, seriesIndex, config);
         if (opts.dataLabel !== false) {
-            drawPointText(points, eachSeries);
+            drawPointText(points, eachSeries, config, context);
         }
     });
 }
 
 function drawAreaDataPoints(series, opts, config, context) {
+    var process = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
+
     var _calYAxisData2 = calYAxisData(series, opts, config),
         ranges = _calYAxisData2.ranges;
 
@@ -362,7 +371,7 @@ function drawAreaDataPoints(series, opts, config, context) {
 
     series.forEach(function (eachSeries, seriesIndex) {
         var data = eachSeries.data;
-        var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config);
+        var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
 
         // 绘制区域数据
         var firstPoint = points[0];
@@ -392,13 +401,15 @@ function drawAreaDataPoints(series, opts, config, context) {
     if (opts.dataLabel !== false) {
         series.forEach(function (eachSeries, seriesIndex) {
             var data = eachSeries.data;
-            var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config);
+            var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
             drawPointText(points, eachSeries, config, context);
         });
     }
 }
 
 function drawLineDataPoints(series, opts, config, context) {
+    var process = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
+
     var _calYAxisData3 = calYAxisData(series, opts, config),
         ranges = _calYAxisData3.ranges;
 
@@ -411,7 +422,7 @@ function drawLineDataPoints(series, opts, config, context) {
 
     series.forEach(function (eachSeries, seriesIndex) {
         var data = eachSeries.data;
-        var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config);
+        var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
 
         // 绘制数据线
         context.beginPath();
@@ -433,7 +444,7 @@ function drawLineDataPoints(series, opts, config, context) {
     if (opts.dataLabel !== false) {
         series.forEach(function (eachSeries, seriesIndex) {
             var data = eachSeries.data;
-            var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config);
+            var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
             drawPointText(points, eachSeries, config, context);
         });
     }
@@ -545,7 +556,9 @@ function drawLegend(series, opts, config, context) {
     });
 }
 function drawPieDataPoints(series, opts, config, context) {
-    series = getPieDataPoints(series);
+    var process = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
+
+    series = getPieDataPoints(series, process);
     var centerPosition = {
         x: opts.width / 2,
         y: (opts.height - 2 * config.padding - config.legendHeight) / 2
@@ -584,6 +597,53 @@ function drawCanvas(opts, context) {
     });
 }
 
+var Timing = {
+    easeIn: function easeIn(pos) {
+        return Math.pow(pos, 3);
+    },
+
+    easeOut: function easeOut(pos) {
+        return Math.pow(pos - 1, 3) + 1;
+    },
+
+    easeInOut: function easeInOut(pos) {
+        if ((pos /= 0.5) < 1) {
+            return 0.5 * Math.pow(pos, 3);
+        } else {
+            return 0.5 * (Math.pow(pos - 2, 3) + 2);
+        }
+    },
+
+    linear: function linear(pos) {
+        return pos;
+    }
+};
+
+function Animation(opts) {
+    opts.duration = typeof opts.duration === 'undefined' ? 1000 : opts.duration;
+    opts.timing = opts.timing || 'linear';
+
+    var startTimeStamp = null;
+
+    function step(timestamp) {
+        if (startTimeStamp === null) {
+            startTimeStamp = timestamp;
+        }
+        if (timestamp - startTimeStamp < opts.duration) {
+            var process = (timestamp - startTimeStamp) / opts.duration;
+            var timingFunction = Timing[opts.timing];
+            process = timingFunction(process);
+            opts.onProcess && opts.onProcess(process);
+            requestAnimationFrame(step);
+        } else {
+            opts.onProcess && opts.onProcess(1);
+            opts.onAnimationFinish && opts.onAnimationFinish();
+        }
+    }
+
+    requestAnimationFrame(step);
+}
+
 function drawCharts(type, opts, config, context) {
     var series = opts.series;
     var categories = opts.categories;
@@ -594,24 +654,55 @@ function drawCharts(type, opts, config, context) {
 
     config.yAxisWidth = yAxisWidth;
 
+    var duration = opts.animation ? 1000 : 0;
+
     switch (type) {
         case 'line':
-            drawYAxis(series, opts, config, context);
-            drawXAxis(categories, opts, config, context);
-            drawLineDataPoints(series, opts, config, context);
+            Animation({
+                timing: 'easeIn',
+                duration: duration,
+                onProcess: function onProcess(process) {
+                    drawYAxis(series, opts, config, context);
+                    drawXAxis(categories, opts, config, context);
+                    drawLineDataPoints(series, opts, config, context, process);
+                    drawCanvas(opts, context);
+                }
+            });
             break;
         case 'column':
-            drawYAxis(series, opts, config, context);
-            drawXAxis(categories, opts, config, context);
-            drawColumnDataPoints(series, opts, config, context);
+            Animation({
+                timing: 'easeIn',
+                duration: duration,
+                onProcess: function onProcess(process) {
+                    drawYAxis(series, opts, config, context);
+                    drawXAxis(categories, opts, config, context);
+                    drawColumnDataPoints(series, opts, config, context, process);
+                    drawCanvas(opts, context);
+                }
+            });
             break;
         case 'area':
-            drawYAxis(series, opts, config, context);
-            drawXAxis(categories, opts, config, context);
-            drawAreaDataPoints(series, opts, config, context);
+            Animation({
+                timing: 'easeIn',
+                duration: duration,
+                onProcess: function onProcess(process) {
+                    drawYAxis(series, opts, config, context);
+                    drawXAxis(categories, opts, config, context);
+                    drawAreaDataPoints(series, opts, config, context, process);
+                    drawCanvas(opts, context);
+                }
+            });
             break;
         case 'pie':
-            drawPieDataPoints(series, opts, config, context);
+            Animation({
+                timing: 'easeInOut',
+                duration: duration,
+                onProcess: function onProcess(process) {
+                    drawPieDataPoints(series, opts, config, context, process);
+                    drawLegend(opts.series, opts, config, context);
+                    drawCanvas(opts, context);
+                }
+            });
             break;
     }
 }
@@ -619,6 +710,7 @@ function drawCharts(type, opts, config, context) {
 var Charts = function Charts(opts) {
     opts.yAxis = opts.yAxis || {};
     opts.legend = opts.legend === false ? false : true;
+    opts.animation = opts.animation === false ? false : true;
     var config$$1 = assign({}, config);
     config$$1.legendHeight = opts.legend ? 30 : 0;
     config$$1.yAxisTitleWidth = opts.yAxis.title ? 30 : 0;
@@ -626,8 +718,6 @@ var Charts = function Charts(opts) {
     var context = wx.createContext();
 
     drawCharts(opts.type, opts, config$$1, context);
-    drawLegend(opts.series, opts, config$$1, context);
-    drawCanvas(opts, context);
 };
 
 module.exports = Charts;

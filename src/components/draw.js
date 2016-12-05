@@ -18,7 +18,7 @@ function drawYAxisTitle (title, opts, config, context) {
     context.restore();
 }
 
-export function drawColumnDataPoints (series, opts, config, context) {
+export function drawColumnDataPoints (series, opts, config, context, process = 1) {
     let { ranges } = calYAxisData(series, opts, config);
     let { xAxisPoints, eachSpacing } = getXAxisPoints(opts.categories, opts, config);
     let minRange = ranges.pop();
@@ -27,7 +27,7 @@ export function drawColumnDataPoints (series, opts, config, context) {
 
     series.forEach(function(eachSeries, seriesIndex) {
         let data = eachSeries.data;
-        let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config);
+        let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
         points = fixColumeData(points, eachSpacing, series.length, seriesIndex, config);
 
         // 绘制柱状数据图
@@ -44,15 +44,15 @@ export function drawColumnDataPoints (series, opts, config, context) {
     });
     series.forEach(function(eachSeries, seriesIndex) {
         let data = eachSeries.data;
-        let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config);
+        let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
         points = fixColumeData(points, eachSpacing, series.length, seriesIndex, config);
         if (opts.dataLabel !== false) {
-            drawPointText(points, eachSeries);
+            drawPointText(points, eachSeries, config, context);
         }
     });
 }
 
-export function drawAreaDataPoints (series, opts, config, context) {
+export function drawAreaDataPoints (series, opts, config, context, process = 1) {
     let { ranges } = calYAxisData(series, opts, config);
     let { xAxisPoints, eachSpacing } = getXAxisPoints(opts.categories, opts, config);
     let minRange = ranges.pop();
@@ -61,7 +61,7 @@ export function drawAreaDataPoints (series, opts, config, context) {
 
     series.forEach(function(eachSeries, seriesIndex) {
         let data = eachSeries.data;
-        let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config);
+        let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
 
         // 绘制区域数据
         let firstPoint = points[0];
@@ -91,13 +91,13 @@ export function drawAreaDataPoints (series, opts, config, context) {
     if (opts.dataLabel !== false) {
         series.forEach(function(eachSeries, seriesIndex) {
             let data = eachSeries.data;
-            let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config);
+            let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
             drawPointText(points, eachSeries, config, context);
         });
     }
 }
 
-export function drawLineDataPoints (series, opts, config, context) {
+export function drawLineDataPoints (series, opts, config, context, process = 1) {
     let { ranges } = calYAxisData(series, opts, config);
     let { xAxisPoints, eachSpacing } = getXAxisPoints(opts.categories, opts, config);
     let minRange = ranges.pop();
@@ -105,7 +105,7 @@ export function drawLineDataPoints (series, opts, config, context) {
 
     series.forEach(function(eachSeries, seriesIndex) {
         let data = eachSeries.data;
-        let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config);
+        let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
 
         // 绘制数据线
         context.beginPath();
@@ -127,7 +127,7 @@ export function drawLineDataPoints (series, opts, config, context) {
     if (opts.dataLabel !== false) {
         series.forEach(function(eachSeries, seriesIndex) {
             let data = eachSeries.data;
-            let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config);
+            let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
             drawPointText(points, eachSeries, config, context);
         });
     }
@@ -232,8 +232,8 @@ export function drawLegend (series, opts, config, context) {
         startX += mesureText(item.name) + padding + 15; 
     });
 }
-export function drawPieDataPoints (series, opts, config, context) {
-    series = getPieDataPoints(series);
+export function drawPieDataPoints (series, opts, config, context, process = 1) {
+    series = getPieDataPoints(series, process);
     let centerPosition = {
         x: opts.width / 2,
         y: (opts.height - 2 * config.padding - config.legendHeight) / 2 
