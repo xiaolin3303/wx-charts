@@ -204,4 +204,5 @@ new Charts({
 # TodoList
 
 - [x] add legend
+- [x] build with `rollup`
 - [ ] add animation
