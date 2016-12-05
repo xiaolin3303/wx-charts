@@ -146,7 +146,7 @@ new Charts({
 new Charts({
     canvasId: 'columnCanvas',
     type: 'column',
-    categories: ['2016-08', '2016-09', '2016-10', '2016-11', '2016-12', '2017'],
+    categories: ['2012', '2013', '2014', '2015', '2016', '2017'],
     series: [{
         name: '成交量1',
         data: [15, 20, 45, 37, 4, 80]
