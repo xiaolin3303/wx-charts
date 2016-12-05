@@ -45,6 +45,8 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 
 `opts.height` Number **required** canvas高度，单位为px
 
+`opts.animation` Boolean default `true` 是否动画展示
+
 `opts.type` String **required** 图表类型，可选值为`pie`, `line`, `column`, `area`
 
 `opts.categories` Array **required** *(饼图不需要)* 数据类别分类
@@ -101,6 +103,7 @@ new Charts({
 });
 ```
 ![pieChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/pie.png)
+![pieChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/pie.gif)
 
 ### line chart
 
@@ -135,6 +138,7 @@ new Charts({
 ```
 
 ![lineChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/line.png)
+![lineChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/line.gif)
 
 ### columnChart
 
@@ -149,12 +153,6 @@ new Charts({
     }, {
         name: '成交量2',
         data: [70, 40, 65, 100, 34, 18]
-    }, {
-        name: '成交量3',
-        data: [70, 40, 65, 100, 34, 18]
-    }, {
-        name: '成交量4',
-        data: [70, 40, 65, 100, 34, 18]
     }],
     yAxis: {
         format: function (val) {
@@ -162,12 +160,12 @@ new Charts({
         }
     },
     width: 640,
-    height: 400,
-    dataLabel: false
+    height: 400
 });
 ```
 
 ![columnChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/column.png)
+![columnChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/column.gif)
 
 ### areaChart
 
@@ -200,9 +198,10 @@ new Charts({
 ```
 
 ![areaChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/area.png)
+![areaChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/area.gif)
 
 # TodoList
 
 - [x] add legend
 - [x] build with `rollup`
-- [ ] add animation
+- [x] add animation
