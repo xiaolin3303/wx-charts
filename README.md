@@ -5,6 +5,8 @@
 
 > **持续优化更新中，请保持关注~**
 
+> 有任何问题欢迎在[Issues](https://github.com/xiaolin3303/wx-charts/issues)中讨论
+
 **支持图表类型**
 - 饼图   `pie`
 - 圆环图 `ring`
