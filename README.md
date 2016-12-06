@@ -7,6 +7,7 @@
 
 **支持图表类型**
 - 饼图   `pie`
+- 圆环图 `ring`
 - 线图   `line`
 - 柱状图 `column`
 - 区域图 `area`
@@ -49,7 +50,7 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 
 `opts.animation` Boolean default `true` 是否动画展示
 
-`opts.type` String **required** 图表类型，可选值为`pie`, `line`, `column`, `area`
+`opts.type` String **required** 图表类型，可选值为`pie`, `line`, `column`, `area`, `ring`
 
 `opts.categories` Array **required** *(饼图不需要)* 数据类别分类
 
@@ -106,6 +107,33 @@ new Charts({
 ```
 ![pieChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/pie.png)
 ![pieChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/pie.gif)
+
+### ring chart
+
+```javascript
+new Charts({
+    canvasId: 'pieCanvas',
+    type: 'ring',
+    series: [{
+        name: '成交量1',
+        data: 15,
+    }, {
+        name: '成交量2',
+        data: 35,
+    }, {
+        name: '成交量3',
+        data: 78,
+    }, {
+        name: '成交量4',
+        data: 63,
+    }],
+    width: 640,
+    height: 400,
+    dataLabel: false
+});
+```
+![pieChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/ring.png)
+![pieChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/ring.gif)
 
 ### line chart
 
