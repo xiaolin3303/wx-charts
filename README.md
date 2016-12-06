@@ -20,7 +20,7 @@
 .canvas {
     width: 640px;
     height: 600px;
-    transform: scale(0.5)
+    transform: scale(0.5);
 }
 ```
 
