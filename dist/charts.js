@@ -348,7 +348,7 @@ function drawColumnDataPoints(series, opts, config, context) {
         var data = eachSeries.data;
         var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
         points = fixColumeData(points, eachSpacing, series.length, seriesIndex, config);
-        if (opts.dataLabel !== false) {
+        if (opts.dataLabel !== false && process === 1) {
             drawPointText(points, eachSeries, config, context);
         }
     });
@@ -397,7 +397,7 @@ function drawAreaDataPoints(series, opts, config, context) {
         var shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
         drawPointShape(points, eachSeries.color, shape, context);
     });
-    if (opts.dataLabel !== false) {
+    if (opts.dataLabel !== false && process === 1) {
         series.forEach(function (eachSeries, seriesIndex) {
             var data = eachSeries.data;
             var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
@@ -440,7 +440,7 @@ function drawLineDataPoints(series, opts, config, context) {
         var shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
         drawPointShape(points, eachSeries.color, shape, context);
     });
-    if (opts.dataLabel !== false) {
+    if (opts.dataLabel !== false && process === 1) {
         series.forEach(function (eachSeries, seriesIndex) {
             var data = eachSeries.data;
             var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
@@ -664,6 +664,7 @@ function drawCharts(type, opts, config, context) {
                     drawYAxis(series, opts, config, context);
                     drawXAxis(categories, opts, config, context);
                     drawLineDataPoints(series, opts, config, context, process);
+                    drawLegend(opts.series, opts, config, context);
                     drawCanvas(opts, context);
                 }
             });
@@ -676,6 +677,7 @@ function drawCharts(type, opts, config, context) {
                     drawYAxis(series, opts, config, context);
                     drawXAxis(categories, opts, config, context);
                     drawColumnDataPoints(series, opts, config, context, process);
+                    drawLegend(opts.series, opts, config, context);
                     drawCanvas(opts, context);
                 }
             });
@@ -688,6 +690,7 @@ function drawCharts(type, opts, config, context) {
                     drawYAxis(series, opts, config, context);
                     drawXAxis(categories, opts, config, context);
                     drawAreaDataPoints(series, opts, config, context, process);
+                    drawLegend(opts.series, opts, config, context);
                     drawCanvas(opts, context);
                 }
             });

@@ -22,6 +22,7 @@ export default function drawCharts (type, opts, config, context) {
                     drawYAxis(series, opts, config, context);
                     drawXAxis(categories, opts, config, context);
                     drawLineDataPoints(series, opts, config, context, process);
+                    drawLegend(opts.series, opts, config, context);                    
                     drawCanvas(opts, context);
                 }
             });
@@ -34,6 +35,7 @@ export default function drawCharts (type, opts, config, context) {
                     drawYAxis(series, opts, config, context);
                     drawXAxis(categories, opts, config, context);
                     drawColumnDataPoints(series, opts, config, context, process);
+                    drawLegend(opts.series, opts, config, context);                    
                     drawCanvas(opts, context);
                 }
             });
@@ -46,6 +48,7 @@ export default function drawCharts (type, opts, config, context) {
                     drawYAxis(series, opts, config, context);
                     drawXAxis(categories, opts, config, context);
                     drawAreaDataPoints(series, opts, config, context, process);
+                    drawLegend(opts.series, opts, config, context);                    
                     drawCanvas(opts, context);
                 }
             });

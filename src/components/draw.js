@@ -46,7 +46,7 @@ export function drawColumnDataPoints (series, opts, config, context, process = 1
         let data = eachSeries.data;
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
         points = fixColumeData(points, eachSpacing, series.length, seriesIndex, config);
-        if (opts.dataLabel !== false) {
+        if (opts.dataLabel !== false && process === 1) {
             drawPointText(points, eachSeries, config, context);
         }
     });
@@ -88,7 +88,7 @@ export function drawAreaDataPoints (series, opts, config, context, process = 1) 
         let shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
         drawPointShape(points, eachSeries.color, shape, context);
     });
-    if (opts.dataLabel !== false) {
+    if (opts.dataLabel !== false && process === 1) {
         series.forEach(function(eachSeries, seriesIndex) {
             let data = eachSeries.data;
             let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
@@ -124,7 +124,7 @@ export function drawLineDataPoints (series, opts, config, context, process = 1) 
         let shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
         drawPointShape(points, eachSeries.color, shape, context);
     });
-    if (opts.dataLabel !== false) {
+    if (opts.dataLabel !== false && process === 1) {
         series.forEach(function(eachSeries, seriesIndex) {
             let data = eachSeries.data;
             let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
