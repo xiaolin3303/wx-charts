@@ -53,6 +53,7 @@ export default function drawCharts (type, opts, config, context) {
                 }
             });
             break;
+        case 'ring':
         case 'pie':
             Animation({
                 timing: 'easeInOut',

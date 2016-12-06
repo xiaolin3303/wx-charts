@@ -587,6 +587,15 @@ function drawPieDataPoints(series, opts, config, context) {
         context.stroke();
         context.closePath();
     });
+
+    if (opts.type === 'ring') {
+        context.beginPath();
+        context.setFillStyle('#ffffff');
+        context.moveTo(centerPosition.x, centerPosition.y);
+        context.arc(centerPosition.x, centerPosition.y, radius * 0.6, 0, 2 * Math.PI);
+        context.fill();
+        context.closePath();
+    }
 }
 
 function drawCanvas(opts, context) {
@@ -695,6 +704,7 @@ function drawCharts(type, opts, config, context) {
                 }
             });
             break;
+        case 'ring':
         case 'pie':
             Animation({
                 timing: 'easeInOut',

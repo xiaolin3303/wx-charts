@@ -263,6 +263,15 @@ export function drawPieDataPoints (series, opts, config, context, process = 1) {
         context.stroke();
         context.closePath();
     });
+
+    if (opts.type === 'ring') {
+        context.beginPath();
+        context.setFillStyle('#ffffff');
+        context.moveTo(centerPosition.x, centerPosition.y);
+        context.arc(centerPosition.x, centerPosition.y, radius * 0.6, 0, 2 * Math.PI);
+        context.fill();
+        context.closePath();
+    }
 }
 
 export function drawCanvas (opts, context) {
