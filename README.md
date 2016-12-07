@@ -220,6 +220,7 @@ new Charts({
 # 测试 
 1. iPhone 6s, 9.3.5
 2. 小米4, 6.0.1
+
 兼容性问题请在[Issue](https://github.com/xiaolin3303/wx-charts/issues)中提出
 
 # TodoList
