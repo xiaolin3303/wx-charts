@@ -1,3 +1,4 @@
+
 /*
  * charts for WeChat small app v1.0
  *
@@ -10,14 +11,14 @@
 'use strict';
 
 var config = {
-    yAxisWidth: 30,
+    yAxisWidth: 15,
     yAxisSplit: 5,
-    xAxisHeight: 30,
-    legendHeight: 30,
-    yAxisTitleWidth: 30,
-    padding: 30,
-    columePadding: 20,
-    fontSize: 20,
+    xAxisHeight: 15,
+    legendHeight: 15,
+    yAxisTitleWidth: 15,
+    padding: 12,
+    columePadding: 10,
+    fontSize: 10,
     dataPointShape: ['diamond', 'circle', 'triangle', 'rect'],
     colors: ['#7cb5ec', '#f7a35c', '#434348', '#90ed7d', '#f15c80', '#8085e9']
 };
@@ -114,21 +115,21 @@ function mesureText(text) {
     var width = 0;
     text.forEach(function (item) {
         if (/[a-zA-Z]/.test(item)) {
-            width += 14;
+            width += 7;
         } else if (/[0-9]/.test(item)) {
-            width += 11;
+            width += 5.5;
         } else if (/\./.test(item)) {
-            width += 5.4;
+            width += 2.7;
         } else if (/-/.test(item)) {
-            width += 6.5;
+            width += 3.25;
         } else if (/[\u4e00-\u9fa5]/.test(item)) {
-            width += 20;
+            width += 10;
         } else if (/\(|\)/.test(item)) {
-            width += 7.45;
+            width += 3.73;
         } else if (/\s/.test(item)) {
-            width += 5;
+            width += 2.5;
         } else {
-            width += 20;
+            width += 10;
         }
     });
     return width;
@@ -250,33 +251,33 @@ function calYAxisData(series, opts, config) {
 function drawPointShape(points, color, shape, context) {
     context.beginPath();
     context.setStrokeStyle("#ffffff");
-    context.setLineWidth(2);
+    context.setLineWidth(1);
     context.setFillStyle(color);
 
     if (shape === 'diamond') {
         points.forEach(function (item, index) {
-            context.moveTo(item.x, item.y - 9);
-            context.lineTo(item.x - 9, item.y);
-            context.lineTo(item.x, item.y + 9);
-            context.lineTo(item.x + 9, item.y);
-            context.lineTo(item.x, item.y - 9);
+            context.moveTo(item.x, item.y - 4.5);
+            context.lineTo(item.x - 4.5, item.y);
+            context.lineTo(item.x, item.y + 4.5);
+            context.lineTo(item.x + 4.5, item.y);
+            context.lineTo(item.x, item.y - 4.5);
         });
     } else if (shape === 'circle') {
         points.forEach(function (item, index) {
-            context.moveTo(item.x + 7, item.y);
-            context.arc(item.x, item.y, 8, 0, 2 * Math.PI, false);
+            context.moveTo(item.x + 3.5, item.y);
+            context.arc(item.x, item.y, 4, 0, 2 * Math.PI, false);
         });
     } else if (shape === 'rect') {
         points.forEach(function (item, index) {
-            context.moveTo(item.x - 7, item.y - 7);
-            context.rect(item.x - 7, item.y - 7, 14, 14);
+            context.moveTo(item.x - 3.5, item.y - 3.5);
+            context.rect(item.x - 3.5, item.y - 3.5, 7, 7);
         });
     } else if (shape === 'triangle') {
         points.forEach(function (item, index) {
-            context.moveTo(item.x, item.y - 9);
-            context.lineTo(item.x - 9, item.y + 9);
-            context.lineTo(item.x + 9, item.y + 9);
-            context.lineTo(item.x, item.y - 9);
+            context.moveTo(item.x, item.y - 4.5);
+            context.lineTo(item.x - 4.5, item.y + 4.5);
+            context.lineTo(item.x + 4.5, item.y + 4.5);
+            context.lineTo(item.x, item.y - 4.5);
         });
     }
     context.closePath();
@@ -293,7 +294,7 @@ function drawPointText(points, series, config, context) {
     context.setFillStyle('#666666');
     points.forEach(function (item, index) {
         var formatVal = series.format ? series.format(data[index]) : data[index];
-        context.fillText(formatVal, item.x - mesureText(formatVal) / 2, item.y - 10);
+        context.fillText(formatVal, item.x - mesureText(formatVal) / 2, item.y - 2);
     });
     context.closePath();
     context.stroke();
@@ -303,11 +304,11 @@ function drawYAxisTitle(title, opts, config, context) {
     var startX = config.xAxisHeight + (opts.height - config.xAxisHeight - mesureText(title)) / 2;
     context.save();
     context.beginPath();
-    context.setFontSize(20);
+    context.setFontSize(config.fontSize);
     context.setFillStyle('#333333');
     context.translate(0, opts.height);
     context.rotate(-90 * Math.PI / 180);
-    context.fillText(title, startX, 35);
+    context.fillText(title, startX, config.padding + 0.5 * config.fontSize);
     context.stroke();
     context.closePath();
     context.restore();
@@ -379,7 +380,7 @@ function drawAreaDataPoints(series, opts, config, context) {
         context.setStrokeStyle(eachSeries.color);
         context.setFillStyle(eachSeries.color);
         context.setGlobalAlpha(0.6);
-        context.setLineWidth(4);
+        context.setLineWidth(2);
         context.moveTo(firstPoint.x, firstPoint.y);
         points.forEach(function (item, index) {
             if (index > 0) {
@@ -426,7 +427,7 @@ function drawLineDataPoints(series, opts, config, context) {
         // 绘制数据线
         context.beginPath();
         context.setStrokeStyle(eachSeries.color);
-        context.setLineWidth(4);
+        context.setLineWidth(2);
         context.moveTo(points[0].x, points[0].y);
         points.forEach(function (item, index) {
             if (index > 0) {
@@ -476,7 +477,7 @@ function drawXAxis(categories, opts, config, context) {
     context.setFillStyle('#666666');
     categories.forEach(function (item, index) {
         var offset = eachSpacing / 2 - mesureText(item) / 2;
-        context.fillText(item, xAxisPoints[index] + offset, startY + 28);
+        context.fillText(item, xAxisPoints[index] + offset, startY + config.fontSize + 5);
     });
     context.closePath();
     context.stroke();
@@ -528,11 +529,11 @@ function drawLegend(series, opts, config, context) {
     if (!opts.legend) {
         return;
     }
-    var padding = 10;
+    var padding = 5;
     var width = 0;
     series.forEach(function (item) {
         item.name = item.name || 'undefined';
-        width += 2 * padding + mesureText(item.name) + 45;
+        width += 2 * padding + mesureText(item.name) + 22.5;
     });
     var startX = (opts.width - width) / 2 + padding;
     var startY = opts.height - config.legendHeight - 5;
@@ -542,16 +543,16 @@ function drawLegend(series, opts, config, context) {
         context.moveTo(startX, startY);
         context.beginPath();
         context.setFillStyle(item.color);
-        context.rect(startX, startY, 30, 20);
+        context.rect(startX, startY, 15, 10);
         context.closePath();
         context.fill();
-        startX += padding + 30;
+        startX += padding + 15;
         context.beginPath();
         context.setFillStyle('#333333');
-        context.fillText(item.name, startX, startY + 18);
+        context.fillText(item.name, startX, startY + 9);
         context.closePath();
         context.stroke();
-        startX += mesureText(item.name) + padding + 15;
+        startX += mesureText(item.name) + padding + 7.5;
     });
 }
 function drawPieDataPoints(series, opts, config, context) {
@@ -560,32 +561,20 @@ function drawPieDataPoints(series, opts, config, context) {
     series = getPieDataPoints(series, process);
     var centerPosition = {
         x: opts.width / 2,
-        y: (opts.height - 2 * config.padding - config.legendHeight) / 2
+        y: (opts.height - 2 * config.padding - config.legendHeight) / 2 + config.padding
     };
-    var radius = Math.min(centerPosition.x - config.padding, centerPosition.y);
-    context.setStrokeStyle('#ffffff');
-    context.setLineWidth(2);
+    var radius = Math.min(centerPosition.x - config.padding, centerPosition.y - 2 * config.padding);
+
     series.forEach(function (eachSeries) {
         context.beginPath();
+        context.setLineWidth(2);
+        context.setStrokeStyle('#ffffff');
         context.setFillStyle(eachSeries.color);
         context.moveTo(centerPosition.x, centerPosition.y);
         context.arc(centerPosition.x, centerPosition.y, radius, eachSeries._start_, 2 * eachSeries._proportion_ * Math.PI);
         context.closePath();
         context.fill();
-
-        context.beginPath();
-        context.moveTo(centerPosition.x, centerPosition.y);
-        context.arc(centerPosition.x, centerPosition.y, radius, eachSeries._start_, 0);
-        context.lineTo(centerPosition.x, centerPosition.y);
         context.stroke();
-        context.closePath();
-        context.stroke();
-        context.beginPath();
-        context.moveTo(centerPosition.x, centerPosition.y);
-        context.arc(centerPosition.x, centerPosition.y, radius, eachSeries._start_ + 2 * eachSeries._proportion_ * Math.PI, 0);
-        context.moveTo(centerPosition.x, centerPosition.y);
-        context.stroke();
-        context.closePath();
     });
 
     if (opts.type === 'ring') {
@@ -593,8 +582,8 @@ function drawPieDataPoints(series, opts, config, context) {
         context.setFillStyle('#ffffff');
         context.moveTo(centerPosition.x, centerPosition.y);
         context.arc(centerPosition.x, centerPosition.y, radius * 0.6, 0, 2 * Math.PI);
-        context.fill();
         context.closePath();
+        context.fill();
     }
 }
 
@@ -724,8 +713,8 @@ var Charts = function Charts(opts) {
     opts.legend = opts.legend === false ? false : true;
     opts.animation = opts.animation === false ? false : true;
     var config$$1 = assign({}, config);
-    config$$1.legendHeight = opts.legend ? 30 : 0;
-    config$$1.yAxisTitleWidth = opts.yAxis.title ? 30 : 0;
+    config$$1.legendHeight = opts.legend ? config$$1.legendHeight : 0;
+    config$$1.yAxisTitleWidth = opts.yAxis.title ? config$$1.yAxisTitleWidth : 0;
 
     var context = wx.createContext();
 

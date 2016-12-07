@@ -7,8 +7,8 @@ let Charts = function(opts) {
     opts.legend = opts.legend === false ? false : true;
     opts.animation = opts.animation === false ? false : true;
     let config = assign({}, Config);
-    config.legendHeight = opts.legend ? 30 : 0;
-    config.yAxisTitleWidth = opts.yAxis.title ? 30 : 0;    
+    config.legendHeight = opts.legend ? config.legendHeight : 0;
+    config.yAxisTitleWidth = opts.yAxis.title ? config.yAxisTitleWidth : 0;    
 
     const context = wx.createContext();
 

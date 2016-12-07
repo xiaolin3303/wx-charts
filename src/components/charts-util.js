@@ -64,21 +64,21 @@ export function mesureText (text) {
     var width = 0;
     text.forEach(function(item) {
         if (/[a-zA-Z]/.test(item)) {
-            width += 14;
+            width += 7;
         } else if (/[0-9]/.test(item)) {
-            width += 11;
+            width += 5.5;
         } else if (/\./.test(item)) {
-            width += 5.4;
+            width += 2.7;
         } else if (/-/.test(item)) {
-            width += 6.5;
+            width += 3.25;
         } else if (/[\u4e00-\u9fa5]/.test(item)) {
-            width += 20;
+            width += 10;
         } else if (/\(|\)/.test(item)) {
-            width += 7.45;
+            width += 3.73;
         } else if (/\s/.test(item)) {
-            width += 5;
+            width += 2.5;
         } else {
-            width += 20;
+            width += 10;
         }
     });
     return width;

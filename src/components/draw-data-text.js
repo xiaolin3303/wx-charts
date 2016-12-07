@@ -9,7 +9,7 @@ export default function drawPointText (points, series, config, context) {
     context.setFillStyle('#666666');
     points.forEach(function(item, index) {
         let formatVal = series.format ? series.format(data[index]) : data[index];
-        context.fillText(formatVal, item.x - mesureText(formatVal) / 2, item.y - 10);
+        context.fillText(formatVal, item.x - mesureText(formatVal) / 2, item.y - 2);
     });
     context.closePath();
     context.stroke();

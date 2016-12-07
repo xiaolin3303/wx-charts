@@ -8,11 +8,11 @@ function drawYAxisTitle (title, opts, config, context) {
     let startX = config.xAxisHeight + (opts.height - config.xAxisHeight - mesureText(title)) / 2;
     context.save();
     context.beginPath();
-    context.setFontSize(20);
+    context.setFontSize(config.fontSize);
     context.setFillStyle('#333333');
     context.translate(0, opts.height);
     context.rotate(-90 * Math.PI / 180);
-    context.fillText(title, startX, 35);
+    context.fillText(title, startX, config.padding + 0.5 * config.fontSize);
     context.stroke();
     context.closePath();
     context.restore();
@@ -70,7 +70,7 @@ export function drawAreaDataPoints (series, opts, config, context, process = 1) 
         context.setStrokeStyle(eachSeries.color);
         context.setFillStyle(eachSeries.color);
         context.setGlobalAlpha(0.6);
-        context.setLineWidth(4);
+        context.setLineWidth(2);
         context.moveTo(firstPoint.x, firstPoint.y);
         points.forEach(function(item, index) {
             if (index > 0) {
@@ -110,7 +110,7 @@ export function drawLineDataPoints (series, opts, config, context, process = 1) 
         // 绘制数据线
         context.beginPath();
         context.setStrokeStyle(eachSeries.color);
-        context.setLineWidth(4);
+        context.setLineWidth(2);
         context.moveTo(points[0].x, points[0].y);
         points.forEach(function(item, index) {
             if (index > 0) {
@@ -155,7 +155,7 @@ export function drawXAxis (categories, opts, config, context) {
     context.setFillStyle('#666666');
     categories.forEach(function(item, index) {
         let offset = eachSpacing / 2 - mesureText(item) / 2;
-        context.fillText(item, xAxisPoints[index] + offset, startY + 28);
+        context.fillText(item, xAxisPoints[index] + offset, startY + config.fontSize + 5);
     });
     context.closePath();
     context.stroke();
@@ -163,7 +163,6 @@ export function drawXAxis (categories, opts, config, context) {
 
 export function drawYAxis (series, opts, config, context) {
     let { rangesFormat } = calYAxisData(series, opts, config);
-
     let yAxisTotleWidth = config.yAxisWidth + config.yAxisTitleWidth;
 
     let spacingValid = opts.height - 2 * config.padding - config.xAxisHeight - config.legendHeight;
@@ -206,11 +205,11 @@ export function drawLegend (series, opts, config, context) {
     if (!opts.legend) {
         return;
     }
-    let padding = 10;
+    let padding = 5;
     let width = 0;
     series.forEach(function (item) {
         item.name = item.name || 'undefined';
-        width += 2 * padding + mesureText(item.name) + 45;
+        width += 2 * padding + mesureText(item.name) + 22.5;
     });
     let startX = (opts.width - width) / 2 + padding;
     let startY = opts.height - config.legendHeight - 5;
@@ -220,48 +219,36 @@ export function drawLegend (series, opts, config, context) {
         context.moveTo(startX, startY);
         context.beginPath();
         context.setFillStyle(item.color);
-        context.rect(startX, startY, 30, 20);
+        context.rect(startX, startY, 15, 10);
         context.closePath();
         context.fill();
-        startX += padding + 30;
+        startX += padding + 15;
         context.beginPath();
         context.setFillStyle('#333333');
-        context.fillText(item.name, startX, startY + 18);
+        context.fillText(item.name, startX, startY + 9);
         context.closePath();
         context.stroke();
-        startX += mesureText(item.name) + padding + 15; 
+        startX += mesureText(item.name) + padding + 7.5; 
     });
 }
 export function drawPieDataPoints (series, opts, config, context, process = 1) {
     series = getPieDataPoints(series, process);
     let centerPosition = {
         x: opts.width / 2,
-        y: (opts.height - 2 * config.padding - config.legendHeight) / 2 
+        y: (opts.height - 2 * config.padding - config.legendHeight) / 2 + config.padding
     }
-    let radius = Math.min(centerPosition.x - config.padding, centerPosition.y);
-    context.setStrokeStyle('#ffffff');
-    context.setLineWidth(2)
+    let radius = Math.min(centerPosition.x - config.padding, centerPosition.y - 2 * config.padding);
+
     series.forEach(function(eachSeries) {
         context.beginPath();
+        context.setLineWidth(2);
+        context.setStrokeStyle('#ffffff');
         context.setFillStyle(eachSeries.color);
         context.moveTo(centerPosition.x, centerPosition.y);
         context.arc(centerPosition.x, centerPosition.y, radius, eachSeries._start_, 2 * eachSeries._proportion_ * Math.PI);
         context.closePath();
         context.fill();
-
-        context.beginPath();
-        context.moveTo(centerPosition.x, centerPosition.y);
-        context.arc(centerPosition.x, centerPosition.y, radius, eachSeries._start_, 0);
-        context.lineTo(centerPosition.x, centerPosition.y);
         context.stroke();
-        context.closePath();
-        context.stroke();
-        context.beginPath();
-        context.moveTo(centerPosition.x, centerPosition.y);
-        context.arc(centerPosition.x, centerPosition.y, radius, eachSeries._start_ + 2 * eachSeries._proportion_ * Math.PI, 0);
-        context.moveTo(centerPosition.x, centerPosition.y);
-        context.stroke();
-        context.closePath();
     });
 
     if (opts.type === 'ring') {
@@ -269,8 +256,8 @@ export function drawPieDataPoints (series, opts, config, context, process = 1) {
         context.setFillStyle('#ffffff');
         context.moveTo(centerPosition.x, centerPosition.y);
         context.arc(centerPosition.x, centerPosition.y, radius * 0.6, 0, 2 * Math.PI);
-        context.fill();
         context.closePath();
+        context.fill();
     }
 }
 
