@@ -12,19 +12,6 @@
 - 柱状图 `column`
 - 区域图 `area`
 
-**高清显示**
-
-设置canvas的尺寸为2倍大小，然后缩小到50%，建议都进行这样的设置，图表本身绘制时是按照高清显示配置的，不然整体效果会偏大
-
-```css
-/* 例如设计图尺寸为320 x 300 */
-.canvas {
-    width: 640px;
-    height: 600px;
-    transform: scale(0.5);
-}
-```
-
 代码分析 [Here](https://segmentfault.com/a/1190000007649376)
 
 # 如何使用
@@ -100,8 +87,8 @@ new Charts({
         name: '成交量4',
         data: 63,
     }],
-    width: 640,
-    height: 400,
+    width: 320,
+    height: 200,
     dataLabel: false
 });
 ```
@@ -127,8 +114,8 @@ new Charts({
         name: '成交量4',
         data: 63,
     }],
-    width: 640,
-    height: 400,
+    width: 320,
+    height: 200,
     dataLabel: false
 });
 ```
@@ -162,8 +149,8 @@ new Charts({
         },
         min: 0
     },
-    width: 640,
-    height: 400
+    width: 320,
+    height: 200
 });
 ```
 
@@ -189,8 +176,8 @@ new Charts({
             return val + '万';
         }
     },
-    width: 640,
-    height: 400
+    width: 320,
+    height: 200
 });
 ```
 
@@ -222,8 +209,8 @@ new Charts({
             return val + '万';
         }
     },
-    width: 640,
-    height: 400
+    width: 320,
+    height: 200
 });
 ```
 
