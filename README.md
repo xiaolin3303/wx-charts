@@ -218,8 +218,8 @@ new Charts({
 ![areaChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/area.gif)
 
 # 测试 
-1. iPhone 6s, 9.3.5
-2. 小米4, 6.0.1
+1. iPhone 6s, IOS 9.3.5
+2. 小米4, ANDORID 6.0.1
 
 兼容性问题请在[Issue](https://github.com/xiaolin3303/wx-charts/issues)中提出
 
