@@ -14,6 +14,13 @@
 
 代码分析 [Here](https://segmentfault.com/a/1190000007649376)
 
+# 更新记录 
+
+- [ ] 动画性能优化
+- [x] add animation  2016-12-05
+- [x] build with `rollup` 2016-12-02
+- [x] add legend  2016-11-29
+
 # 如何使用
 1、直接引用编译好的文件 `dist/charts.js`
 
@@ -222,10 +229,3 @@ new Charts({
 2. 小米4, ANDORID 6.0.1
 
 兼容性问题请在[Issue](https://github.com/xiaolin3303/wx-charts/issues)中提出
-
-# TodoList
-
-- [x] add legend
-- [x] build with `rollup`
-- [x] add animation
-- [ ] 动画性能优化
