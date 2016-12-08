@@ -228,3 +228,4 @@ new Charts({
 - [x] add legend
 - [x] build with `rollup`
 - [x] add animation
+- [ ] 动画性能优化
