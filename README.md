@@ -229,3 +229,6 @@ new Charts({
 2. 小米4, ANDORID 6.0.1
 
 兼容性问题请在[Issue](https://github.com/xiaolin3303/wx-charts/issues)中提出
+
+# 一些问题的说明汇总
+- [wx-charts自适应屏幕宽度的问题](https://github.com/xiaolin3303/wx-charts/issues/4)
