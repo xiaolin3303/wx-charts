@@ -44,6 +44,8 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 
 `opts.animation` Boolean default `true` 是否动画展示
 
+`opts.legend` Boolen default `true` 是否显示图表下方各类别的标识
+
 `opts.type` String **required** 图表类型，可选值为`pie`, `line`, `column`, `area`, `ring`
 
 `opts.categories` Array **required** *(饼图不需要)* 数据类别分类
