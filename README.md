@@ -50,7 +50,7 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 
 `opts.categories` Array **required** *(饼图不需要)* 数据类别分类
 
-`opts.dataLabel` Boolean default `true` 是否在图表中显示数据内容值
+`opts.dataLabel` Boolean default `true` 是否在图表中显示数据内容值(`pie`图暂不支持，开发中)
 
 `opts.yAxis` Object Y轴配置
 
