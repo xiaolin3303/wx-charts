@@ -1,3 +1,4 @@
+
 /*
  * charts for WeChat small app v1.0
  *
@@ -127,6 +128,8 @@ function mesureText(text) {
             width += 3.73;
         } else if (/\s/.test(item)) {
             width += 2.5;
+        } else if (/%/.test(item)) {
+            width += 8;
         } else {
             width += 10;
         }
