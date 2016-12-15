@@ -216,12 +216,42 @@ export function drawLegend (series, opts, config, context) {
     
     context.setFontSize(config.fontSize);
     series.forEach(function (item) {
-        context.moveTo(startX, startY);
-        context.beginPath();
-        context.setFillStyle(item.color);
-        context.rect(startX, startY, 15, 10);
-        context.closePath();
-        context.fill();
+        switch (opts.type) {
+            case 'line':
+                context.beginPath();
+                context.setLineWidth(1);
+                context.setStrokeStyle(item.color);
+                context.moveTo(startX - 2, startY + 5);
+                context.lineTo(startX + 17, startY + 5);
+                context.stroke();
+                context.closePath();
+                context.beginPath();
+                context.setLineWidth(1);
+                context.setStrokeStyle('#ffffff');
+                context.setFillStyle(item.color);
+                context.moveTo(startX + 7.5, startY + 5);
+                context.arc(startX + 7.5, startY + 5, 4, 0, 2 * Math.PI);
+                context.fill();
+                context.stroke();
+                context.closePath();
+                break;
+            case 'pie':
+            case 'ring':
+                context.beginPath();
+                context.setFillStyle(item.color);
+                context.moveTo(startX + 7.5, startY + 5);
+                context.arc(startX + 7.5, startY + 5, 7, 0, 2 * Math.PI);
+                context.closePath();
+                context.fill();
+                break;
+            default:
+                context.beginPath();
+                context.setFillStyle(item.color);
+                context.moveTo(startX, startY);
+                context.rect(startX, startY, 15, 10);
+                context.closePath();
+                context.fill();
+        }
         startX += padding + 15;
         context.beginPath();
         context.setFillStyle('#333333');
