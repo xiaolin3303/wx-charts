@@ -17,6 +17,7 @@
 # 更新记录 
 
 - [ ] 动画性能优化
+- [x] add pie chart dataLabel  2016-12-19
 - [x] add animation  2016-12-05
 - [x] build with `rollup` 2016-12-02
 - [x] add legend  2016-11-29
@@ -50,7 +51,7 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 
 `opts.categories` Array **required** *(饼图不需要)* 数据类别分类
 
-`opts.dataLabel` Boolean default `true` 是否在图表中显示数据内容值(`pie`图暂不支持，开发中)
+`opts.dataLabel` Boolean default `true` 是否在图表中显示数据内容值
 
 `opts.yAxis` Object Y轴配置
 
