@@ -1,3 +1,5 @@
+import Util from '../util/util'
+
 function findRange (num, type, limit) {
     limit = limit || 10;
     type = type ? type : 'upper';
@@ -20,6 +22,33 @@ function findRange (num, type, limit) {
     }
 
     return num / multiple;
+}
+
+export function convertCoordinateOrigin (x, y, center) {
+    return {
+        x: center.x + x,
+        y: center.y - y
+    }
+}
+
+export function avoidCollision (obj, target) {
+    if (target) {
+        // is collision test
+        while (Util.isCollision(obj, target)) {
+            if (obj.start.x > 0) {
+                obj.start.y--;
+            } else if (obj.start.x < 0) {
+                obj.start.y++;
+            } else {
+                if (obj.start.y > 0) {
+                    obj.start.y++;
+                } else {
+                    obj.start.y--;
+                }
+            }
+        }
+    }
+    return obj;
 }
 
 export function fillSeriesColor (series, config) {

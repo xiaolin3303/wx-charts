@@ -25,6 +25,17 @@ export function getPieDataPoints(series, process = 1) {
     return series;
 }
 
+export function getPieTextMaxLength(series) {
+    series = getPieDataPoints(series);
+    let maxLength = 0;
+    series.forEach((item) => {
+        let text = item.format ? item.format(+item._proportion_.toFixed(2)) : `${Util.toFixed(item._proportion_ * 100)}%`;
+        maxLength = Math.max(maxLength, mesureText(text));
+    });
+
+    return maxLength;
+}
+
 export function fixColumeData(points, eachSpacing, columnLen, index, config) {
     return points.map(function(item) {
         item.width = (eachSpacing - 2 * config.columePadding) / columnLen;

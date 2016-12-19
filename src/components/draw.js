@@ -2,7 +2,7 @@ import { getPieDataPoints, calYAxisData, getXAxisPoints, getDataPoints, fixColum
 import { mesureText } from './charts-util'
 import Util from '../util/util'
 import drawPointShape from './draw-data-shape'
-import drawPointText from './draw-data-text'
+import { drawPointText, drawPieText } from './draw-data-text'
 
 function drawYAxisTitle (title, opts, config, context) {
     let startX = config.xAxisHeight + (opts.height - config.xAxisHeight - mesureText(title)) / 2;
@@ -265,10 +265,17 @@ export function drawPieDataPoints (series, opts, config, context, process = 1) {
     series = getPieDataPoints(series, process);
     let centerPosition = {
         x: opts.width / 2,
-        y: (opts.height - 2 * config.padding - config.legendHeight) / 2 + config.padding
+        y: (opts.height - config.legendHeight) / 2
     }
-    let radius = Math.min(centerPosition.x - config.padding, centerPosition.y - 2 * config.padding);
-
+    let radius = Math.min(
+        centerPosition.x - config.pieChartLinePadding - config.pieChartTextPadding - config._pieTextMaxLength_,
+        centerPosition.y - config.pieChartLinePadding - config.pieChartTextPadding
+    );
+    if (opts.dataLabel) {
+        radius -= 10;
+    } else {
+        radius -= 2 * config.padding;
+    }
     series.forEach(function(eachSeries) {
         context.beginPath();
         context.setLineWidth(2);
@@ -288,6 +295,10 @@ export function drawPieDataPoints (series, opts, config, context, process = 1) {
         context.arc(centerPosition.x, centerPosition.y, radius * 0.6, 0, 2 * Math.PI);
         context.closePath();
         context.fill();
+    }
+
+    if (opts.dataLabel !== false && process === 1) {
+        drawPieText(series, opts, config, context, radius, centerPosition);
     }
 }
 

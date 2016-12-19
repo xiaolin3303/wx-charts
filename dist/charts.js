@@ -19,7 +19,9 @@ var config = {
     columePadding: 10,
     fontSize: 10,
     dataPointShape: ['diamond', 'circle', 'triangle', 'rect'],
-    colors: ['#7cb5ec', '#f7a35c', '#434348', '#90ed7d', '#f15c80', '#8085e9']
+    colors: ['#7cb5ec', '#f7a35c', '#434348', '#90ed7d', '#f15c80', '#8085e9'],
+    pieChartLinePadding: 25,
+    pieChartTextPadding: 15
 };
 
 // Object.assign polyfill
@@ -48,6 +50,36 @@ function assign(target, varArgs) {
     return to;
 }
 
+var util = {
+    toFixed: function toFixed(num, limit) {
+        limit = limit || 2;
+        if (this.isFloat(num)) {
+            num = num.toFixed(limit);
+        }
+        return num;
+    },
+    isFloat: function isFloat(num) {
+        return num % 1 !== 0;
+    },
+    isSameSign: function isSameSign(num1, num2) {
+        return Math.abs(num1) === num1 && Math.abs(num2) === num2 || Math.abs(num1) !== num1 && Math.abs(num2) !== num2;
+    },
+    isSameXCoordinateArea: function isSameXCoordinateArea(p1, p2) {
+        return this.isSameSign(p1.x, p2.x);
+    },
+    isCollision: function isCollision(obj1, obj2) {
+        obj1.end = {};
+        obj1.end.x = obj1.start.x + obj1.width;
+        obj1.end.y = obj1.start.y - obj1.height;
+        obj2.end = {};
+        obj2.end.x = obj2.start.x + obj2.width;
+        obj2.end.y = obj2.start.y - obj2.height;
+        var flag = obj2.start.x > obj1.end.x || obj2.end.x < obj1.start.x || obj2.end.y > obj1.start.y || obj2.start.y < obj1.end.y;
+
+        return !flag;
+    }
+};
+
 function findRange(num, type, limit) {
     limit = limit || 10;
     type = type ? type : 'upper';
@@ -70,6 +102,33 @@ function findRange(num, type, limit) {
     }
 
     return num / multiple;
+}
+
+function convertCoordinateOrigin(x, y, center) {
+    return {
+        x: center.x + x,
+        y: center.y - y
+    };
+}
+
+function avoidCollision(obj, target) {
+    if (target) {
+        // is collision test
+        while (util.isCollision(obj, target)) {
+            if (obj.start.x > 0) {
+                obj.start.y--;
+            } else if (obj.start.x < 0) {
+                obj.start.y++;
+            } else {
+                if (obj.start.y > 0) {
+                    obj.start.y++;
+                } else {
+                    obj.start.y--;
+                }
+            }
+        }
+    }
+    return obj;
 }
 
 function fillSeriesColor(series, config) {
@@ -136,19 +195,6 @@ function mesureText(text) {
     return width;
 }
 
-var util = {
-    toFixed: function toFixed(num, limit) {
-        limit = limit || 2;
-        if (this.isFloat(num)) {
-            num = num.toFixed(limit);
-        }
-        return num;
-    },
-    isFloat: function isFloat(num) {
-        return num % 1 !== 0;
-    }
-};
-
 function dataCombine(series) {
     return series.reduce(function (a, b) {
         return (a.data ? a.data : a).concat(b.data);
@@ -172,6 +218,17 @@ function getPieDataPoints(series) {
     });
 
     return series;
+}
+
+function getPieTextMaxLength(series) {
+    series = getPieDataPoints(series);
+    var maxLength = 0;
+    series.forEach(function (item) {
+        var text = item.format ? item.format(+item._proportion_.toFixed(2)) : util.toFixed(item._proportion_ * 100) + '%';
+        maxLength = Math.max(maxLength, mesureText(text));
+    });
+
+    return maxLength;
 }
 
 function fixColumeData(points, eachSpacing, columnLen, index, config) {
@@ -299,6 +356,106 @@ function drawPointText(points, series, config, context) {
     });
     context.closePath();
     context.stroke();
+}
+
+function drawPieText(series, opts, config, context, radius, center) {
+    var lineRadius = radius + config.pieChartLinePadding;
+    var textRadius = lineRadius + config.pieChartTextPadding;
+    var textObjectCollection = [];
+    var lastTextObject = null;
+
+    var seriesConvert = series.map(function (item) {
+        var arc = 2 * Math.PI - (item._start_ + 2 * Math.PI * item._proportion_ / 2);
+        var text = item.format ? item.format(+item._proportion_.toFixed(2)) : util.toFixed(item._proportion_ * 100) + '%';
+        var color = item.color;
+        return { arc: arc, text: text, color: color };
+    });
+    seriesConvert.forEach(function (item) {
+        // line end
+        var orginX1 = Math.cos(item.arc) * lineRadius;
+        var orginY1 = Math.sin(item.arc) * lineRadius;
+
+        // line start
+        var orginX2 = Math.cos(item.arc) * radius;
+        var orginY2 = Math.sin(item.arc) * radius;
+
+        // text start
+        var orginX3 = orginX1 >= 0 ? orginX1 + config.pieChartTextPadding : orginX1 - config.pieChartTextPadding;
+        var orginY3 = orginY1;
+
+        var textWidth = mesureText(item.text);
+        var startY = orginY3;
+
+        if (lastTextObject && util.isSameXCoordinateArea(lastTextObject.start, { x: orginX3 })) {
+            if (orginX3 > 0) {
+                startY = Math.min(orginY3, lastTextObject.start.y);
+            } else if (orginX1 < 0) {
+                startY = Math.max(orginY3, lastTextObject.start.y);
+            } else {
+                if (orginY3 > 0) {
+                    startY = Math.max(orginY3, lastTextObject.start.y);
+                } else {
+                    startY = Math.min(orginY3, lastTextObject.start.y);
+                }
+            }
+        }
+
+        if (orginX3 < 0) {
+            orginX3 -= textWidth;
+        }
+
+        var textObject = {
+            lineStart: {
+                x: orginX2,
+                y: orginY2
+            },
+            lineEnd: {
+                x: orginX1,
+                y: orginY1
+            },
+            start: {
+                x: orginX3,
+                y: startY
+            },
+            width: textWidth,
+            height: config.fontSize,
+            text: item.text,
+            color: item.color
+        };
+
+        lastTextObject = avoidCollision(textObject, lastTextObject);
+        textObjectCollection.push(lastTextObject);
+    });
+
+    textObjectCollection.forEach(function (item) {
+        var lineStartPoistion = convertCoordinateOrigin(item.lineStart.x, item.lineStart.y, center);
+        var lineEndPoistion = convertCoordinateOrigin(item.lineEnd.x, item.lineEnd.y, center);
+        var textPosition = convertCoordinateOrigin(item.start.x, item.start.y, center);
+        context.setLineWidth(1);
+        context.setFontSize(config.fontSize);
+        context.beginPath();
+        context.setStrokeStyle(item.color);
+        context.setFillStyle(item.color);
+        context.moveTo(lineStartPoistion.x, lineStartPoistion.y);
+        var curveStartX = item.start.x < 0 ? textPosition.x + item.width : textPosition.x;
+        var textStartX = item.start.x < 0 ? textPosition.x - 5 : textPosition.x + 5;
+        context.quadraticCurveTo(lineEndPoistion.x, lineEndPoistion.y, curveStartX, textPosition.y);
+        context.moveTo(lineStartPoistion.x, lineStartPoistion.y);
+        context.stroke();
+        context.closePath();
+        context.beginPath();
+        context.moveTo(textPosition.x + item.width, textPosition.y);
+        context.arc(curveStartX, textPosition.y, 2, 0, 2 * Math.PI);
+        context.closePath();
+        context.fill();
+        context.beginPath();
+        context.setFillStyle('#666666');
+        context.fillText(item.text, textStartX, textPosition.y + 3);
+        context.closePath();
+        context.stroke();
+
+        context.closePath();
+    });
 }
 
 function drawYAxisTitle(title, opts, config, context) {
@@ -592,10 +749,14 @@ function drawPieDataPoints(series, opts, config, context) {
     series = getPieDataPoints(series, process);
     var centerPosition = {
         x: opts.width / 2,
-        y: (opts.height - 2 * config.padding - config.legendHeight) / 2 + config.padding
+        y: (opts.height - config.legendHeight) / 2
     };
-    var radius = Math.min(centerPosition.x - config.padding, centerPosition.y - 2 * config.padding);
-
+    var radius = Math.min(centerPosition.x - config.pieChartLinePadding - config.pieChartTextPadding - config._pieTextMaxLength_, centerPosition.y - config.pieChartLinePadding - config.pieChartTextPadding);
+    if (opts.dataLabel) {
+        radius -= 10;
+    } else {
+        radius -= 2 * config.padding;
+    }
     series.forEach(function (eachSeries) {
         context.beginPath();
         context.setLineWidth(2);
@@ -615,6 +776,10 @@ function drawPieDataPoints(series, opts, config, context) {
         context.arc(centerPosition.x, centerPosition.y, radius * 0.6, 0, 2 * Math.PI);
         context.closePath();
         context.fill();
+    }
+
+    if (opts.dataLabel !== false && process === 1) {
+        drawPieText(series, opts, config, context, radius, centerPosition);
     }
 }
 
@@ -704,6 +869,7 @@ function drawCharts(type, opts, config, context) {
         yAxisWidth = _calYAxisData.yAxisWidth;
 
     config.yAxisWidth = yAxisWidth;
+    config._pieTextMaxLength_ = getPieTextMaxLength(series);
 
     var duration = opts.animation ? 1000 : 0;
 
@@ -769,6 +935,8 @@ var Charts = function Charts(opts) {
     var config$$1 = assign({}, config);
     config$$1.legendHeight = opts.legend ? config$$1.legendHeight : 0;
     config$$1.yAxisTitleWidth = opts.yAxis.title ? config$$1.yAxisTitleWidth : 0;
+    config$$1.pieChartLinePadding = opts.dataLabel === false ? 0 : config$$1.pieChartLinePadding;
+    config$$1.pieChartTextPadding = opts.dataLabel === false ? 0 : config$$1.pieChartTextPadding;
 
     var context = wx.createContext();
 
