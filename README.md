@@ -85,21 +85,24 @@ new Charts({
     canvasId: 'pieCanvas',
     type: 'pie',
     series: [{
-        name: '成交量1',
-        data: 15,
+        name: 'cat1',
+        data: 50,
     }, {
-        name: '成交量2',
-        data: 35,
+        name: 'cat2',
+        data: 30,
     }, {
-        name: '成交量3',
-        data: 78,
+        name: 'cat3',
+        data: 1,
     }, {
-        name: '成交量4',
-        data: 63,
+        name: 'cat4',
+        data: 1,
+    }, {
+        name: 'cat5',
+        data: 46,
     }],
-    width: 320,
-    height: 200,
-    dataLabel: false
+    width: 360,
+    height: 300,
+    dataLabel: true
 });
 ```
 ![pieChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/pie.png)
