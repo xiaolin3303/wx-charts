@@ -5,6 +5,8 @@
 
 **持续优化更新中，请保持关注~ 有任何问题欢迎在[Issues](https://github.com/xiaolin3303/wx-charts/issues)中讨论**
 
+**!!微信小程序`0.11.122100版本 （2016-12-21）`更新了`canvas API`, 请下载最新的IDE开发环境**
+
 **支持图表类型**
 - 饼图   `pie`
 - 圆环图 `ring`
