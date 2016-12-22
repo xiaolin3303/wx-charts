@@ -51,7 +51,7 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 
 `opts.type` String **required** 图表类型，可选值为`pie`, `line`, `column`, `area`, `ring`
 
-`opts.categories` Array **required** *(饼图不需要)* 数据类别分类
+`opts.categories` Array **required** *(饼图、圆环图不需要)* 数据类别分类
 
 `opts.dataLabel` Boolean default `true` 是否在图表中显示数据内容值
 
@@ -69,7 +69,7 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 
 `dataItem` Object
 
-`dataItem.data` Array **required** *(饼图为Number)* 数据
+`dataItem.data` Array **required** *(饼图、圆环图为Number)* 数据
 
 `dataItem.color` String 例如`#7cb5ec` 不传入则使用系统默认配色方案
 
