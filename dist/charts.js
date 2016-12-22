@@ -766,7 +766,7 @@ function drawPieDataPoints(series, opts, config, context) {
         context.setStrokeStyle('#ffffff');
         context.setFillStyle(eachSeries.color);
         context.moveTo(centerPosition.x, centerPosition.y);
-        context.arc(centerPosition.x, centerPosition.y, radius, eachSeries._start_, 2 * eachSeries._proportion_ * Math.PI);
+        context.arc(centerPosition.x, centerPosition.y, radius, eachSeries._start_, eachSeries._start_ + 2 * eachSeries._proportion_ * Math.PI);
         context.closePath();
         context.fill();
         context.stroke();
@@ -787,10 +787,7 @@ function drawPieDataPoints(series, opts, config, context) {
 }
 
 function drawCanvas(opts, context) {
-    wx.drawCanvas({
-        canvasId: opts.canvasId,
-        actions: context.getActions()
-    });
+    context.draw();
 }
 
 var Timing = {
@@ -941,7 +938,7 @@ var Charts = function Charts(opts) {
     config$$1.pieChartLinePadding = opts.dataLabel === false ? 0 : config$$1.pieChartLinePadding;
     config$$1.pieChartTextPadding = opts.dataLabel === false ? 0 : config$$1.pieChartTextPadding;
 
-    var context = wx.createContext();
+    var context = wx.createCanvasContext(opts.canvasId);
 
     drawCharts(opts.type, opts, config$$1, context);
 };

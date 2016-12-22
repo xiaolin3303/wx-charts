@@ -12,7 +12,7 @@ let Charts = function(opts) {
     config.pieChartLinePadding = opts.dataLabel === false ? 0 : config.pieChartLinePadding;
     config.pieChartTextPadding = opts.dataLabel === false ? 0 : config.pieChartTextPadding;
 
-    const context = wx.createContext();
+    const context = wx.createCanvasContext(opts.canvasId);
 
     drawCharts(opts.type, opts, config, context);
 }

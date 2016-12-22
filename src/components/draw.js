@@ -282,7 +282,7 @@ export function drawPieDataPoints (series, opts, config, context, process = 1) {
         context.setStrokeStyle('#ffffff');
         context.setFillStyle(eachSeries.color);
         context.moveTo(centerPosition.x, centerPosition.y);
-        context.arc(centerPosition.x, centerPosition.y, radius, eachSeries._start_, 2 * eachSeries._proportion_ * Math.PI);
+        context.arc(centerPosition.x, centerPosition.y, radius, eachSeries._start_, eachSeries._start_ + 2 * eachSeries._proportion_ * Math.PI);
         context.closePath();
         context.fill();
         context.stroke();
@@ -303,8 +303,5 @@ export function drawPieDataPoints (series, opts, config, context, process = 1) {
 }
 
 export function drawCanvas (opts, context) {
-    wx.drawCanvas({
-        canvasId: opts.canvasId,
-        actions: context.getActions()
-    });
+    context.draw();
 }
