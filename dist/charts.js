@@ -283,6 +283,14 @@ function getYAxisTextList(series, opts, config) {
     var data = dataCombine(series);
     var minData = typeof opts.yAxis.min === 'number' ? opts.yAxis.min : Math.min.apply(this, data);
     var maxData = Math.max.apply(this, data);
+
+    // fix issue https://github.com/xiaolin3303/wx-charts/issues/9
+    if (minData === maxData) {
+        var rangeSpan = maxData || 1;
+        minData -= rangeSpan;
+        maxData += rangeSpan;
+    }
+
     var dataRange = getDataRange(minData, maxData);
     var minRange = dataRange.minRange;
     var maxRange = dataRange.maxRange;
@@ -676,7 +684,7 @@ function drawYAxis(series, opts, config, context) {
     context.setFillStyle('#666666');
     rangesFormat.forEach(function (item, index) {
         var pos = points[index] ? points[index] : endY;
-        context.fillText(item, config.padding + config.yAxisTitleWidth, pos + 10);
+        context.fillText(item, config.padding + config.yAxisTitleWidth, pos + config.fontSize / 2);
     });
     context.closePath();
     context.stroke();

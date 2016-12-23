@@ -191,7 +191,7 @@ export function drawYAxis (series, opts, config, context) {
     context.setFillStyle('#666666')
     rangesFormat.forEach(function(item, index) {
         let pos = points[index] ? points[index] : endY;
-        context.fillText(item, config.padding + config.yAxisTitleWidth, pos + 10);
+        context.fillText(item, config.padding + config.yAxisTitleWidth, pos + config.fontSize / 2);
     });
     context.closePath();
     context.stroke();

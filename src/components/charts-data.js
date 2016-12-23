@@ -83,6 +83,14 @@ export function getYAxisTextList(series, opts, config) {
     let data = dataCombine(series);
     let minData = typeof opts.yAxis.min === 'number' ? opts.yAxis.min : Math.min.apply(this, data);
     let maxData = Math.max.apply(this, data);
+
+    // fix issue https://github.com/xiaolin3303/wx-charts/issues/9
+    if (minData === maxData) {
+        let rangeSpan = maxData || 1;
+        minData -= rangeSpan;
+        maxData += rangeSpan;
+    }
+
     let dataRange = getDataRange(minData, maxData);
     let minRange = dataRange.minRange;
     let maxRange = dataRange.maxRange;
