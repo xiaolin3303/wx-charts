@@ -25,7 +25,7 @@
 - [x] add legend  2016-11-29
 
 # 如何使用
-1、直接引用编译好的文件 `dist/wxCharts.js`
+1、直接引用编译好的文件 `dist/wxcharts.js`
 
 2、自行编译
 
@@ -82,7 +82,7 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 ### pie chart
 
 ```javascript
-var wxCharts = require('wxCharts.js');
+var wxCharts = require('wxcharts.js');
 new wxCharts({
     canvasId: 'pieCanvas',
     type: 'pie',
