@@ -25,7 +25,7 @@
 - [x] add legend  2016-11-29
 
 # 如何使用
-1、直接引用编译好的文件 `dist/charts.js`
+1、直接引用编译好的文件 `dist/wxCharts.js`
 
 2、自行编译
 
@@ -82,8 +82,8 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 ### pie chart
 
 ```javascript
-var Charts = require('charts.js');
-new Charts({
+var wxCharts = require('wxCharts.js');
+new wxCharts({
     canvasId: 'pieCanvas',
     type: 'pie',
     series: [{
@@ -113,7 +113,7 @@ new Charts({
 ### ring chart
 
 ```javascript
-new Charts({
+new wxCharts({
     canvasId: 'pieCanvas',
     type: 'ring',
     series: [{
@@ -140,7 +140,7 @@ new Charts({
 ### line chart
 
 ```javascript
-new Charts({
+new wxCharts({
     canvasId: 'lineCanvas',
     type: 'line',
     categories: ['2012', '2013', '2014', '2015', '2016', '2017'],
@@ -175,7 +175,7 @@ new Charts({
 ### columnChart
 
 ```javascript
-new Charts({
+new wxCharts({
     canvasId: 'columnCanvas',
     type: 'column',
     categories: ['2012', '2013', '2014', '2015', '2016', '2017'],
@@ -202,7 +202,7 @@ new Charts({
 ### areaChart
 
 ```javascript
-new Charts({
+new wxCharts({
     canvasId: 'areaCanvas',
     type: 'area',
     categories: ['2016-08', '2016-09', '2016-10', '2016-11', '2016-12', '2017'],
