@@ -14,7 +14,7 @@ let banner = `
 export default {
   entry: 'src/app.js',
   format: 'cjs',
-  dest: 'dist/wxCharts.js',
+  dest: 'dist/wxcharts.js',
   plugins: [
       babel({
           exclude: 'node_modules/**',
