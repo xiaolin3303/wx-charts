@@ -2,7 +2,7 @@ import Util from '../util/util'
 
 function findRange (num, type, limit) {
     if (isNaN(num)) {
-        throw new Error('unvalid series data!');
+        throw new Error('[wxCharts] unvalid series data!');
     }
     limit = limit || 10;
     type = type ? type : 'upper';
