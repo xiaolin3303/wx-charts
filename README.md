@@ -19,6 +19,7 @@
 # 更新记录 
 
 - [ ] 动画性能优化
+- [x] x轴文案碰撞避让 2016-12-30
 - [x] add pie chart dataLabel  2016-12-19
 - [x] add animation  2016-12-05
 - [x] build with `rollup` 2016-12-02
