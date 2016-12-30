@@ -8,6 +8,28 @@ function dataCombine(series) {
     }, []);
 }
 
+export function calCategoriesData(categories, opts, config) {
+    let result = {
+        angle: 0,
+        xAxisHeight: config.xAxisHeight
+    };
+    let { eachSpacing } = getXAxisPoints(categories, opts, config);
+
+    // get max length of categories text
+    let categoriesTextLenth = categories.map((item) => {
+        return mesureText(item);
+    });
+
+    let maxTextLength = Math.max.apply(this, categoriesTextLenth);
+
+    if ( maxTextLength + 2 * config.xAxisTextPadding > eachSpacing) {
+        result.angle = 45 * Math.PI / 180;
+        result.xAxisHeight = 2 * config.xAxisTextPadding + maxTextLength * Math.sin(result.angle) + config.padding;
+    }
+
+    return result;
+}
+
 export function getPieDataPoints(series, process = 1) {
     var count = 0;
     var _start_ = 0;
@@ -39,22 +61,20 @@ export function getPieTextMaxLength(series) {
 export function fixColumeData(points, eachSpacing, columnLen, index, config) {
     return points.map(function(item) {
         item.width = (eachSpacing - 2 * config.columePadding) / columnLen;
-        item.x = item.x - eachSpacing / 2 + config.columePadding + (index + 0.5) * item.width;
-
-        item.width = Math.round(item.width);
-        item.x = Math.round(item.x);
+        item.width = Math.min(item.width, 15);
+        item.x += (index + 0.5 - (columnLen) / 2) * item.width;
 
         return item;
     });
 }
 
 export function getXAxisPoints(categories, opts, config) {
-    let yAxisTotleWidth = config.yAxisWidth + config.yAxisTitleWidth;
-    let spacingValid = opts.width - 2 * config.padding - yAxisTotleWidth;
-    let eachSpacing = Math.floor(spacingValid / categories.length);
+    let yAxisTotalWidth = config.yAxisWidth + config.yAxisTitleWidth;
+    let spacingValid = opts.width - 2 * config.padding - yAxisTotalWidth;
+    let eachSpacing = spacingValid / categories.length;
 
     let xAxisPoints = [];
-    let startX = config.padding + yAxisTotleWidth;
+    let startX = config.padding + yAxisTotalWidth;
     let endX = opts.width - config.padding;
     categories.forEach(function(item, index) {
         xAxisPoints.push(startX + index * eachSpacing);

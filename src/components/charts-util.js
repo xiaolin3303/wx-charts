@@ -27,6 +27,21 @@ function findRange (num, type, limit) {
     return num / multiple;
 }
 
+export function calRotateTranslate(x, y, h) {
+    var xv = x;
+    var yv = h - y;
+
+    var transX = xv + (h - yv -xv) / Math.sqrt(2);
+    transX *= -1;
+
+    var transY = (h -yv) * (Math.sqrt(2) - 1) - (h - yv - xv) / Math.sqrt(2);
+
+    return {
+        transX,
+        transY
+    };
+}
+
 export function convertCoordinateOrigin (x, y, center) {
     return {
         x: center.x + x,

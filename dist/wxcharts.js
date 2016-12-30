@@ -13,15 +13,17 @@ var config = {
     yAxisWidth: 15,
     yAxisSplit: 5,
     xAxisHeight: 15,
+    xAxisLineHeight: 15,
     legendHeight: 15,
     yAxisTitleWidth: 15,
     padding: 12,
-    columePadding: 10,
+    columePadding: 3,
     fontSize: 10,
     dataPointShape: ['diamond', 'circle', 'triangle', 'rect'],
     colors: ['#7cb5ec', '#f7a35c', '#434348', '#90ed7d', '#f15c80', '#8085e9'],
     pieChartLinePadding: 25,
-    pieChartTextPadding: 15
+    pieChartTextPadding: 15,
+    xAxisTextPadding: 3
 };
 
 // Object.assign polyfill
@@ -105,6 +107,21 @@ function findRange(num, type, limit) {
     }
 
     return num / multiple;
+}
+
+function calRotateTranslate(x, y, h) {
+    var xv = x;
+    var yv = h - y;
+
+    var transX = xv + (h - yv - xv) / Math.sqrt(2);
+    transX *= -1;
+
+    var transY = (h - yv) * (Math.sqrt(2) - 1) - (h - yv - xv) / Math.sqrt(2);
+
+    return {
+        transX: transX,
+        transY: transY
+    };
 }
 
 function convertCoordinateOrigin(x, y, center) {
@@ -204,6 +221,32 @@ function dataCombine(series) {
     }, []);
 }
 
+function calCategoriesData(categories, opts, config) {
+    var result = {
+        angle: 0,
+        xAxisHeight: config.xAxisHeight
+    };
+
+    var _getXAxisPoints = getXAxisPoints(categories, opts, config),
+        eachSpacing = _getXAxisPoints.eachSpacing;
+
+    // get max length of categories text
+
+
+    var categoriesTextLenth = categories.map(function (item) {
+        return mesureText(item);
+    });
+
+    var maxTextLength = Math.max.apply(this, categoriesTextLenth);
+
+    if (maxTextLength + 2 * config.xAxisTextPadding > eachSpacing) {
+        result.angle = 45 * Math.PI / 180;
+        result.xAxisHeight = 2 * config.xAxisTextPadding + maxTextLength * Math.sin(result.angle) + config.padding;
+    }
+
+    return result;
+}
+
 function getPieDataPoints(series) {
     var process = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
 
@@ -237,22 +280,20 @@ function getPieTextMaxLength(series) {
 function fixColumeData(points, eachSpacing, columnLen, index, config) {
     return points.map(function (item) {
         item.width = (eachSpacing - 2 * config.columePadding) / columnLen;
-        item.x = item.x - eachSpacing / 2 + config.columePadding + (index + 0.5) * item.width;
-
-        item.width = Math.round(item.width);
-        item.x = Math.round(item.x);
+        item.width = Math.min(item.width, 15);
+        item.x += (index + 0.5 - columnLen / 2) * item.width;
 
         return item;
     });
 }
 
 function getXAxisPoints(categories, opts, config) {
-    var yAxisTotleWidth = config.yAxisWidth + config.yAxisTitleWidth;
-    var spacingValid = opts.width - 2 * config.padding - yAxisTotleWidth;
-    var eachSpacing = Math.floor(spacingValid / categories.length);
+    var yAxisTotalWidth = config.yAxisWidth + config.yAxisTitleWidth;
+    var spacingValid = opts.width - 2 * config.padding - yAxisTotalWidth;
+    var eachSpacing = spacingValid / categories.length;
 
     var xAxisPoints = [];
-    var startX = config.padding + yAxisTotleWidth;
+    var startX = config.padding + yAxisTotalWidth;
     var endX = opts.width - config.padding;
     categories.forEach(function (item, index) {
         xAxisPoints.push(startX + index * eachSpacing);
@@ -627,7 +668,7 @@ function drawXAxis(categories, opts, config, context) {
         eachSpacing = _getXAxisPoints4.eachSpacing;
 
     var startY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
-    var endY = opts.height - config.padding - config.legendHeight;
+    var endY = startY + config.xAxisLineHeight;
 
     context.beginPath();
     context.setStrokeStyle("#cccccc");
@@ -641,26 +682,48 @@ function drawXAxis(categories, opts, config, context) {
     context.closePath();
     context.stroke();
 
-    context.beginPath();
-    context.setFontSize(config.fontSize);
-    context.setFillStyle('#666666');
-    categories.forEach(function (item, index) {
-        var offset = eachSpacing / 2 - mesureText(item) / 2;
-        context.fillText(item, xAxisPoints[index] + offset, startY + config.fontSize + 5);
-    });
-    context.closePath();
-    context.stroke();
+    if (config._xAxisTextAngle_ === 0) {
+        context.beginPath();
+        context.setFontSize(config.fontSize);
+        context.setFillStyle('#666666');
+        categories.forEach(function (item, index) {
+            var offset = eachSpacing / 2 - mesureText(item) / 2;
+            context.fillText(item, xAxisPoints[index] + offset, startY + config.fontSize + 5);
+        });
+        context.closePath();
+        context.stroke();
+    } else {
+        categories.forEach(function (item, index) {
+            context.save();
+            context.beginPath();
+            context.setFontSize(config.fontSize);
+            context.setFillStyle('#666666');
+            var textWidth = mesureText(item);
+            var offset = eachSpacing / 2 - textWidth;
+
+            var _calRotateTranslate = calRotateTranslate(xAxisPoints[index] + eachSpacing / 2, startY + config.fontSize / 2 + 5, opts.height),
+                transX = _calRotateTranslate.transX,
+                transY = _calRotateTranslate.transY;
+
+            context.rotate(-1 * config._xAxisTextAngle_);
+            context.translate(transX, transY);
+            context.fillText(item, xAxisPoints[index] + offset, startY + config.fontSize + 5);
+            context.closePath();
+            context.stroke();
+            context.restore();
+        });
+    }
 }
 
 function drawYAxis(series, opts, config, context) {
     var _calYAxisData4 = calYAxisData(series, opts, config),
         rangesFormat = _calYAxisData4.rangesFormat;
 
-    var yAxisTotleWidth = config.yAxisWidth + config.yAxisTitleWidth;
+    var yAxisTotalWidth = config.yAxisWidth + config.yAxisTitleWidth;
 
     var spacingValid = opts.height - 2 * config.padding - config.xAxisHeight - config.legendHeight;
     var eachSpacing = Math.floor(spacingValid / config.yAxisSplit);
-    var startX = config.padding + yAxisTotleWidth;
+    var startX = config.padding + yAxisTotalWidth;
     var endX = opts.width - config.padding;
     var startY = config.padding;
     var endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
@@ -877,7 +940,17 @@ function drawCharts(type, opts, config, context) {
         yAxisWidth = _calYAxisData.yAxisWidth;
 
     config.yAxisWidth = yAxisWidth;
-    config._pieTextMaxLength_ = getPieTextMaxLength(series);
+    if (categories && categories.length) {
+        var _calCategoriesData = calCategoriesData(categories, opts, config),
+            xAxisHeight = _calCategoriesData.xAxisHeight,
+            angle = _calCategoriesData.angle;
+
+        config.xAxisHeight = xAxisHeight;
+        config._xAxisTextAngle_ = angle;
+    }
+    if (type === 'pie' || type === 'ring') {
+        config._pieTextMaxLength_ = getPieTextMaxLength(series);
+    }
 
     var duration = opts.animation ? 1000 : 0;
 

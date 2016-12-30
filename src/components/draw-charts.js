@@ -1,5 +1,5 @@
 import { drawCanvas, drawLegend, drawPieDataPoints, drawLineDataPoints, drawAreaDataPoints, drawColumnDataPoints, drawYAxis, drawXAxis } from './draw'
-import { calYAxisData, getPieTextMaxLength } from './charts-data'
+import { calYAxisData, getPieTextMaxLength, calCategoriesData } from './charts-data'
 import { fillSeriesColor } from './charts-util';
 import Animation from './animation'
 
@@ -10,7 +10,14 @@ export default function drawCharts (type, opts, config, context) {
 
     let { yAxisWidth } = calYAxisData(series, opts, config);
     config.yAxisWidth = yAxisWidth;
-    config._pieTextMaxLength_ = getPieTextMaxLength(series);
+    if (categories && categories.length) {
+        let { xAxisHeight, angle } = calCategoriesData(categories, opts, config);
+        config.xAxisHeight = xAxisHeight;
+        config._xAxisTextAngle_ = angle;
+    }
+    if (type === 'pie' || type === 'ring') {    
+        config._pieTextMaxLength_ = getPieTextMaxLength(series);
+    }
 
     let duration = opts.animation ? 1000 : 0;
 

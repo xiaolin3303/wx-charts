@@ -1,5 +1,5 @@
 import { getPieDataPoints, calYAxisData, getXAxisPoints, getDataPoints, fixColumeData } from './charts-data'
-import { mesureText } from './charts-util'
+import { mesureText, calRotateTranslate } from './charts-util'
 import Util from '../util/util'
 import drawPointShape from './draw-data-shape'
 import { drawPointText, drawPieText } from './draw-data-text'
@@ -136,7 +136,7 @@ export function drawLineDataPoints (series, opts, config, context, process = 1) 
 export function drawXAxis (categories, opts, config, context) {
     let { xAxisPoints, startX, endX, eachSpacing } = getXAxisPoints(categories, opts, config);
     let startY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
-    let endY = opts.height - config.padding - config.legendHeight;
+    let endY = startY + config.xAxisLineHeight;
 
     context.beginPath();
     context.setStrokeStyle("#cccccc")
@@ -150,24 +150,42 @@ export function drawXAxis (categories, opts, config, context) {
     context.closePath();
     context.stroke();
 
-    context.beginPath();
-    context.setFontSize(config.fontSize);
-    context.setFillStyle('#666666');
-    categories.forEach(function(item, index) {
-        let offset = eachSpacing / 2 - mesureText(item) / 2;
-        context.fillText(item, xAxisPoints[index] + offset, startY + config.fontSize + 5);
-    });
-    context.closePath();
-    context.stroke();
+    if (config._xAxisTextAngle_ === 0) {
+        context.beginPath();
+        context.setFontSize(config.fontSize);
+        context.setFillStyle('#666666');
+        categories.forEach(function(item, index) {
+            let offset = eachSpacing / 2 - mesureText(item) / 2;
+            context.fillText(item, xAxisPoints[index] + offset, startY + config.fontSize + 5);
+        });
+        context.closePath();
+        context.stroke();
+    } else {
+        categories.forEach(function(item, index) {
+            context.save();
+            context.beginPath();
+            context.setFontSize(config.fontSize);
+            context.setFillStyle('#666666');
+            let textWidth = mesureText(item);
+            let offset = eachSpacing / 2 - textWidth;
+            let { transX, transY }  = calRotateTranslate(xAxisPoints[index] + eachSpacing / 2, startY + config.fontSize / 2 + 5, opts.height);
+            context.rotate(-1 * config._xAxisTextAngle_);
+            context.translate(transX, transY);
+            context.fillText(item, xAxisPoints[index] + offset, startY + config.fontSize + 5);
+            context.closePath();
+            context.stroke();
+            context.restore();
+        });
+    }
 }
 
 export function drawYAxis (series, opts, config, context) {
     let { rangesFormat } = calYAxisData(series, opts, config);
-    let yAxisTotleWidth = config.yAxisWidth + config.yAxisTitleWidth;
+    let yAxisTotalWidth = config.yAxisWidth + config.yAxisTitleWidth;
 
     let spacingValid = opts.height - 2 * config.padding - config.xAxisHeight - config.legendHeight;
     let eachSpacing = Math.floor(spacingValid / config.yAxisSplit);
-    let startX = config.padding + yAxisTotleWidth;
+    let startX = config.padding + yAxisTotalWidth;
     let endX = opts.width - config.padding;
     let startY = config.padding;
     let endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
