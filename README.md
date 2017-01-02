@@ -115,7 +115,7 @@ new wxCharts({
 
 ```javascript
 new wxCharts({
-    canvasId: 'pieCanvas',
+    canvasId: 'ringCanvas',
     type: 'ring',
     series: [{
         name: '成交量1',
