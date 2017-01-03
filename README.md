@@ -26,7 +26,7 @@
 - [x] add legend  2016-11-29
 
 # 如何使用
-1、直接引用编译好的文件 `dist/wxcharts.js`
+1、直接引用编译好的文件 `dist/wxcharts.js` 或者 `dist/wxcharts-min.js`
 
 2、自行编译
 
