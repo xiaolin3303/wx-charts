@@ -605,8 +605,10 @@ function drawAreaDataPoints(series, opts, config, context) {
         context.fill();
         context.setGlobalAlpha(1);
 
-        var shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
-        drawPointShape(points, eachSeries.color, shape, context);
+        if (opts.dataPointShape !== false) {
+            var shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
+            drawPointShape(points, eachSeries.color, shape, context);
+        }
     });
     if (opts.dataLabel !== false && process === 1) {
         series.forEach(function (eachSeries, seriesIndex) {
@@ -648,8 +650,10 @@ function drawLineDataPoints(series, opts, config, context) {
         context.closePath();
         context.stroke();
 
-        var shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
-        drawPointShape(points, eachSeries.color, shape, context);
+        if (opts.dataPointShape !== false) {
+            var shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
+            drawPointShape(points, eachSeries.color, shape, context);
+        }
     });
     if (opts.dataLabel !== false && process === 1) {
         series.forEach(function (eachSeries, seriesIndex) {

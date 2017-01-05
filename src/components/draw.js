@@ -85,8 +85,10 @@ export function drawAreaDataPoints (series, opts, config, context, process = 1) 
         context.fill();
         context.setGlobalAlpha(1);
 
-        let shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
-        drawPointShape(points, eachSeries.color, shape, context);
+        if (opts.dataPointShape !== false) {          
+            let shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
+            drawPointShape(points, eachSeries.color, shape, context);
+        }
     });
     if (opts.dataLabel !== false && process === 1) {
         series.forEach(function(eachSeries, seriesIndex) {
@@ -121,8 +123,10 @@ export function drawLineDataPoints (series, opts, config, context, process = 1) 
         context.closePath();
         context.stroke();
 
-        let shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
-        drawPointShape(points, eachSeries.color, shape, context);
+        if (opts.dataPointShape !== false) {        
+            let shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
+            drawPointShape(points, eachSeries.color, shape, context);
+        }
     });
     if (opts.dataLabel !== false && process === 1) {
         series.forEach(function(eachSeries, seriesIndex) {
