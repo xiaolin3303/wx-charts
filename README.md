@@ -58,6 +58,10 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 
 `opts.dataPointShape` Boolean default `true` 是否在图表中显示数据点图形标识
 
+`opts.xAxis` Object X轴配置
+
+`opts.xAxis.disableGrid` Boolean default `false` 不绘制X轴网格
+
 `opts.yAxis` Object Y轴配置
 
 `opts.yAxis.format` Function 自定义Y轴文案显示
@@ -65,6 +69,8 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 `opts.yAxis.min` Number Y轴起始值
 
 `opts.yAxis.title` String Y轴title
+
+`opts.yAxis.disabled` Boolean default `false` 不绘制Y轴
 
 `opts.series` Array **required** 数据列表
 
