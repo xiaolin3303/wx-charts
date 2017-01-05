@@ -56,6 +56,8 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 
 `opts.dataLabel` Boolean default `true` 是否在图表中显示数据内容值
 
+`opts.dataPointShape` Boolean default `true` 是否在图表中显示数据点图形标识
+
 `opts.yAxis` Object Y轴配置
 
 `opts.yAxis.format` Function 自定义Y轴文案显示
