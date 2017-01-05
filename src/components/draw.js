@@ -147,10 +147,12 @@ export function drawXAxis (categories, opts, config, context) {
     context.setLineWidth(1);
     context.moveTo(startX, startY);
     context.lineTo(endX, startY);
-    xAxisPoints.forEach(function(item, index) {
-        context.moveTo(item, startY);
-        context.lineTo(item, endY);
-    });
+    if (opts.xAxis.disableGrid !== true) {    
+        xAxisPoints.forEach(function(item, index) {
+            context.moveTo(item, startY);
+            context.lineTo(item, endY);
+        });
+    }
     context.closePath();
     context.stroke();
 
@@ -184,6 +186,9 @@ export function drawXAxis (categories, opts, config, context) {
 }
 
 export function drawYAxis (series, opts, config, context) {
+    if (opts.yAxis.disabled === true) {
+        return;
+    }
     let { rangesFormat } = calYAxisData(series, opts, config);
     let yAxisTotalWidth = config.yAxisWidth + config.yAxisTitleWidth;
 

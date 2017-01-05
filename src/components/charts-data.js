@@ -61,7 +61,7 @@ export function getPieTextMaxLength(series) {
 export function fixColumeData(points, eachSpacing, columnLen, index, config) {
     return points.map(function(item) {
         item.width = (eachSpacing - 2 * config.columePadding) / columnLen;
-        item.width = Math.min(item.width, 15);
+        item.width = Math.min(item.width, 25);
         item.x += (index + 0.5 - (columnLen) / 2) * item.width;
 
         return item;
@@ -125,6 +125,7 @@ export function getYAxisTextList(series, opts, config) {
 }
 
 export function calYAxisData(series, opts, config) {
+
     let ranges = getYAxisTextList(series, opts, config);
     let yAxisWidth = config.yAxisWidth;
     let rangesFormat = ranges.map(function(item) {
@@ -133,6 +134,9 @@ export function calYAxisData(series, opts, config) {
         yAxisWidth = Math.max(yAxisWidth, mesureText(item) + 5);
         return item;
     });
+    if (opts.yAxis.disabled === true) {
+        yAxisWidth = 0;
+    }
 
     return { rangesFormat, ranges, yAxisWidth };
 }

@@ -280,7 +280,7 @@ function getPieTextMaxLength(series) {
 function fixColumeData(points, eachSpacing, columnLen, index, config) {
     return points.map(function (item) {
         item.width = (eachSpacing - 2 * config.columePadding) / columnLen;
-        item.width = Math.min(item.width, 15);
+        item.width = Math.min(item.width, 25);
         item.x += (index + 0.5 - columnLen / 2) * item.width;
 
         return item;
@@ -346,6 +346,7 @@ function getYAxisTextList(series, opts, config) {
 }
 
 function calYAxisData(series, opts, config) {
+
     var ranges = getYAxisTextList(series, opts, config);
     var yAxisWidth = config.yAxisWidth;
     var rangesFormat = ranges.map(function (item) {
@@ -354,6 +355,9 @@ function calYAxisData(series, opts, config) {
         yAxisWidth = Math.max(yAxisWidth, mesureText(item) + 5);
         return item;
     });
+    if (opts.yAxis.disabled === true) {
+        yAxisWidth = 0;
+    }
 
     return { rangesFormat: rangesFormat, ranges: ranges, yAxisWidth: yAxisWidth };
 }
@@ -679,10 +683,12 @@ function drawXAxis(categories, opts, config, context) {
     context.setLineWidth(1);
     context.moveTo(startX, startY);
     context.lineTo(endX, startY);
-    xAxisPoints.forEach(function (item, index) {
-        context.moveTo(item, startY);
-        context.lineTo(item, endY);
-    });
+    if (opts.xAxis.disableGrid !== true) {
+        xAxisPoints.forEach(function (item, index) {
+            context.moveTo(item, startY);
+            context.lineTo(item, endY);
+        });
+    }
     context.closePath();
     context.stroke();
 
@@ -720,6 +726,10 @@ function drawXAxis(categories, opts, config, context) {
 }
 
 function drawYAxis(series, opts, config, context) {
+    if (opts.yAxis.disabled === true) {
+        return;
+    }
+
     var _calYAxisData4 = calYAxisData(series, opts, config),
         rangesFormat = _calYAxisData4.rangesFormat;
 
@@ -1015,11 +1025,12 @@ function drawCharts(type, opts, config, context) {
 
 var Charts = function Charts(opts) {
     opts.yAxis = opts.yAxis || {};
+    opts.xAxis = opts.xAxis || {};
     opts.legend = opts.legend === false ? false : true;
     opts.animation = opts.animation === false ? false : true;
     var config$$1 = assign({}, config);
     config$$1.legendHeight = opts.legend ? config$$1.legendHeight : 0;
-    config$$1.yAxisTitleWidth = opts.yAxis.title ? config$$1.yAxisTitleWidth : 0;
+    config$$1.yAxisTitleWidth = opts.yAxis.disabled !== true && opts.yAxis.title ? config$$1.yAxisTitleWidth : 0;
     config$$1.pieChartLinePadding = opts.dataLabel === false ? 0 : config$$1.pieChartLinePadding;
     config$$1.pieChartTextPadding = opts.dataLabel === false ? 0 : config$$1.pieChartTextPadding;
 
