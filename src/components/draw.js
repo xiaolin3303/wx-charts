@@ -1,4 +1,4 @@
-import { getPieDataPoints, calYAxisData, getXAxisPoints, getDataPoints, fixColumeData } from './charts-data'
+import { getPieDataPoints, calYAxisData, getXAxisPoints, getDataPoints, fixColumeData, calLegendData } from './charts-data'
 import { mesureText, calRotateTranslate } from './charts-util'
 import Util from '../util/util'
 import drawPointShape from './draw-data-shape'
@@ -232,60 +232,69 @@ export function drawLegend (series, opts, config, context) {
     if (!opts.legend) {
         return;
     }
+    // each legend shape width 15px
+    // the spacing between shape and text in each legend is the `padding`
+    // each legend spacing is the `padding`
+    // legend margin top `config.padding`
+    let { legendList, legendHeight } = calLegendData(series, opts, config);
     let padding = 5;
-    let width = 0;
-    series.forEach(function (item) {
-        item.name = item.name || 'undefined';
-        width += 2 * padding + mesureText(item.name) + 22.5;
-    });
-    let startX = (opts.width - width) / 2 + padding;
-    let startY = opts.height - config.legendHeight - 5;
-    
-    context.setFontSize(config.fontSize);
-    series.forEach(function (item) {
-        switch (opts.type) {
-            case 'line':
-                context.beginPath();
-                context.setLineWidth(1);
-                context.setStrokeStyle(item.color);
-                context.moveTo(startX - 2, startY + 5);
-                context.lineTo(startX + 17, startY + 5);
-                context.stroke();
-                context.closePath();
-                context.beginPath();
-                context.setLineWidth(1);
-                context.setStrokeStyle('#ffffff');
-                context.setFillStyle(item.color);
-                context.moveTo(startX + 7.5, startY + 5);
-                context.arc(startX + 7.5, startY + 5, 4, 0, 2 * Math.PI);
-                context.fill();
-                context.stroke();
-                context.closePath();
-                break;
-            case 'pie':
-            case 'ring':
-                context.beginPath();
-                context.setFillStyle(item.color);
-                context.moveTo(startX + 7.5, startY + 5);
-                context.arc(startX + 7.5, startY + 5, 7, 0, 2 * Math.PI);
-                context.closePath();
-                context.fill();
-                break;
-            default:
-                context.beginPath();
-                context.setFillStyle(item.color);
-                context.moveTo(startX, startY);
-                context.rect(startX, startY, 15, 10);
-                context.closePath();
-                context.fill();
-        }
-        startX += padding + 15;
-        context.beginPath();
-        context.setFillStyle('#333333');
-        context.fillText(item.name, startX, startY + 9);
-        context.closePath();
-        context.stroke();
-        startX += mesureText(item.name) + padding + 7.5; 
+    let marginTop = 8;
+    let shapeWidth = 15;
+    legendList.forEach((itemList, listIndex) => {
+        let width = 0;
+        itemList.forEach(function (item) {
+            item.name = item.name || 'undefined';
+            width += 3 * padding + mesureText(item.name) + shapeWidth;
+        });
+        let startX = (opts.width - width) / 2 + padding;
+        let startY = opts.height - config.padding - config.legendHeight + listIndex * (config.fontSize + marginTop) + padding + marginTop;
+
+        context.setFontSize(config.fontSize);
+        itemList.forEach(function (item) {
+            switch (opts.type) {
+                case 'line':
+                    context.beginPath();
+                    context.setLineWidth(1);
+                    context.setStrokeStyle(item.color);
+                    context.moveTo(startX - 2, startY + 5);
+                    context.lineTo(startX + 17, startY + 5);
+                    context.stroke();
+                    context.closePath();
+                    context.beginPath();
+                    context.setLineWidth(1);
+                    context.setStrokeStyle('#ffffff');
+                    context.setFillStyle(item.color);
+                    context.moveTo(startX + 7.5, startY + 5);
+                    context.arc(startX + 7.5, startY + 5, 4, 0, 2 * Math.PI);
+                    context.fill();
+                    context.stroke();
+                    context.closePath();
+                    break;
+                case 'pie':
+                case 'ring':
+                    context.beginPath();
+                    context.setFillStyle(item.color);
+                    context.moveTo(startX + 7.5, startY + 5);
+                    context.arc(startX + 7.5, startY + 5, 7, 0, 2 * Math.PI);
+                    context.closePath();
+                    context.fill();
+                    break;
+                default:
+                    context.beginPath();
+                    context.setFillStyle(item.color);
+                    context.moveTo(startX, startY);
+                    context.rect(startX, startY, 15, 10);
+                    context.closePath();
+                    context.fill();
+            }
+            startX += padding + shapeWidth;
+            context.beginPath();
+            context.setFillStyle('#333333');
+            context.fillText(item.name, startX, startY + 9);
+            context.closePath();
+            context.stroke();
+            startX += mesureText(item.name) + 2 * padding; 
+        });
     });
 }
 export function drawPieDataPoints (series, opts, config, context, process = 1) {

@@ -1,8 +1,7 @@
 import babel from 'rollup-plugin-babel';
 import uglify from 'rollup-plugin-uglify';
 
-let banner = `
-/*
+let banner = `/*
  * charts for WeChat small app v1.0
  *
  * https://github.com/xiaolin3303/wx-charts

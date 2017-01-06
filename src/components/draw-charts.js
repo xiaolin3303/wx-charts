@@ -1,5 +1,5 @@
 import { drawCanvas, drawLegend, drawPieDataPoints, drawLineDataPoints, drawAreaDataPoints, drawColumnDataPoints, drawYAxis, drawXAxis } from './draw'
-import { calYAxisData, getPieTextMaxLength, calCategoriesData } from './charts-data'
+import { calYAxisData, getPieTextMaxLength, calCategoriesData, calLegendData } from './charts-data'
 import { fillSeriesColor } from './charts-util';
 import Animation from './animation'
 
@@ -7,6 +7,9 @@ export default function drawCharts (type, opts, config, context) {
     let series = opts.series;
     let categories = opts.categories;
     series = fillSeriesColor(series, config);
+
+    let { legendHeight } = calLegendData(series, opts, config);
+    config.legendHeight = legendHeight;
 
     let { yAxisWidth } = calYAxisData(series, opts, config);
     config.yAxisWidth = yAxisWidth;

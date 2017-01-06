@@ -8,6 +8,40 @@ function dataCombine(series) {
     }, []);
 }
 
+export function calLegendData(series, opts, config) {
+    if (opts.legend === false) {
+        return {
+            legendList: [],
+            legendHeight: 0
+        }
+    }
+    let padding = 5;
+    let marginTop = 8;
+    let shapeWidth = 15;
+    let legendList = [];
+    let widthCount = 0;
+    let currentRow = [];
+    series.forEach((item) => {
+        let itemWidth = 3 * padding + shapeWidth + mesureText(item.name || 'undefinded');
+        if (widthCount + itemWidth > opts.width) {
+            legendList.push(currentRow);
+            widthCount = itemWidth;
+            currentRow = [item];
+        } else {
+            widthCount += itemWidth;
+            currentRow.push(item);
+        }
+    });
+    if (currentRow.length) {
+        legendList.push(currentRow);
+    }
+
+    return {
+        legendList,
+        legendHeight: legendList.length * (config.fontSize + marginTop) + padding
+    }
+}
+
 export function calCategoriesData(categories, opts, config) {
     let result = {
         angle: 0,
@@ -24,7 +58,7 @@ export function calCategoriesData(categories, opts, config) {
 
     if ( maxTextLength + 2 * config.xAxisTextPadding > eachSpacing) {
         result.angle = 45 * Math.PI / 180;
-        result.xAxisHeight = 2 * config.xAxisTextPadding + maxTextLength * Math.sin(result.angle) + config.padding;
+        result.xAxisHeight = 2 * config.xAxisTextPadding + maxTextLength * Math.sin(result.angle);
     }
 
     return result;

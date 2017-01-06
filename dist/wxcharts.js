@@ -187,6 +187,8 @@ function getDataRange(minData, maxData) {
 }
 
 function mesureText(text) {
+    var fontSize = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
+
     // wx canvas 未实现mesureText方法, 此处自行实现
     text = String(text);
     var text = text.split('');
@@ -212,13 +214,47 @@ function mesureText(text) {
             width += 10;
         }
     });
-    return width;
+    return width * fontSize / 10;
 }
 
 function dataCombine(series) {
     return series.reduce(function (a, b) {
         return (a.data ? a.data : a).concat(b.data);
     }, []);
+}
+
+function calLegendData(series, opts, config) {
+    if (opts.legend === false) {
+        return {
+            legendList: [],
+            legendHeight: 0
+        };
+    }
+    var padding = 5;
+    var marginTop = 8;
+    var shapeWidth = 15;
+    var legendList = [];
+    var widthCount = 0;
+    var currentRow = [];
+    series.forEach(function (item) {
+        var itemWidth = 3 * padding + shapeWidth + mesureText(item.name || 'undefinded');
+        if (widthCount + itemWidth > opts.width) {
+            legendList.push(currentRow);
+            widthCount = itemWidth;
+            currentRow = [item];
+        } else {
+            widthCount += itemWidth;
+            currentRow.push(item);
+        }
+    });
+    if (currentRow.length) {
+        legendList.push(currentRow);
+    }
+
+    return {
+        legendList: legendList,
+        legendHeight: legendList.length * (config.fontSize + marginTop) + padding
+    };
 }
 
 function calCategoriesData(categories, opts, config) {
@@ -241,7 +277,7 @@ function calCategoriesData(categories, opts, config) {
 
     if (maxTextLength + 2 * config.xAxisTextPadding > eachSpacing) {
         result.angle = 45 * Math.PI / 180;
-        result.xAxisHeight = 2 * config.xAxisTextPadding + maxTextLength * Math.sin(result.angle) + config.padding;
+        result.xAxisHeight = 2 * config.xAxisTextPadding + maxTextLength * Math.sin(result.angle);
     }
 
     return result;
@@ -775,60 +811,73 @@ function drawLegend(series, opts, config, context) {
     if (!opts.legend) {
         return;
     }
-    var padding = 5;
-    var width = 0;
-    series.forEach(function (item) {
-        item.name = item.name || 'undefined';
-        width += 2 * padding + mesureText(item.name) + 22.5;
-    });
-    var startX = (opts.width - width) / 2 + padding;
-    var startY = opts.height - config.legendHeight - 5;
+    // each legend shape width 15px
+    // the spacing between shape and text in each legend is the `padding`
+    // each legend spacing is the `padding`
+    // legend margin top `config.padding`
 
-    context.setFontSize(config.fontSize);
-    series.forEach(function (item) {
-        switch (opts.type) {
-            case 'line':
-                context.beginPath();
-                context.setLineWidth(1);
-                context.setStrokeStyle(item.color);
-                context.moveTo(startX - 2, startY + 5);
-                context.lineTo(startX + 17, startY + 5);
-                context.stroke();
-                context.closePath();
-                context.beginPath();
-                context.setLineWidth(1);
-                context.setStrokeStyle('#ffffff');
-                context.setFillStyle(item.color);
-                context.moveTo(startX + 7.5, startY + 5);
-                context.arc(startX + 7.5, startY + 5, 4, 0, 2 * Math.PI);
-                context.fill();
-                context.stroke();
-                context.closePath();
-                break;
-            case 'pie':
-            case 'ring':
-                context.beginPath();
-                context.setFillStyle(item.color);
-                context.moveTo(startX + 7.5, startY + 5);
-                context.arc(startX + 7.5, startY + 5, 7, 0, 2 * Math.PI);
-                context.closePath();
-                context.fill();
-                break;
-            default:
-                context.beginPath();
-                context.setFillStyle(item.color);
-                context.moveTo(startX, startY);
-                context.rect(startX, startY, 15, 10);
-                context.closePath();
-                context.fill();
-        }
-        startX += padding + 15;
-        context.beginPath();
-        context.setFillStyle('#333333');
-        context.fillText(item.name, startX, startY + 9);
-        context.closePath();
-        context.stroke();
-        startX += mesureText(item.name) + padding + 7.5;
+    var _calLegendData = calLegendData(series, opts, config),
+        legendList = _calLegendData.legendList,
+        legendHeight = _calLegendData.legendHeight;
+
+    var padding = 5;
+    var marginTop = 8;
+    var shapeWidth = 15;
+    legendList.forEach(function (itemList, listIndex) {
+        var width = 0;
+        itemList.forEach(function (item) {
+            item.name = item.name || 'undefined';
+            width += 3 * padding + mesureText(item.name) + shapeWidth;
+        });
+        var startX = (opts.width - width) / 2 + padding;
+        var startY = opts.height - config.padding - config.legendHeight + listIndex * (config.fontSize + marginTop) + padding + marginTop;
+
+        context.setFontSize(config.fontSize);
+        itemList.forEach(function (item) {
+            switch (opts.type) {
+                case 'line':
+                    context.beginPath();
+                    context.setLineWidth(1);
+                    context.setStrokeStyle(item.color);
+                    context.moveTo(startX - 2, startY + 5);
+                    context.lineTo(startX + 17, startY + 5);
+                    context.stroke();
+                    context.closePath();
+                    context.beginPath();
+                    context.setLineWidth(1);
+                    context.setStrokeStyle('#ffffff');
+                    context.setFillStyle(item.color);
+                    context.moveTo(startX + 7.5, startY + 5);
+                    context.arc(startX + 7.5, startY + 5, 4, 0, 2 * Math.PI);
+                    context.fill();
+                    context.stroke();
+                    context.closePath();
+                    break;
+                case 'pie':
+                case 'ring':
+                    context.beginPath();
+                    context.setFillStyle(item.color);
+                    context.moveTo(startX + 7.5, startY + 5);
+                    context.arc(startX + 7.5, startY + 5, 7, 0, 2 * Math.PI);
+                    context.closePath();
+                    context.fill();
+                    break;
+                default:
+                    context.beginPath();
+                    context.setFillStyle(item.color);
+                    context.moveTo(startX, startY);
+                    context.rect(startX, startY, 15, 10);
+                    context.closePath();
+                    context.fill();
+            }
+            startX += padding + shapeWidth;
+            context.beginPath();
+            context.setFillStyle('#333333');
+            context.fillText(item.name, startX, startY + 9);
+            context.closePath();
+            context.stroke();
+            startX += mesureText(item.name) + 2 * padding;
+        });
     });
 }
 function drawPieDataPoints(series, opts, config, context) {
@@ -950,6 +999,11 @@ function drawCharts(type, opts, config, context) {
     var categories = opts.categories;
     series = fillSeriesColor(series, config);
 
+    var _calLegendData = calLegendData(series, opts, config),
+        legendHeight = _calLegendData.legendHeight;
+
+    config.legendHeight = legendHeight;
+
     var _calYAxisData = calYAxisData(series, opts, config),
         yAxisWidth = _calYAxisData.yAxisWidth;
 
@@ -1029,7 +1083,6 @@ var Charts = function Charts(opts) {
     opts.legend = opts.legend === false ? false : true;
     opts.animation = opts.animation === false ? false : true;
     var config$$1 = assign({}, config);
-    config$$1.legendHeight = opts.legend ? config$$1.legendHeight : 0;
     config$$1.yAxisTitleWidth = opts.yAxis.disabled !== true && opts.yAxis.title ? config$$1.yAxisTitleWidth : 0;
     config$$1.pieChartLinePadding = opts.dataLabel === false ? 0 : config$$1.pieChartLinePadding;
     config$$1.pieChartTextPadding = opts.dataLabel === false ? 0 : config$$1.pieChartTextPadding;

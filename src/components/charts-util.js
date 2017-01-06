@@ -104,7 +104,7 @@ export function getDataRange (minData, maxData) {
     }
 }
 
-export function mesureText (text) {
+export function mesureText (text, fontSize=10) {
     // wx canvas 未实现mesureText方法, 此处自行实现
     text = String(text);
     var text = text.split('');
@@ -130,5 +130,5 @@ export function mesureText (text) {
             width += 10;
         }
     });
-    return width;
+    return width * fontSize / 10;
 }
