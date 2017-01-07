@@ -1017,7 +1017,6 @@ function drawCharts(type, opts, config, context) {
         config._xAxisTextAngle_ = angle;
     }
     if (type === 'pie' || type === 'ring') {
-        config._pieTextMaxLength_ = getPieTextMaxLength(series);
         config._pieTextMaxLength_ = opts.dataLabel === false ? 0 : getPieTextMaxLength(series);
     }
 
