@@ -1018,6 +1018,7 @@ function drawCharts(type, opts, config, context) {
     }
     if (type === 'pie' || type === 'ring') {
         config._pieTextMaxLength_ = getPieTextMaxLength(series);
+        config._pieTextMaxLength_ = opts.dataLabel === false ? 0 : getPieTextMaxLength(series);
     }
 
     var duration = opts.animation ? 1000 : 0;
