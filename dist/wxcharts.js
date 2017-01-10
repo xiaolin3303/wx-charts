@@ -772,6 +772,15 @@ function drawXAxis(categories, opts, config, context) {
     context.closePath();
     context.stroke();
 
+    // 对X轴列表做抽稀处理
+    var validWidth = opts.width - 2 * config.padding - config.yAxisWidth - config.yAxisTitleWidth;
+    var maxXAxisListLength = Math.min(categories.length, Math.ceil(validWidth / config.fontSize / 1.5));
+    var ratio = Math.ceil(categories.length / maxXAxisListLength);
+
+    categories = categories.map(function (item, index) {
+        return index % ratio !== 0 ? '' : item;
+    });
+
     if (config._xAxisTextAngle_ === 0) {
         context.beginPath();
         context.setFontSize(config.fontSize);

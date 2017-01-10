@@ -156,6 +156,15 @@ export function drawXAxis (categories, opts, config, context) {
     context.closePath();
     context.stroke();
 
+    // 对X轴列表做抽稀处理
+    let validWidth = opts.width - 2 * config.padding - config.yAxisWidth - config.yAxisTitleWidth;
+    let maxXAxisListLength = Math.min(categories.length, Math.ceil(validWidth / config.fontSize / 1.5));
+    let ratio = Math.ceil(categories.length / maxXAxisListLength);
+
+    categories = categories.map((item, index) => {
+        return index % ratio !== 0 ? '' : item;
+    });
+
     if (config._xAxisTextAngle_ === 0) {
         context.beginPath();
         context.setFontSize(config.fontSize);
