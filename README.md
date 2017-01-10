@@ -46,6 +46,22 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 
 `opts.height` Number **required** canvas高度，单位为px
 
+`opts.title` Object (only for ring chart)
+
+`opts.title.name` String 标题内容
+
+`opts.title.fontSize` Number 标题字体大小（可选，单位为px）
+
+`opts.title.color` String 标题颜色（可选）
+
+`opts.subtitle` Object (only for ring chart)
+
+`opts.subtitle.name` String 副标题内容
+
+`opts.subtitle.fontSize` Number 副标题字体大小（可选，单位为px）
+
+`opts.subtitle.color` String 副标题颜色（可选）
+
 `opts.animation` Boolean default `true` 是否动画展示
 
 `opts.legend` Boolen default `true` 是否显示图表下方各类别的标识
