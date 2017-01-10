@@ -1,6 +1,46 @@
 import { mesureText, convertCoordinateOrigin, avoidCollision } from './charts-util'
 import Util from '../util/util'
 
+export function drawRingTitle(opts, config, context) {
+    let titlefontSize = opts.title.fontSize || config.titleFontSize;
+    let subtitlefontSize = opts.subtitle.fontSize || config.subtitleFontSize;
+    let title = opts.title.name || '';
+    let subtitle = opts.subtitle.name || '';
+    let titleFontColor = opts.title.color || config.titleColor;
+    let subtitleFontColor = opts.subtitle.color || config.subtitleColor;
+    let titleHeight = title ? titlefontSize : 0;
+    let subtitleHeight = subtitle ? subtitlefontSize : 0;
+    let margin = 5;
+    if (subtitle) {
+        let textWidth = mesureText(subtitle, subtitlefontSize);
+        let startX = (opts.width - textWidth) / 2;
+        let startY = (opts.height - config.legendHeight + subtitlefontSize) / 2;
+        if (title) {
+            startY -= (titleHeight + margin) / 2;
+        }
+        context.beginPath();
+        context.setFontSize(subtitlefontSize);
+        context.setFillStyle(subtitleFontColor);
+        context.fillText(subtitle, startX, startY);
+        context.stroke();
+        context.closePath();
+    }
+    if (title) {
+        let textWidth = mesureText(title, titlefontSize);
+        let startX = (opts.width - textWidth) / 2;
+        let startY = (opts.height - config.legendHeight + titlefontSize) / 2;
+        if (subtitle) {
+            startY += (subtitleHeight + margin) / 2;
+        }
+        context.beginPath();
+        context.setFontSize(titlefontSize);
+        context.setFillStyle(titleFontColor);
+        context.fillText(title, startX, startY);
+        context.stroke();
+        context.closePath();
+    }    
+}
+
 export function drawPointText (points, series, config, context) {
     // 绘制数据文案
     let data = series.data;

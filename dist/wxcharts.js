@@ -23,7 +23,11 @@ var config = {
     colors: ['#7cb5ec', '#f7a35c', '#434348', '#90ed7d', '#f15c80', '#8085e9'],
     pieChartLinePadding: 25,
     pieChartTextPadding: 15,
-    xAxisTextPadding: 3
+    xAxisTextPadding: 3,
+    titleColor: '#333333',
+    titleFontSize: 20,
+    subtitleColor: '#999999',
+    subtitleFontSize: 15
 };
 
 // Object.assign polyfill
@@ -433,6 +437,46 @@ function drawPointShape(points, color, shape, context) {
     context.closePath();
     context.fill();
     context.stroke();
+}
+
+function drawRingTitle(opts, config, context) {
+    var titlefontSize = opts.title.fontSize || config.titleFontSize;
+    var subtitlefontSize = opts.subtitle.fontSize || config.subtitleFontSize;
+    var title = opts.title.name || '';
+    var subtitle = opts.subtitle.name || '';
+    var titleFontColor = opts.title.color || config.titleColor;
+    var subtitleFontColor = opts.subtitle.color || config.subtitleColor;
+    var titleHeight = title ? titlefontSize : 0;
+    var subtitleHeight = subtitle ? subtitlefontSize : 0;
+    var margin = 5;
+    if (subtitle) {
+        var textWidth = mesureText(subtitle, subtitlefontSize);
+        var startX = (opts.width - textWidth) / 2;
+        var startY = (opts.height - config.legendHeight + subtitlefontSize) / 2;
+        if (title) {
+            startY -= (titleHeight + margin) / 2;
+        }
+        context.beginPath();
+        context.setFontSize(subtitlefontSize);
+        context.setFillStyle(subtitleFontColor);
+        context.fillText(subtitle, startX, startY);
+        context.stroke();
+        context.closePath();
+    }
+    if (title) {
+        var _textWidth = mesureText(title, titlefontSize);
+        var _startX = (opts.width - _textWidth) / 2;
+        var _startY = (opts.height - config.legendHeight + titlefontSize) / 2;
+        if (subtitle) {
+            _startY += (subtitleHeight + margin) / 2;
+        }
+        context.beginPath();
+        context.setFontSize(titlefontSize);
+        context.setFillStyle(titleFontColor);
+        context.fillText(title, _startX, _startY);
+        context.stroke();
+        context.closePath();
+    }
 }
 
 function drawPointText(points, series, config, context) {
@@ -918,6 +962,10 @@ function drawPieDataPoints(series, opts, config, context) {
     if (opts.dataLabel !== false && process === 1) {
         drawPieText(series, opts, config, context, radius, centerPosition);
     }
+
+    if (process === 1 && opts.type === 'ring') {
+        drawRingTitle(opts, config, context);
+    }
 }
 
 function drawCanvas(opts, context) {
@@ -1078,6 +1126,8 @@ function drawCharts(type, opts, config, context) {
 }
 
 var Charts = function Charts(opts) {
+    opts.title = opts.title || {};
+    opts.subtitle = opts.subtitle || {};
     opts.yAxis = opts.yAxis || {};
     opts.xAxis = opts.xAxis || {};
     opts.legend = opts.legend === false ? false : true;

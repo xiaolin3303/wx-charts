@@ -2,7 +2,7 @@ import { getPieDataPoints, calYAxisData, getXAxisPoints, getDataPoints, fixColum
 import { mesureText, calRotateTranslate } from './charts-util'
 import Util from '../util/util'
 import drawPointShape from './draw-data-shape'
-import { drawPointText, drawPieText } from './draw-data-text'
+import { drawPointText, drawPieText, drawRingTitle } from './draw-data-text'
 
 function drawYAxisTitle (title, opts, config, context) {
     let startX = config.xAxisHeight + (opts.height - config.xAxisHeight - mesureText(title)) / 2;
@@ -335,6 +335,10 @@ export function drawPieDataPoints (series, opts, config, context, process = 1) {
 
     if (opts.dataLabel !== false && process === 1) {
         drawPieText(series, opts, config, context, radius, centerPosition);
+    }
+
+    if (process === 1 && opts.type === 'ring') {
+        drawRingTitle(opts, config, context);
     }
 }
 

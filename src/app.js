@@ -3,6 +3,8 @@ import { assign } from './util/polyfill/index';
 import drawCharts from './components/draw-charts'
 
 let Charts = function(opts) {
+    opts.title = opts.title || {};
+    opts.subtitle = opts.subtitle || {};
     opts.yAxis = opts.yAxis || {};
     opts.xAxis = opts.xAxis || {};
     opts.legend = opts.legend === false ? false : true;
