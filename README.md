@@ -85,6 +85,8 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 
 `opts.yAxis.min` Number Y轴起始值
 
+`opts.yAxis.max` Number Y轴终止值
+
 `opts.yAxis.title` String Y轴title
 
 `opts.yAxis.disabled` Boolean default `false` 不绘制Y轴
