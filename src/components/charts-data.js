@@ -135,8 +135,14 @@ export function getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing
 
 export function getYAxisTextList(series, opts, config) {
     let data = dataCombine(series);
-    let minData = typeof opts.yAxis.min === 'number' ? opts.yAxis.min : Math.min.apply(this, data);
+    let minData = Math.min.apply(this, data);
     let maxData = Math.max.apply(this, data);
+    if (typeof opts.yAxis.min === 'number') {
+        minData = Math.min(opts.yAxis.min, minData);
+    }
+    if (typeof opts.yAxis.max === 'number') {
+        maxData = Math.max(opts.yAxis.max, maxData);
+    }
 
     // fix issue https://github.com/xiaolin3303/wx-charts/issues/9
     if (minData === maxData) {
