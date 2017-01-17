@@ -35,7 +35,7 @@ npm install rollup -g
 npm install
 rollup -c 或者 rollup --config rollup.config.prod.js
 ```
-[实际项目中如何具体使用wx-charts](https://github.com/xiaolin3303/wx-charts/issues/28)
+[实际项目中如何具体使用wx-charts](https://github.com/xiaolin3303/wx-charts/issues/28) 或者 访问[wx-charts-demo](https://github.com/xiaolin3303/wx-charts-demo)查看在微信开发工具中直接运行的例子
 
 # 参数说明
 `opts` Object
