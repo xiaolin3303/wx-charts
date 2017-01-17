@@ -76,6 +76,10 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 
 `opts.xAxis` Object X轴配置
 
+`opts.xAxis.gridColor` String 例如`#7cb5ec` default `#cccccc` X轴网格颜色
+
+`opts.xAxis.fontColor` String 例如`#7cb5ec` default `#666666` X轴数据点颜色
+
 `opts.xAxis.disableGrid` Boolean default `false` 不绘制X轴网格
 
 `opts.yAxis` Object Y轴配置
@@ -87,6 +91,12 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 `opts.yAxis.max` Number Y轴终止值
 
 `opts.yAxis.title` String Y轴title
+
+`opts.yAxis.gridColor` String 例如`#7cb5ec` default `#cccccc` Y轴网格颜色
+
+`opts.yAxis.fontColor` String 例如`#7cb5ec` default `#666666` Y轴数据点颜色
+
+`opts.yAxis.titleFontColor` String 例如`#7cb5ec` default `#333333` Y轴title颜色
 
 `opts.yAxis.disabled` Boolean default `false` 不绘制Y轴
 
