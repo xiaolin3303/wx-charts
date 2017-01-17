@@ -9,7 +9,7 @@ function drawYAxisTitle (title, opts, config, context) {
     context.save();
     context.beginPath();
     context.setFontSize(config.fontSize);
-    context.setFillStyle('#333333');
+    context.setFillStyle(opts.yAxis.titleFontColor || '#333333');
     context.translate(0, opts.height);
     context.rotate(-90 * Math.PI / 180);
     context.fillText(title, startX, config.padding + 0.5 * config.fontSize);
@@ -143,7 +143,7 @@ export function drawXAxis (categories, opts, config, context) {
     let endY = startY + config.xAxisLineHeight;
 
     context.beginPath();
-    context.setStrokeStyle("#cccccc")
+    context.setStrokeStyle(opts.xAxis.gridColor || "#cccccc");
     context.setLineWidth(1);
     context.moveTo(startX, startY);
     context.lineTo(endX, startY);
@@ -168,7 +168,7 @@ export function drawXAxis (categories, opts, config, context) {
     if (config._xAxisTextAngle_ === 0) {
         context.beginPath();
         context.setFontSize(config.fontSize);
-        context.setFillStyle('#666666');
+        context.setFillStyle(opts.xAxis.fontColor || '#666666');
         categories.forEach(function(item, index) {
             let offset = eachSpacing / 2 - mesureText(item) / 2;
             context.fillText(item, xAxisPoints[index] + offset, startY + config.fontSize + 5);
@@ -180,7 +180,7 @@ export function drawXAxis (categories, opts, config, context) {
             context.save();
             context.beginPath();
             context.setFontSize(config.fontSize);
-            context.setFillStyle('#666666');
+            context.setFillStyle(opts.xAxis.fontColor || '#666666');
             let textWidth = mesureText(item);
             let offset = eachSpacing / 2 - textWidth;
             let { transX, transY }  = calRotateTranslate(xAxisPoints[index] + eachSpacing / 2, startY + config.fontSize / 2 + 5, opts.height);
@@ -214,7 +214,7 @@ export function drawYAxis (series, opts, config, context) {
     }
 
     context.beginPath();
-    context.setStrokeStyle("#cccccc")
+    context.setStrokeStyle(opts.yAxis.gridColor || "#cccccc")
     context.setLineWidth(1);
     points.forEach(function(item, index) {
         context.moveTo(startX, item);
@@ -224,7 +224,7 @@ export function drawYAxis (series, opts, config, context) {
     context.stroke();
     context.beginPath();
     context.setFontSize(config.fontSize);
-    context.setFillStyle('#666666')
+    context.setFillStyle(opts.yAxis.fontColor || '#666666')
     rangesFormat.forEach(function(item, index) {
         let pos = points[index] ? points[index] : endY;
         context.fillText(item, config.padding + config.yAxisTitleWidth, pos + config.fontSize / 2);

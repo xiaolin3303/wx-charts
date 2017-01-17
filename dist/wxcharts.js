@@ -605,7 +605,7 @@ function drawYAxisTitle(title, opts, config, context) {
     context.save();
     context.beginPath();
     context.setFontSize(config.fontSize);
-    context.setFillStyle('#333333');
+    context.setFillStyle(opts.yAxis.titleFontColor || '#333333');
     context.translate(0, opts.height);
     context.rotate(-90 * Math.PI / 180);
     context.fillText(title, startX, config.padding + 0.5 * config.fontSize);
@@ -765,7 +765,7 @@ function drawXAxis(categories, opts, config, context) {
     var endY = startY + config.xAxisLineHeight;
 
     context.beginPath();
-    context.setStrokeStyle("#cccccc");
+    context.setStrokeStyle(opts.xAxis.gridColor || "#cccccc");
     context.setLineWidth(1);
     context.moveTo(startX, startY);
     context.lineTo(endX, startY);
@@ -790,7 +790,7 @@ function drawXAxis(categories, opts, config, context) {
     if (config._xAxisTextAngle_ === 0) {
         context.beginPath();
         context.setFontSize(config.fontSize);
-        context.setFillStyle('#666666');
+        context.setFillStyle(opts.xAxis.fontColor || '#666666');
         categories.forEach(function (item, index) {
             var offset = eachSpacing / 2 - mesureText(item) / 2;
             context.fillText(item, xAxisPoints[index] + offset, startY + config.fontSize + 5);
@@ -802,7 +802,7 @@ function drawXAxis(categories, opts, config, context) {
             context.save();
             context.beginPath();
             context.setFontSize(config.fontSize);
-            context.setFillStyle('#666666');
+            context.setFillStyle(opts.xAxis.fontColor || '#666666');
             var textWidth = mesureText(item);
             var offset = eachSpacing / 2 - textWidth;
 
@@ -843,7 +843,7 @@ function drawYAxis(series, opts, config, context) {
     }
 
     context.beginPath();
-    context.setStrokeStyle("#cccccc");
+    context.setStrokeStyle(opts.yAxis.gridColor || "#cccccc");
     context.setLineWidth(1);
     points.forEach(function (item, index) {
         context.moveTo(startX, item);
@@ -853,7 +853,7 @@ function drawYAxis(series, opts, config, context) {
     context.stroke();
     context.beginPath();
     context.setFontSize(config.fontSize);
-    context.setFillStyle('#666666');
+    context.setFillStyle(opts.yAxis.fontColor || '#666666');
     rangesFormat.forEach(function (item, index) {
         var pos = points[index] ? points[index] : endY;
         context.fillText(item, config.padding + config.yAxisTitleWidth, pos + config.fontSize / 2);
