@@ -82,6 +82,8 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 
 `opts.xAxis.disableGrid` Boolean default `false` 不绘制X轴网格
 
+`opts.xAxis.type` String 可选值`calibration(刻度)` 默认为包含样式
+
 `opts.yAxis` Object Y轴配置
 
 `opts.yAxis.format` Function 自定义Y轴文案显示
