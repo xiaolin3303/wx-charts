@@ -106,7 +106,7 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 
 `dataItem` Object
 
-`dataItem.data` Array **required** *(饼图、圆环图为Number)* 数据
+`dataItem.data` Array **required** *(饼图、圆环图为Number)* 数据，如果传入`null`图表该处出现断点
 
 `dataItem.color` String 例如`#7cb5ec` 不传入则使用系统默认配色方案
 
