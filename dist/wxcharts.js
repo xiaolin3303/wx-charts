@@ -836,10 +836,19 @@ function drawXAxis(categories, opts, config, context) {
     context.moveTo(startX, startY);
     context.lineTo(endX, startY);
     if (opts.xAxis.disableGrid !== true) {
-        xAxisPoints.forEach(function (item, index) {
-            context.moveTo(item, startY);
-            context.lineTo(item, endY);
-        });
+        if (opts.xAxis.type === 'calibration') {
+            xAxisPoints.forEach(function (item, index) {
+                if (index > 0) {
+                    context.moveTo(item - eachSpacing / 2, startY);
+                    context.lineTo(item - eachSpacing / 2, startY + 4);
+                }
+            });
+        } else {
+            xAxisPoints.forEach(function (item, index) {
+                context.moveTo(item, startY);
+                context.lineTo(item, endY);
+            });
+        }
     }
     context.closePath();
     context.stroke();
