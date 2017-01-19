@@ -227,6 +227,26 @@ function dataCombine(series) {
     }, []);
 }
 
+function splitPoints(points) {
+    var newPoints = [];
+    var items = [];
+    points.forEach(function (item, index) {
+        if (item !== null) {
+            items.push(item);
+        } else {
+            if (items.length) {
+                newPoints.push(items);
+            }
+            items = [];
+        }
+    });
+    if (items.length) {
+        newPoints.push(items);
+    }
+
+    return newPoints;
+}
+
 function calLegendData(series, opts, config) {
     if (opts.legend === false) {
         return {
@@ -293,9 +313,11 @@ function getPieDataPoints(series) {
     var count = 0;
     var _start_ = 0;
     series.forEach(function (item) {
+        item.data = item.data === null ? 0 : item.data;
         count += item.data;
     });
     series.forEach(function (item) {
+        item.data = item.data === null ? 0 : item.data;
         item._proportion_ = item.data / count * process;
     });
     series.forEach(function (item) {
@@ -319,6 +341,9 @@ function getPieTextMaxLength(series) {
 
 function fixColumeData(points, eachSpacing, columnLen, index, config) {
     return points.map(function (item) {
+        if (item === null) {
+            return null;
+        }
         item.width = (eachSpacing - 2 * config.columePadding) / columnLen;
         item.width = Math.min(item.width, 25);
         item.x += (index + 0.5 - columnLen / 2) * item.width;
@@ -349,12 +374,16 @@ function getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts,
     var points = [];
     var validHeight = opts.height - 2 * config.padding - config.xAxisHeight - config.legendHeight;
     data.forEach(function (item, index) {
-        var point = {};
-        point.x = xAxisPoints[index] + Math.round(eachSpacing / 2);
-        var height = validHeight * (item - minRange) / (maxRange - minRange);
-        height *= process;
-        point.y = opts.height - config.xAxisHeight - config.legendHeight - Math.round(height) - config.padding;
-        points.push(point);
+        if (item === null) {
+            points.push(null);
+        } else {
+            var point = {};
+            point.x = xAxisPoints[index] + Math.round(eachSpacing / 2);
+            var height = validHeight * (item - minRange) / (maxRange - minRange);
+            height *= process;
+            point.y = opts.height - config.xAxisHeight - config.legendHeight - Math.round(height) - config.padding;
+            points.push(point);
+        }
     });
 
     return points;
@@ -362,6 +391,10 @@ function getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts,
 
 function getYAxisTextList(series, opts, config) {
     var data = dataCombine(series);
+    // remove null from data
+    data = data.filter(function (item) {
+        return item !== null;
+    });
     var minData = Math.min.apply(this, data);
     var maxData = Math.max.apply(this, data);
     if (typeof opts.yAxis.min === 'number') {
@@ -416,28 +449,36 @@ function drawPointShape(points, color, shape, context) {
 
     if (shape === 'diamond') {
         points.forEach(function (item, index) {
-            context.moveTo(item.x, item.y - 4.5);
-            context.lineTo(item.x - 4.5, item.y);
-            context.lineTo(item.x, item.y + 4.5);
-            context.lineTo(item.x + 4.5, item.y);
-            context.lineTo(item.x, item.y - 4.5);
+            if (item !== null) {
+                context.moveTo(item.x, item.y - 4.5);
+                context.lineTo(item.x - 4.5, item.y);
+                context.lineTo(item.x, item.y + 4.5);
+                context.lineTo(item.x + 4.5, item.y);
+                context.lineTo(item.x, item.y - 4.5);
+            }
         });
     } else if (shape === 'circle') {
         points.forEach(function (item, index) {
-            context.moveTo(item.x + 3.5, item.y);
-            context.arc(item.x, item.y, 4, 0, 2 * Math.PI, false);
+            if (item !== null) {
+                context.moveTo(item.x + 3.5, item.y);
+                context.arc(item.x, item.y, 4, 0, 2 * Math.PI, false);
+            }
         });
     } else if (shape === 'rect') {
         points.forEach(function (item, index) {
-            context.moveTo(item.x - 3.5, item.y - 3.5);
-            context.rect(item.x - 3.5, item.y - 3.5, 7, 7);
+            if (item !== null) {
+                context.moveTo(item.x - 3.5, item.y - 3.5);
+                context.rect(item.x - 3.5, item.y - 3.5, 7, 7);
+            }
         });
     } else if (shape === 'triangle') {
         points.forEach(function (item, index) {
-            context.moveTo(item.x, item.y - 4.5);
-            context.lineTo(item.x - 4.5, item.y + 4.5);
-            context.lineTo(item.x + 4.5, item.y + 4.5);
-            context.lineTo(item.x, item.y - 4.5);
+            if (item !== null) {
+                context.moveTo(item.x, item.y - 4.5);
+                context.lineTo(item.x - 4.5, item.y + 4.5);
+                context.lineTo(item.x + 4.5, item.y + 4.5);
+                context.lineTo(item.x, item.y - 4.5);
+            }
         });
     }
     context.closePath();
@@ -493,8 +534,10 @@ function drawPointText(points, series, config, context) {
     context.setFontSize(config.fontSize);
     context.setFillStyle('#666666');
     points.forEach(function (item, index) {
-        var formatVal = series.format ? series.format(data[index]) : data[index];
-        context.fillText(formatVal, item.x - mesureText(formatVal) / 2, item.y - 2);
+        if (item !== null) {
+            var formatVal = series.format ? series.format(data[index]) : data[index];
+            context.fillText(formatVal, item.x - mesureText(formatVal) / 2, item.y - 2);
+        }
     });
     context.closePath();
     context.stroke();
@@ -637,10 +680,12 @@ function drawColumnDataPoints(series, opts, config, context) {
         context.beginPath();
         context.setFillStyle(eachSeries.color);
         points.forEach(function (item, index) {
-            var startX = item.x - item.width / 2 + 1;
-            var height = opts.height - item.y - config.padding - config.xAxisHeight - config.legendHeight;
-            context.moveTo(startX, item.y);
-            context.rect(startX, item.y, item.width - 2, height);
+            if (item !== null) {
+                var startX = item.x - item.width / 2 + 1;
+                var height = opts.height - item.y - config.padding - config.xAxisHeight - config.legendHeight;
+                context.moveTo(startX, item.y);
+                context.rect(startX, item.y, item.width - 2, height);
+            }
         });
         context.closePath();
         context.fill();
@@ -673,27 +718,41 @@ function drawAreaDataPoints(series, opts, config, context) {
         var data = eachSeries.data;
         var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
 
-        // 绘制区域数据
-        var firstPoint = points[0];
-        var lastPoint = points[points.length - 1];
-        context.beginPath();
-        context.setStrokeStyle(eachSeries.color);
-        context.setFillStyle(eachSeries.color);
-        context.setGlobalAlpha(0.6);
-        context.setLineWidth(2);
-        context.moveTo(firstPoint.x, firstPoint.y);
-        points.forEach(function (item, index) {
-            if (index > 0) {
-                context.lineTo(item.x, item.y);
-            }
-        });
+        var splitPointList = splitPoints(points);
 
-        context.lineTo(lastPoint.x, endY);
-        context.lineTo(firstPoint.x, endY);
-        context.lineTo(firstPoint.x, firstPoint.y);
-        context.closePath();
-        context.fill();
-        context.setGlobalAlpha(1);
+        splitPointList.forEach(function (points) {
+            // 绘制区域数据
+            context.beginPath();
+            context.setStrokeStyle(eachSeries.color);
+            context.setFillStyle(eachSeries.color);
+            context.setGlobalAlpha(0.6);
+            context.setLineWidth(2);
+            if (points.length > 1) {
+                var firstPoint = points[0];
+                var lastPoint = points[points.length - 1];
+
+                context.moveTo(firstPoint.x, firstPoint.y);
+                points.forEach(function (item, index) {
+                    if (index > 0) {
+                        context.lineTo(item.x, item.y);
+                    }
+                });
+
+                context.lineTo(lastPoint.x, endY);
+                context.lineTo(firstPoint.x, endY);
+                context.lineTo(firstPoint.x, firstPoint.y);
+            } else {
+                var item = points[0];
+                context.moveTo(item.x - eachSpacing / 2, item.y);
+                context.lineTo(item.x + eachSpacing / 2, item.y);
+                context.lineTo(item.x + eachSpacing / 2, endY);
+                context.lineTo(item.x - eachSpacing / 2, endY);
+                context.moveTo(item.x - eachSpacing / 2, item.y);
+            }
+            context.closePath();
+            context.fill();
+            context.setGlobalAlpha(1);
+        });
 
         if (opts.dataPointShape !== false) {
             var shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
@@ -725,20 +784,27 @@ function drawLineDataPoints(series, opts, config, context) {
     series.forEach(function (eachSeries, seriesIndex) {
         var data = eachSeries.data;
         var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
+        var splitPointList = splitPoints(points);
 
-        // 绘制数据线
-        context.beginPath();
-        context.setStrokeStyle(eachSeries.color);
-        context.setLineWidth(2);
-        context.moveTo(points[0].x, points[0].y);
-        points.forEach(function (item, index) {
-            if (index > 0) {
-                context.lineTo(item.x, item.y);
+        splitPointList.forEach(function (points, index) {
+            context.beginPath();
+            context.setStrokeStyle(eachSeries.color);
+            context.setLineWidth(2);
+            if (points.length === 1) {
+                context.moveTo(points[0].x, points[0].y);
+                context.arc(points[0].x, points[0].y, 1, 0, 2 * Math.PI);
+            } else {
+                context.moveTo(points[0].x, points[0].y);
+                points.forEach(function (item, index) {
+                    if (index > 0) {
+                        context.lineTo(item.x, item.y);
+                    }
+                });
+                context.moveTo(points[0].x, points[0].y);
             }
+            context.closePath();
+            context.stroke();
         });
-        context.moveTo(points[0].x, points[0].y);
-        context.closePath();
-        context.stroke();
 
         if (opts.dataPointShape !== false) {
             var shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];

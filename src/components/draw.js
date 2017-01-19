@@ -1,4 +1,4 @@
-import { getPieDataPoints, calYAxisData, getXAxisPoints, getDataPoints, fixColumeData, calLegendData } from './charts-data'
+import { splitPoints, getPieDataPoints, calYAxisData, getXAxisPoints, getDataPoints, fixColumeData, calLegendData } from './charts-data'
 import { mesureText, calRotateTranslate } from './charts-util'
 import Util from '../util/util'
 import drawPointShape from './draw-data-shape'
@@ -34,10 +34,12 @@ export function drawColumnDataPoints (series, opts, config, context, process = 1
         context.beginPath();
         context.setFillStyle(eachSeries.color);
         points.forEach(function(item, index) {
-            let startX = item.x - item.width / 2 + 1;
-            let height = opts.height - item.y - config.padding - config.xAxisHeight - config.legendHeight;
-            context.moveTo(startX, item.y);
-            context.rect(startX, item.y, item.width - 2, height);
+            if (item !== null) { 
+                let startX = item.x - item.width / 2 + 1;
+                let height = opts.height - item.y - config.padding - config.xAxisHeight - config.legendHeight;
+                context.moveTo(startX, item.y);
+                context.rect(startX, item.y, item.width - 2, height);
+            }
         });
         context.closePath();
         context.fill();
@@ -63,27 +65,41 @@ export function drawAreaDataPoints (series, opts, config, context, process = 1) 
         let data = eachSeries.data;
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
 
-        // 绘制区域数据
-        let firstPoint = points[0];
-        let lastPoint = points[points.length - 1];
-        context.beginPath();
-        context.setStrokeStyle(eachSeries.color);
-        context.setFillStyle(eachSeries.color);
-        context.setGlobalAlpha(0.6);
-        context.setLineWidth(2);
-        context.moveTo(firstPoint.x, firstPoint.y);
-        points.forEach(function(item, index) {
-            if (index > 0) {
-                context.lineTo(item.x, item.y);
-            }
-        });
+        let splitPointList = splitPoints(points);
 
-        context.lineTo(lastPoint.x, endY);
-        context.lineTo(firstPoint.x, endY);
-        context.lineTo(firstPoint.x, firstPoint.y);
-        context.closePath();
-        context.fill();
-        context.setGlobalAlpha(1);
+        splitPointList.forEach((points) => {
+            // 绘制区域数据
+            context.beginPath();
+            context.setStrokeStyle(eachSeries.color);
+            context.setFillStyle(eachSeries.color);
+            context.setGlobalAlpha(0.6);
+            context.setLineWidth(2);
+            if (points.length > 1) {
+                let firstPoint = points[0];
+                let lastPoint = points[points.length - 1];
+                
+                context.moveTo(firstPoint.x, firstPoint.y);
+                points.forEach(function(item, index) {
+                    if (index > 0) {
+                        context.lineTo(item.x, item.y);
+                    }
+                });
+
+                context.lineTo(lastPoint.x, endY);
+                context.lineTo(firstPoint.x, endY);
+                context.lineTo(firstPoint.x, firstPoint.y);
+            } else {
+                let item = points[0];
+                context.moveTo(item.x - eachSpacing / 2, item.y);
+                context.lineTo(item.x + eachSpacing / 2, item.y);
+                context.lineTo(item.x + eachSpacing / 2, endY);
+                context.lineTo(item.x - eachSpacing / 2, endY);
+                context.moveTo(item.x - eachSpacing / 2, item.y);
+            }
+            context.closePath();
+            context.fill();
+            context.setGlobalAlpha(1);
+        });
 
         if (opts.dataPointShape !== false) {          
             let shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
@@ -108,20 +124,27 @@ export function drawLineDataPoints (series, opts, config, context, process = 1) 
     series.forEach(function(eachSeries, seriesIndex) {
         let data = eachSeries.data;
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
+        let splitPointList = splitPoints(points);
 
-        // 绘制数据线
-        context.beginPath();
-        context.setStrokeStyle(eachSeries.color);
-        context.setLineWidth(2);
-        context.moveTo(points[0].x, points[0].y);
-        points.forEach(function(item, index) {
-            if (index > 0) {
-                context.lineTo(item.x, item.y);
+        splitPointList.forEach((points, index) => {
+            context.beginPath();
+            context.setStrokeStyle(eachSeries.color);
+            context.setLineWidth(2);
+            if (points.length === 1) {
+                context.moveTo(points[0].x, points[0].y);
+                context.arc(points[0].x, points[0].y, 1, 0, 2 * Math.PI);
+            } else {
+                context.moveTo(points[0].x, points[0].y);
+                points.forEach(function(item, index) {
+                    if (index > 0) {
+                        context.lineTo(item.x, item.y);
+                    }
+                });
+                context.moveTo(points[0].x, points[0].y);
             }
+            context.closePath();
+            context.stroke();
         });
-        context.moveTo(points[0].x, points[0].y);
-        context.closePath();
-        context.stroke();
 
         if (opts.dataPointShape !== false) {        
             let shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];

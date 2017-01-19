@@ -8,6 +8,26 @@ function dataCombine(series) {
     }, []);
 }
 
+export function splitPoints(points) {
+    let newPoints = [];
+    let items = [];
+    points.forEach((item, index) => {
+        if (item !== null) {
+            items.push(item);
+        } else {
+            if (items.length) {
+                newPoints.push(items);
+            }
+            items = [];
+        }
+    });
+    if (items.length) {
+        newPoints.push(items);
+    }
+
+    return newPoints;
+}
+
 export function calLegendData(series, opts, config) {
     if (opts.legend === false) {
         return {
@@ -68,9 +88,11 @@ export function getPieDataPoints(series, process = 1) {
     var count = 0;
     var _start_ = 0;
     series.forEach(function(item) {
+        item.data = item.data === null ? 0 : item.data;
         count += item.data;
     });
     series.forEach(function(item) {
+        item.data = item.data === null ? 0 : item.data;
         item._proportion_ = item.data / count * process;
     });
     series.forEach(function(item) {
@@ -94,6 +116,9 @@ export function getPieTextMaxLength(series) {
 
 export function fixColumeData(points, eachSpacing, columnLen, index, config) {
     return points.map(function(item) {
+        if (item === null) {
+            return null;
+        }
         item.width = (eachSpacing - 2 * config.columePadding) / columnLen;
         item.width = Math.min(item.width, 25);
         item.x += (index + 0.5 - (columnLen) / 2) * item.width;
@@ -122,12 +147,16 @@ export function getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing
     let points = [];
     let validHeight = opts.height - 2 * config.padding - config.xAxisHeight - config.legendHeight;
     data.forEach(function(item, index) {
-        let point = {};
-        point.x = xAxisPoints[index] + Math.round(eachSpacing / 2);
-        let height = validHeight * (item - minRange) / (maxRange - minRange);
-        height *= process;
-        point.y = opts.height - config.xAxisHeight - config.legendHeight - Math.round(height) - config.padding;
-        points.push(point);
+        if (item === null) {
+            points.push(null);
+        } else {        
+            let point = {};
+            point.x = xAxisPoints[index] + Math.round(eachSpacing / 2);
+            let height = validHeight * (item - minRange) / (maxRange - minRange);
+            height *= process;
+            point.y = opts.height - config.xAxisHeight - config.legendHeight - Math.round(height) - config.padding;
+            points.push(point);
+        }
     });
 
     return points;
@@ -135,6 +164,10 @@ export function getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing
 
 export function getYAxisTextList(series, opts, config) {
     let data = dataCombine(series);
+    // remove null from data
+    data = data.filter((item) => {
+        return item !== null;
+    });
     let minData = Math.min.apply(this, data);
     let maxData = Math.max.apply(this, data);
     if (typeof opts.yAxis.min === 'number') {
