@@ -1,6 +1,6 @@
 import { getDataRange } from './charts-util'
 import Util from '../util/util'
-import { mesureText } from './charts-util'
+import { measureText } from './charts-util'
 
 function dataCombine(series) {
     return series.reduce(function(a, b) {
@@ -42,7 +42,7 @@ export function calLegendData(series, opts, config) {
     let widthCount = 0;
     let currentRow = [];
     series.forEach((item) => {
-        let itemWidth = 3 * padding + shapeWidth + mesureText(item.name || 'undefinded');
+        let itemWidth = 3 * padding + shapeWidth + measureText(item.name || 'undefinded');
         if (widthCount + itemWidth > opts.width) {
             legendList.push(currentRow);
             widthCount = itemWidth;
@@ -71,7 +71,7 @@ export function calCategoriesData(categories, opts, config) {
 
     // get max length of categories text
     let categoriesTextLenth = categories.map((item) => {
-        return mesureText(item);
+        return measureText(item);
     });
 
     let maxTextLength = Math.max.apply(this, categoriesTextLenth);
@@ -108,7 +108,7 @@ export function getPieTextMaxLength(series) {
     let maxLength = 0;
     series.forEach((item) => {
         let text = item.format ? item.format(+item._proportion_.toFixed(2)) : `${Util.toFixed(item._proportion_ * 100)}%`;
-        maxLength = Math.max(maxLength, mesureText(text));
+        maxLength = Math.max(maxLength, measureText(text));
     });
 
     return maxLength;
@@ -204,7 +204,7 @@ export function calYAxisData(series, opts, config) {
     let rangesFormat = ranges.map(function(item) {
         item = Util.toFixed(item, 2);
         item = opts.yAxis.format ? opts.yAxis.format(Number(item)) : item;
-        yAxisWidth = Math.max(yAxisWidth, mesureText(item) + 5);
+        yAxisWidth = Math.max(yAxisWidth, measureText(item) + 5);
         return item;
     });
     if (opts.yAxis.disabled === true) {

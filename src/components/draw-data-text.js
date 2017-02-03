@@ -1,4 +1,4 @@
-import { mesureText, convertCoordinateOrigin, avoidCollision } from './charts-util'
+import { measureText, convertCoordinateOrigin, avoidCollision } from './charts-util'
 import Util from '../util/util'
 
 export function drawRingTitle(opts, config, context) {
@@ -12,7 +12,7 @@ export function drawRingTitle(opts, config, context) {
     let subtitleHeight = subtitle ? subtitlefontSize : 0;
     let margin = 5;
     if (subtitle) {
-        let textWidth = mesureText(subtitle, subtitlefontSize);
+        let textWidth = measureText(subtitle, subtitlefontSize);
         let startX = (opts.width - textWidth) / 2;
         let startY = (opts.height - config.legendHeight + subtitlefontSize) / 2;
         if (title) {
@@ -26,7 +26,7 @@ export function drawRingTitle(opts, config, context) {
         context.closePath();
     }
     if (title) {
-        let textWidth = mesureText(title, titlefontSize);
+        let textWidth = measureText(title, titlefontSize);
         let startX = (opts.width - textWidth) / 2;
         let startY = (opts.height - config.legendHeight + titlefontSize) / 2;
         if (subtitle) {
@@ -51,7 +51,7 @@ export function drawPointText (points, series, config, context) {
     points.forEach(function(item, index) {
         if (item !== null) {        
             let formatVal = series.format ? series.format(data[index]) : data[index];
-            context.fillText(formatVal, item.x - mesureText(formatVal) / 2, item.y - 2);
+            context.fillText(formatVal, item.x - measureText(formatVal) / 2, item.y - 2);
         }
     });
     context.closePath();
@@ -83,7 +83,7 @@ export function drawPieText (series, opts, config, context, radius, center) {
         let orginX3 = orginX1 >= 0 ? orginX1 + config.pieChartTextPadding : orginX1 - config.pieChartTextPadding ;
         let orginY3 = orginY1;
         
-        let textWidth = mesureText(item.text);
+        let textWidth = measureText(item.text);
         let startY = orginY3;
         
         if (lastTextObject && Util.isSameXCoordinateArea(lastTextObject.start, {x: orginX3})) {

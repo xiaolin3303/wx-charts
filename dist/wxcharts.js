@@ -190,10 +190,10 @@ function getDataRange(minData, maxData) {
     };
 }
 
-function mesureText(text) {
+function measureText(text) {
     var fontSize = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
 
-    // wx canvas 未实现mesureText方法, 此处自行实现
+    // wx canvas 未实现measureText方法, 此处自行实现
     text = String(text);
     var text = text.split('');
     var width = 0;
@@ -261,7 +261,7 @@ function calLegendData(series, opts, config) {
     var widthCount = 0;
     var currentRow = [];
     series.forEach(function (item) {
-        var itemWidth = 3 * padding + shapeWidth + mesureText(item.name || 'undefinded');
+        var itemWidth = 3 * padding + shapeWidth + measureText(item.name || 'undefinded');
         if (widthCount + itemWidth > opts.width) {
             legendList.push(currentRow);
             widthCount = itemWidth;
@@ -294,7 +294,7 @@ function calCategoriesData(categories, opts, config) {
 
 
     var categoriesTextLenth = categories.map(function (item) {
-        return mesureText(item);
+        return measureText(item);
     });
 
     var maxTextLength = Math.max.apply(this, categoriesTextLenth);
@@ -333,7 +333,7 @@ function getPieTextMaxLength(series) {
     var maxLength = 0;
     series.forEach(function (item) {
         var text = item.format ? item.format(+item._proportion_.toFixed(2)) : util.toFixed(item._proportion_ * 100) + '%';
-        maxLength = Math.max(maxLength, mesureText(text));
+        maxLength = Math.max(maxLength, measureText(text));
     });
 
     return maxLength;
@@ -431,7 +431,7 @@ function calYAxisData(series, opts, config) {
     var rangesFormat = ranges.map(function (item) {
         item = util.toFixed(item, 2);
         item = opts.yAxis.format ? opts.yAxis.format(Number(item)) : item;
-        yAxisWidth = Math.max(yAxisWidth, mesureText(item) + 5);
+        yAxisWidth = Math.max(yAxisWidth, measureText(item) + 5);
         return item;
     });
     if (opts.yAxis.disabled === true) {
@@ -497,7 +497,7 @@ function drawRingTitle(opts, config, context) {
     var subtitleHeight = subtitle ? subtitlefontSize : 0;
     var margin = 5;
     if (subtitle) {
-        var textWidth = mesureText(subtitle, subtitlefontSize);
+        var textWidth = measureText(subtitle, subtitlefontSize);
         var startX = (opts.width - textWidth) / 2;
         var startY = (opts.height - config.legendHeight + subtitlefontSize) / 2;
         if (title) {
@@ -511,7 +511,7 @@ function drawRingTitle(opts, config, context) {
         context.closePath();
     }
     if (title) {
-        var _textWidth = mesureText(title, titlefontSize);
+        var _textWidth = measureText(title, titlefontSize);
         var _startX = (opts.width - _textWidth) / 2;
         var _startY = (opts.height - config.legendHeight + titlefontSize) / 2;
         if (subtitle) {
@@ -536,7 +536,7 @@ function drawPointText(points, series, config, context) {
     points.forEach(function (item, index) {
         if (item !== null) {
             var formatVal = series.format ? series.format(data[index]) : data[index];
-            context.fillText(formatVal, item.x - mesureText(formatVal) / 2, item.y - 2);
+            context.fillText(formatVal, item.x - measureText(formatVal) / 2, item.y - 2);
         }
     });
     context.closePath();
@@ -568,7 +568,7 @@ function drawPieText(series, opts, config, context, radius, center) {
         var orginX3 = orginX1 >= 0 ? orginX1 + config.pieChartTextPadding : orginX1 - config.pieChartTextPadding;
         var orginY3 = orginY1;
 
-        var textWidth = mesureText(item.text);
+        var textWidth = measureText(item.text);
         var startY = orginY3;
 
         if (lastTextObject && util.isSameXCoordinateArea(lastTextObject.start, { x: orginX3 })) {
@@ -644,7 +644,7 @@ function drawPieText(series, opts, config, context, radius, center) {
 }
 
 function drawYAxisTitle(title, opts, config, context) {
-    var startX = config.xAxisHeight + (opts.height - config.xAxisHeight - mesureText(title)) / 2;
+    var startX = config.xAxisHeight + (opts.height - config.xAxisHeight - measureText(title)) / 2;
     context.save();
     context.beginPath();
     context.setFontSize(config.fontSize);
@@ -867,7 +867,7 @@ function drawXAxis(categories, opts, config, context) {
         context.setFontSize(config.fontSize);
         context.setFillStyle(opts.xAxis.fontColor || '#666666');
         categories.forEach(function (item, index) {
-            var offset = eachSpacing / 2 - mesureText(item) / 2;
+            var offset = eachSpacing / 2 - measureText(item) / 2;
             context.fillText(item, xAxisPoints[index] + offset, startY + config.fontSize + 5);
         });
         context.closePath();
@@ -878,7 +878,7 @@ function drawXAxis(categories, opts, config, context) {
             context.beginPath();
             context.setFontSize(config.fontSize);
             context.setFillStyle(opts.xAxis.fontColor || '#666666');
-            var textWidth = mesureText(item);
+            var textWidth = measureText(item);
             var offset = eachSpacing / 2 - textWidth;
 
             var _calRotateTranslate = calRotateTranslate(xAxisPoints[index] + eachSpacing / 2, startY + config.fontSize / 2 + 5, opts.height),
@@ -961,7 +961,7 @@ function drawLegend(series, opts, config, context) {
         var width = 0;
         itemList.forEach(function (item) {
             item.name = item.name || 'undefined';
-            width += 3 * padding + mesureText(item.name) + shapeWidth;
+            width += 3 * padding + measureText(item.name) + shapeWidth;
         });
         var startX = (opts.width - width) / 2 + padding;
         var startY = opts.height - config.padding - config.legendHeight + listIndex * (config.fontSize + marginTop) + padding + marginTop;
@@ -1010,7 +1010,7 @@ function drawLegend(series, opts, config, context) {
             context.fillText(item.name, startX, startY + 9);
             context.closePath();
             context.stroke();
-            startX += mesureText(item.name) + 2 * padding;
+            startX += measureText(item.name) + 2 * padding;
         });
     });
 }

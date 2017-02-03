@@ -1,11 +1,11 @@
 import { splitPoints, getPieDataPoints, calYAxisData, getXAxisPoints, getDataPoints, fixColumeData, calLegendData } from './charts-data'
-import { mesureText, calRotateTranslate } from './charts-util'
+import { measureText, calRotateTranslate } from './charts-util'
 import Util from '../util/util'
 import drawPointShape from './draw-data-shape'
 import { drawPointText, drawPieText, drawRingTitle } from './draw-data-text'
 
 function drawYAxisTitle (title, opts, config, context) {
-    let startX = config.xAxisHeight + (opts.height - config.xAxisHeight - mesureText(title)) / 2;
+    let startX = config.xAxisHeight + (opts.height - config.xAxisHeight - measureText(title)) / 2;
     context.save();
     context.beginPath();
     context.setFontSize(config.fontSize);
@@ -202,7 +202,7 @@ export function drawXAxis (categories, opts, config, context) {
         context.setFontSize(config.fontSize);
         context.setFillStyle(opts.xAxis.fontColor || '#666666');
         categories.forEach(function(item, index) {
-            let offset = eachSpacing / 2 - mesureText(item) / 2;
+            let offset = eachSpacing / 2 - measureText(item) / 2;
             context.fillText(item, xAxisPoints[index] + offset, startY + config.fontSize + 5);
         });
         context.closePath();
@@ -213,7 +213,7 @@ export function drawXAxis (categories, opts, config, context) {
             context.beginPath();
             context.setFontSize(config.fontSize);
             context.setFillStyle(opts.xAxis.fontColor || '#666666');
-            let textWidth = mesureText(item);
+            let textWidth = measureText(item);
             let offset = eachSpacing / 2 - textWidth;
             let { transX, transY }  = calRotateTranslate(xAxisPoints[index] + eachSpacing / 2, startY + config.fontSize / 2 + 5, opts.height);
             context.rotate(-1 * config._xAxisTextAngle_);
@@ -285,7 +285,7 @@ export function drawLegend (series, opts, config, context) {
         let width = 0;
         itemList.forEach(function (item) {
             item.name = item.name || 'undefined';
-            width += 3 * padding + mesureText(item.name) + shapeWidth;
+            width += 3 * padding + measureText(item.name) + shapeWidth;
         });
         let startX = (opts.width - width) / 2 + padding;
         let startY = opts.height - config.padding - config.legendHeight + listIndex * (config.fontSize + marginTop) + padding + marginTop;
@@ -334,7 +334,7 @@ export function drawLegend (series, opts, config, context) {
             context.fillText(item.name, startX, startY + 9);
             context.closePath();
             context.stroke();
-            startX += mesureText(item.name) + 2 * padding; 
+            startX += measureText(item.name) + 2 * padding; 
         });
     });
 }
