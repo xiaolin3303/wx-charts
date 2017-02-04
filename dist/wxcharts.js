@@ -1037,7 +1037,9 @@ function drawPieDataPoints(series, opts, config, context) {
         context.arc(centerPosition.x, centerPosition.y, radius, eachSeries._start_, eachSeries._start_ + 2 * eachSeries._proportion_ * Math.PI);
         context.closePath();
         context.fill();
-        context.stroke();
+        if (opts.disablePieStroke !== true) {
+            context.stroke();
+        }
     });
 
     if (opts.type === 'ring') {
