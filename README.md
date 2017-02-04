@@ -74,6 +74,8 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 
 `opts.dataPointShape` Boolean default `true` 是否在图表中显示数据点图形标识
 
+`opts.disablePieStroke` Boolean default `false` 不绘制饼图（圆环图）各区块的白色分割线
+
 `opts.xAxis` Object X轴配置
 
 `opts.xAxis.gridColor` String 例如`#7cb5ec` default `#cccccc` X轴网格颜色
