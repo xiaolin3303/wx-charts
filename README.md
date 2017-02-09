@@ -281,3 +281,4 @@ new wxCharts({
 
 # 一些问题的说明汇总
 - [wx-charts自适应屏幕宽度的问题](https://github.com/xiaolin3303/wx-charts/issues/4)
+- [项目中如何具体使用wxCharts](https://github.com/xiaolin3303/wx-charts/issues/28)
