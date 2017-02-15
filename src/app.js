@@ -7,6 +7,7 @@ let Charts = function(opts) {
     opts.subtitle = opts.subtitle || {};
     opts.yAxis = opts.yAxis || {};
     opts.xAxis = opts.xAxis || {};
+    opts.extra = opts.extra || {};
     opts.legend = opts.legend === false ? false : true;
     opts.animation = opts.animation === false ? false : true;
     let config = assign({}, Config);

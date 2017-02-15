@@ -1043,10 +1043,14 @@ function drawPieDataPoints(series, opts, config, context) {
     });
 
     if (opts.type === 'ring') {
+        var innerPieWidth = radius * 0.6;
+        if (typeof opts.extra.ringWidth === 'number' && opts.extra.ringWidth > 0) {
+            innerPieWidth = Math.max(0, radius - opts.extra.ringWidth);
+        }
         context.beginPath();
         context.setFillStyle('#ffffff');
         context.moveTo(centerPosition.x, centerPosition.y);
-        context.arc(centerPosition.x, centerPosition.y, radius * 0.6, 0, 2 * Math.PI);
+        context.arc(centerPosition.x, centerPosition.y, innerPieWidth, 0, 2 * Math.PI);
         context.closePath();
         context.fill();
     }
@@ -1222,6 +1226,7 @@ var Charts = function Charts(opts) {
     opts.subtitle = opts.subtitle || {};
     opts.yAxis = opts.yAxis || {};
     opts.xAxis = opts.xAxis || {};
+    opts.extra = opts.extra || {};
     opts.legend = opts.legend === false ? false : true;
     opts.animation = opts.animation === false ? false : true;
     var config$$1 = assign({}, config);

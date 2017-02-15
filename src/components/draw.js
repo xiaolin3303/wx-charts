@@ -368,10 +368,14 @@ export function drawPieDataPoints (series, opts, config, context, process = 1) {
     });
 
     if (opts.type === 'ring') {
+        let innerPieWidth = radius * 0.6;
+        if (typeof opts.extra.ringWidth === 'number' && opts.extra.ringWidth > 0) {
+            innerPieWidth = Math.max(0, radius - opts.extra.ringWidth);
+        }
         context.beginPath();
         context.setFillStyle('#ffffff');
         context.moveTo(centerPosition.x, centerPosition.y);
-        context.arc(centerPosition.x, centerPosition.y, radius * 0.6, 0, 2 * Math.PI);
+        context.arc(centerPosition.x, centerPosition.y, innerPieWidth, 0, 2 * Math.PI);
         context.closePath();
         context.fill();
     }
