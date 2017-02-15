@@ -104,6 +104,10 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 
 `opts.yAxis.disabled` Boolean default `false` 不绘制Y轴
 
+`opts.extra` Object 其他非通用配置项
+
+`opts.extra.ringWidth` Number `ringChart`圆环宽度，单位为`px`
+
 `opts.series` Array **required** 数据列表
 
 **数据列表每项结构定义**
