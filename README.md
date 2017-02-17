@@ -125,9 +125,11 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 
 # 方法
 
-`updateData` 更新图表数据，传入参数为数据对象(data)，data.categories(可选，具体见参数说明)，data.series(可选，具体见参数说明)
+`updateData(data)` 更新图表数据，data: `object`，data.categories(可选，具体见参数说明)，data.series(可选，具体见参数说明)
 
-`stopAnimation` 停止当前正在进行的动画效果，直接展示渲染的最终结果
+`stopAnimation()` 停止当前正在进行的动画效果，直接展示渲染的最终结果
+
+`addEventListener(type, listener)` 添加事件监听，`type`: `String`事件类型，`listener`: `function` 处理方法
 
 # 事件
 
