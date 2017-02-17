@@ -1175,7 +1175,7 @@ function drawCharts(type, opts, config, context) {
     }
 
     var duration = opts.animation ? 1000 : 0;
-
+    this.animationInstance && this.animationInstance.stop();
     switch (type) {
         case 'line':
             this.animationInstance = new Animation({

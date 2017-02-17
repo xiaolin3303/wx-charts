@@ -23,7 +23,7 @@ export default function drawCharts (type, opts, config, context) {
     }
 
     let duration = opts.animation ? 1000 : 0;
-
+    this.animationInstance && this.animationInstance.stop();
     switch (type) {
         case 'line':
             this.animationInstance = new Animation({
