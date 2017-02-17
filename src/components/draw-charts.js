@@ -26,7 +26,7 @@ export default function drawCharts (type, opts, config, context) {
 
     switch (type) {
         case 'line':
-            Animation({
+            this.animationInstance = new Animation({
                 timing: 'easeIn',
                 duration: duration,
                 onProcess: (process) => {
@@ -35,11 +35,14 @@ export default function drawCharts (type, opts, config, context) {
                     drawLineDataPoints(series, opts, config, context, process);
                     drawLegend(opts.series, opts, config, context);                    
                     drawCanvas(opts, context);
+                },
+                onAnimationFinish: () => {
+                    this.event.trigger('renderComplete');
                 }
             });
             break;
         case 'column':
-            Animation({
+            this.animationInstance = new Animation({
                 timing: 'easeIn',
                 duration: duration,
                 onProcess: (process) => {
@@ -48,11 +51,14 @@ export default function drawCharts (type, opts, config, context) {
                     drawColumnDataPoints(series, opts, config, context, process);
                     drawLegend(opts.series, opts, config, context);                    
                     drawCanvas(opts, context);
+                },
+                onAnimationFinish: () => {
+                    this.event.trigger('renderComplete');
                 }
             });
             break;
         case 'area':
-            Animation({
+            this.animationInstance = new Animation({
                 timing: 'easeIn',
                 duration: duration,
                 onProcess: (process) => {
@@ -61,18 +67,24 @@ export default function drawCharts (type, opts, config, context) {
                     drawAreaDataPoints(series, opts, config, context, process);
                     drawLegend(opts.series, opts, config, context);                    
                     drawCanvas(opts, context);
+                },
+                onAnimationFinish: () => {
+                    this.event.trigger('renderComplete');
                 }
             });
             break;
         case 'ring':
         case 'pie':
-            Animation({
+            this.animationInstance = new Animation({
                 timing: 'easeInOut',
                 duration: duration,
                 onProcess: (process) => {
                     drawPieDataPoints(series, opts, config, context, process);
                     drawLegend(opts.series, opts, config, context);
                     drawCanvas(opts, context);
+                },
+                onAnimationFinish: () => {
+                    this.event.trigger('renderComplete');
                 }
             });
             break;

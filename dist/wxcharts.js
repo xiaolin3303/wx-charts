@@ -1091,6 +1091,7 @@ var Timing = {
 };
 
 function Animation(opts) {
+    this.isStop = false;
     opts.duration = typeof opts.duration === 'undefined' ? 1000 : opts.duration;
     opts.timing = opts.timing || 'linear';
 
@@ -1114,8 +1115,8 @@ function Animation(opts) {
     };
     var animationFrame = createAnimationFrame();
     var startTimeStamp = null;
-    function step(timestamp) {
-        if (timestamp === null) {
+    var _step = function step(timestamp) {
+        if (timestamp === null || this.isStop === true) {
             opts.onProcess && opts.onProcess(1);
             opts.onAnimationFinish && opts.onAnimationFinish();
             return;
@@ -1128,17 +1129,26 @@ function Animation(opts) {
             var timingFunction = Timing[opts.timing];
             process = timingFunction(process);
             opts.onProcess && opts.onProcess(process);
-            animationFrame(step, delay);
+            animationFrame(_step, delay);
         } else {
             opts.onProcess && opts.onProcess(1);
             opts.onAnimationFinish && opts.onAnimationFinish();
         }
-    }
+    };
+    _step = _step.bind(this);
 
-    animationFrame(step, delay);
+    animationFrame(_step, delay);
 }
 
+// stop animation immediately
+// and tigger onAnimationFinish
+Animation.prototype.stop = function () {
+    this.isStop = true;
+};
+
 function drawCharts(type, opts, config, context) {
+    var _this = this;
+
     var series = opts.series;
     var categories = opts.categories;
     series = fillSeriesColor(series, config);
@@ -1168,7 +1178,7 @@ function drawCharts(type, opts, config, context) {
 
     switch (type) {
         case 'line':
-            Animation({
+            this.animationInstance = new Animation({
                 timing: 'easeIn',
                 duration: duration,
                 onProcess: function onProcess(process) {
@@ -1177,11 +1187,14 @@ function drawCharts(type, opts, config, context) {
                     drawLineDataPoints(series, opts, config, context, process);
                     drawLegend(opts.series, opts, config, context);
                     drawCanvas(opts, context);
+                },
+                onAnimationFinish: function onAnimationFinish() {
+                    _this.event.trigger('renderComplete');
                 }
             });
             break;
         case 'column':
-            Animation({
+            this.animationInstance = new Animation({
                 timing: 'easeIn',
                 duration: duration,
                 onProcess: function onProcess(process) {
@@ -1190,11 +1203,14 @@ function drawCharts(type, opts, config, context) {
                     drawColumnDataPoints(series, opts, config, context, process);
                     drawLegend(opts.series, opts, config, context);
                     drawCanvas(opts, context);
+                },
+                onAnimationFinish: function onAnimationFinish() {
+                    _this.event.trigger('renderComplete');
                 }
             });
             break;
         case 'area':
-            Animation({
+            this.animationInstance = new Animation({
                 timing: 'easeIn',
                 duration: duration,
                 onProcess: function onProcess(process) {
@@ -1203,23 +1219,58 @@ function drawCharts(type, opts, config, context) {
                     drawAreaDataPoints(series, opts, config, context, process);
                     drawLegend(opts.series, opts, config, context);
                     drawCanvas(opts, context);
+                },
+                onAnimationFinish: function onAnimationFinish() {
+                    _this.event.trigger('renderComplete');
                 }
             });
             break;
         case 'ring':
         case 'pie':
-            Animation({
+            this.animationInstance = new Animation({
                 timing: 'easeInOut',
                 duration: duration,
                 onProcess: function onProcess(process) {
                     drawPieDataPoints(series, opts, config, context, process);
                     drawLegend(opts.series, opts, config, context);
                     drawCanvas(opts, context);
+                },
+                onAnimationFinish: function onAnimationFinish() {
+                    _this.event.trigger('renderComplete');
                 }
             });
             break;
     }
 }
+
+// simple event implement
+
+function Event() {
+	this.events = {};
+}
+
+Event.prototype.addEventListener = function (type, listener) {
+	this.events[type] = this.events[type] || [];
+	this.events[type].push(listener);
+};
+
+Event.prototype.trigger = function () {
+	for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+		args[_key] = arguments[_key];
+	}
+
+	var type = args[0];
+	var params = args.slice(1);
+	if (!!this.events[type]) {
+		this.events[type].forEach(function (listener) {
+			try {
+				listener.apply(null, params);
+			} catch (e) {
+				console.error(e);
+			}
+		});
+	}
+};
 
 var Charts = function Charts(opts) {
     opts.title = opts.title || {};
@@ -1234,9 +1285,28 @@ var Charts = function Charts(opts) {
     config$$1.pieChartLinePadding = opts.dataLabel === false ? 0 : config$$1.pieChartLinePadding;
     config$$1.pieChartTextPadding = opts.dataLabel === false ? 0 : config$$1.pieChartTextPadding;
 
-    var context = wx.createCanvasContext(opts.canvasId);
+    this.opts = opts;
+    this.config = config$$1;
+    this.context = wx.createCanvasContext(opts.canvasId);
+    this.event = new Event();
 
-    drawCharts(opts.type, opts, config$$1, context);
+    drawCharts.call(this, opts.type, opts, config$$1, this.context);
+};
+
+Charts.prototype.updateData = function () {
+    var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    this.opts.series = data.series || this.opts.series;
+    this.opts.categories = data.categories || this.opts.categories;
+    drawCharts.call(this, this.opts.type, this.opts, this.config, this.context);
+};
+
+Charts.prototype.stopAnimation = function () {
+    this.animationInstance && this.animationInstance.stop();
+};
+
+Charts.prototype.addEventListener = function (type, listener) {
+    this.event.addEventListener(type, listener);
 };
 
 module.exports = Charts;

@@ -1,6 +1,7 @@
 import Timing from '../util/timing'
 
 export default function Animation (opts) {
+    this.isStop = false;
     opts.duration = typeof opts.duration === 'undefined' ? 1000 : opts.duration;
     opts.timing = opts.timing || 'linear';
     
@@ -24,8 +25,8 @@ export default function Animation (opts) {
     }
     let animationFrame = createAnimationFrame();
     let startTimeStamp = null;
-    function step (timestamp) {
-        if (timestamp === null) {
+    let step = function (timestamp) {
+        if (timestamp === null || this.isStop === true) {
             opts.onProcess && opts.onProcess(1);
             opts.onAnimationFinish && opts.onAnimationFinish();
             return;
@@ -43,7 +44,14 @@ export default function Animation (opts) {
             opts.onProcess && opts.onProcess(1);
             opts.onAnimationFinish && opts.onAnimationFinish();
         }
-    }
+    };
+    step = step.bind(this);
 
     animationFrame(step, delay);
+}
+
+// stop animation immediately
+// and tigger onAnimationFinish
+Animation.prototype.stop = function () {
+    this.isStop = true;
 }
