@@ -17,6 +17,7 @@
 # 更新记录 
 
 - [ ] 动画性能优化
+- [x] 新增更新数据、终止进行中的动画方法，渲染完成事件回调 2017-02-17
 - [x] 新增圆环图title, subtitle 2017-01-10
 - [x] x轴文案碰撞避让 2016-12-30
 - [x] add pie chart dataLabel  2016-12-19
@@ -121,6 +122,25 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 `dataItem.name` String 数据名称
 
 `dateItem.format` Function 自定义显示数据内容
+
+# 方法
+
+`updateData` 更新图表数据，传入参数为数据对象(data)，data.categories(可选，具体见参数说明)，data.series(可选，具体见参数说明)
+
+`stopAnimation` 停止当前正在进行的动画效果，直接展示渲染的最终结果
+
+# 事件
+
+`renderComplete` 图表渲染完成（如果有动画效果，则动画效果完成时触发）
+
+# 如何使用事件
+
+```javascript
+let chart = new wxCharts(...);
+chart.addEventListener('renderComplete', () => {
+    // your code here
+});
+```
 
 # Example
 
