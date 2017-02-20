@@ -8,6 +8,49 @@ function dataCombine(series) {
     }, []);
 }
 
+export function findCurrentIndex (currentPoints, xAxisPoints, opts, config) {
+    let currentIndex = -1;
+    if (isInExactChartArea(currentPoints, opts, config)) {
+        xAxisPoints.forEach((item, index) => {
+            if (currentPoints.x > item) {
+                currentIndex = index;
+            }
+        });
+    }
+
+    return currentIndex;
+}
+
+export function isInExactChartArea (currentPoints, opts, config) {
+    return currentPoints.x < opts.width - config.padding
+        && currentPoints.x > config.padding + config.yAxisWidth + config.yAxisTitleWidth
+        && currentPoints.y > config.padding
+        && currentPoints.y < opts.height - config.legendHeight - config.xAxisHeight - config.padding
+}
+
+
+export function findPieChartCurrentIndex (currentPoints, pieData) {
+    let currentIndex = -1;
+    if (isInExactPieChartArea(currentPoints, pieData.center, pieData.radius)) {
+        let angle = Math.atan2(pieData.center.y - currentPoints.y, currentPoints.x - pieData.center.x);
+        if (angle < 0) {
+            angle += 2 * Math.PI;
+        }
+        angle = 2 * Math.PI - angle;
+        pieData.series.forEach((item, index) => {
+            if (angle > item._start_) {
+                currentIndex = index;
+            }
+        });
+    }
+
+    return currentIndex;
+}
+
+export function isInExactPieChartArea (currentPoints, center, radius) {
+    return Math.pow(currentPoints.x - center.x, 2) + Math.pow(currentPoints.y - center.y, 2) <= Math.pow(radius, 2);
+}
+
 export function splitPoints(points) {
     let newPoints = [];
     let items = [];

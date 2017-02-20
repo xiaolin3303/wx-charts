@@ -52,6 +52,8 @@ export function drawColumnDataPoints (series, opts, config, context, process = 1
             drawPointText(points, eachSeries, config, context);
         }
     });
+
+    return xAxisPoints;
 }
 
 export function drawAreaDataPoints (series, opts, config, context, process = 1) {
@@ -113,6 +115,8 @@ export function drawAreaDataPoints (series, opts, config, context, process = 1) 
             drawPointText(points, eachSeries, config, context);
         });
     }
+
+    return xAxisPoints;
 }
 
 export function drawLineDataPoints (series, opts, config, context, process = 1) {
@@ -158,6 +162,8 @@ export function drawLineDataPoints (series, opts, config, context, process = 1) 
             drawPointText(points, eachSeries, config, context);
         });
     }
+
+    return xAxisPoints;
 }
 
 export function drawXAxis (categories, opts, config, context) {
@@ -386,6 +392,12 @@ export function drawPieDataPoints (series, opts, config, context, process = 1) {
 
     if (process === 1 && opts.type === 'ring') {
         drawRingTitle(opts, config, context);
+    }
+
+    return {
+        center: centerPosition,
+        radius,
+        series
     }
 }
 

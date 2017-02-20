@@ -227,6 +227,47 @@ function dataCombine(series) {
     }, []);
 }
 
+function findCurrentIndex(currentPoints, xAxisPoints, opts, config) {
+    var currentIndex = -1;
+    if (isInExactChartArea(currentPoints, opts, config)) {
+        xAxisPoints.forEach(function (item, index) {
+            if (currentPoints.x > item) {
+                currentIndex = index;
+            }
+        });
+    }
+
+    return currentIndex;
+}
+
+function isInExactChartArea(currentPoints, opts, config) {
+    return currentPoints.x < opts.width - config.padding && currentPoints.x > config.padding + config.yAxisWidth + config.yAxisTitleWidth && currentPoints.y > config.padding && currentPoints.y < opts.height - config.legendHeight - config.xAxisHeight - config.padding;
+}
+
+function findPieChartCurrentIndex(currentPoints, pieData) {
+    var currentIndex = -1;
+    if (isInExactPieChartArea(currentPoints, pieData.center, pieData.radius)) {
+        (function () {
+            var angle = Math.atan2(pieData.center.y - currentPoints.y, currentPoints.x - pieData.center.x);
+            if (angle < 0) {
+                angle += 2 * Math.PI;
+            }
+            angle = 2 * Math.PI - angle;
+            pieData.series.forEach(function (item, index) {
+                if (angle > item._start_) {
+                    currentIndex = index;
+                }
+            });
+        })();
+    }
+
+    return currentIndex;
+}
+
+function isInExactPieChartArea(currentPoints, center, radius) {
+    return Math.pow(currentPoints.x - center.x, 2) + Math.pow(currentPoints.y - center.y, 2) <= Math.pow(radius, 2);
+}
+
 function splitPoints(points) {
     var newPoints = [];
     var items = [];
@@ -698,6 +739,8 @@ function drawColumnDataPoints(series, opts, config, context) {
             drawPointText(points, eachSeries, config, context);
         }
     });
+
+    return xAxisPoints;
 }
 
 function drawAreaDataPoints(series, opts, config, context) {
@@ -766,6 +809,8 @@ function drawAreaDataPoints(series, opts, config, context) {
             drawPointText(points, eachSeries, config, context);
         });
     }
+
+    return xAxisPoints;
 }
 
 function drawLineDataPoints(series, opts, config, context) {
@@ -818,6 +863,8 @@ function drawLineDataPoints(series, opts, config, context) {
             drawPointText(points, eachSeries, config, context);
         });
     }
+
+    return xAxisPoints;
 }
 
 function drawXAxis(categories, opts, config, context) {
@@ -1062,6 +1109,12 @@ function drawPieDataPoints(series, opts, config, context) {
     if (process === 1 && opts.type === 'ring') {
         drawRingTitle(opts, config, context);
     }
+
+    return {
+        center: centerPosition,
+        radius: radius,
+        series: series
+    };
 }
 
 function drawCanvas(opts, context) {
@@ -1184,7 +1237,7 @@ function drawCharts(type, opts, config, context) {
                 onProcess: function onProcess(process) {
                     drawYAxis(series, opts, config, context);
                     drawXAxis(categories, opts, config, context);
-                    drawLineDataPoints(series, opts, config, context, process);
+                    _this.chartData.xAxisPoints = drawLineDataPoints(series, opts, config, context, process);
                     drawLegend(opts.series, opts, config, context);
                     drawCanvas(opts, context);
                 },
@@ -1200,7 +1253,7 @@ function drawCharts(type, opts, config, context) {
                 onProcess: function onProcess(process) {
                     drawYAxis(series, opts, config, context);
                     drawXAxis(categories, opts, config, context);
-                    drawColumnDataPoints(series, opts, config, context, process);
+                    _this.chartData.xAxisPoints = drawColumnDataPoints(series, opts, config, context, process);
                     drawLegend(opts.series, opts, config, context);
                     drawCanvas(opts, context);
                 },
@@ -1216,7 +1269,7 @@ function drawCharts(type, opts, config, context) {
                 onProcess: function onProcess(process) {
                     drawYAxis(series, opts, config, context);
                     drawXAxis(categories, opts, config, context);
-                    drawAreaDataPoints(series, opts, config, context, process);
+                    _this.chartData.xAxisPoints = drawAreaDataPoints(series, opts, config, context, process);
                     drawLegend(opts.series, opts, config, context);
                     drawCanvas(opts, context);
                 },
@@ -1231,7 +1284,7 @@ function drawCharts(type, opts, config, context) {
                 timing: 'easeInOut',
                 duration: duration,
                 onProcess: function onProcess(process) {
-                    drawPieDataPoints(series, opts, config, context, process);
+                    _this.chartData.pieData = drawPieDataPoints(series, opts, config, context, process);
                     drawLegend(opts.series, opts, config, context);
                     drawCanvas(opts, context);
                 },
@@ -1288,6 +1341,9 @@ var Charts = function Charts(opts) {
     this.opts = opts;
     this.config = config$$1;
     this.context = wx.createCanvasContext(opts.canvasId);
+    // store calcuated chart data
+    // such as chart point coordinate
+    this.chartData = {};
     this.event = new Event();
 
     drawCharts.call(this, opts.type, opts, config$$1, this.context);
@@ -1307,6 +1363,21 @@ Charts.prototype.stopAnimation = function () {
 
 Charts.prototype.addEventListener = function (type, listener) {
     this.event.addEventListener(type, listener);
+};
+
+Charts.prototype.getCurrentDataIndex = function (e) {
+    if (e.touches && e.touches.length) {
+        var _e$touches$ = e.touches[0],
+            x = _e$touches$.x,
+            y = _e$touches$.y;
+
+        if (this.opts.type === 'pie' || this.opts.type === 'ring') {
+            return findPieChartCurrentIndex({ x: x, y: y }, this.chartData.pieData);
+        } else {
+            return findCurrentIndex({ x: x, y: y }, this.chartData.xAxisPoints, this.opts, this.config);
+        }
+    }
+    return -1;
 };
 
 module.exports = Charts;

@@ -2,6 +2,7 @@ import Config from './config';
 import { assign } from './util/polyfill/index';
 import drawCharts from './components/draw-charts';
 import Event from './util/event';
+import { findCurrentIndex, findPieChartCurrentIndex } from  './components/charts-data'
 
 let Charts = function(opts) {
     opts.title = opts.title || {};
@@ -19,6 +20,9 @@ let Charts = function(opts) {
     this.opts = opts;
     this.config = config;
     this.context = wx.createCanvasContext(opts.canvasId);
+    // store calcuated chart data
+    // such as chart point coordinate
+    this.chartData = {};
     this.event = new Event();
 
     drawCharts.call(this, opts.type, opts, config, this.context);
@@ -36,6 +40,18 @@ Charts.prototype.stopAnimation = function () {
 
 Charts.prototype.addEventListener = function (type, listener) {
     this.event.addEventListener(type, listener);
+}
+
+Charts.prototype.getCurrentDataIndex = function (e) {
+    if (e.touches && e.touches.length) {
+        let {x, y} = e.touches[0];
+        if (this.opts.type === 'pie' || this.opts.type === 'ring') {
+            return findPieChartCurrentIndex({ x, y }, this.chartData.pieData);
+        } else {        
+            return findCurrentIndex({ x, y }, this.chartData.xAxisPoints, this.opts, this.config);
+        }
+    }
+    return -1;
 }
 
 export default Charts;
