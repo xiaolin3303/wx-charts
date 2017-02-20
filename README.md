@@ -131,6 +131,8 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 
 `addEventListener(type, listener)` 添加事件监听，`type`: `String`事件类型，`listener`: `function` 处理方法
 
+`getCurrentDataIndex(e)` 获取图表中点击时的数据序列编号(-1表示未找到对应的数据区域), `e`: `Object`微信小程序标准事件，需要手动的去绑定touch事件，具体可参考[wx-charts-demo](https://github.com/xiaolin3303/wx-charts-demo)中`column`图示例
+
 # 事件
 
 `renderComplete` 图表渲染完成（如果有动画效果，则动画效果完成时触发）
