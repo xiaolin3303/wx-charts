@@ -125,7 +125,7 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 
 # 方法
 
-`updateData(data)` 更新图表数据，data: `object`，data.categories(可选，具体见参数说明)，data.series(可选，具体见参数说明)
+`updateData(data)` 更新图表数据，data: `object`，data.categories(可选，具体见参数说明)，data.series(可选，具体见参数说明)，data.title(可选，具体见参数说明)，data.subtitle(可选，具体见参数说明)
 
 `stopAnimation()` 停止当前正在进行的动画效果，直接展示渲染的最终结果
 
