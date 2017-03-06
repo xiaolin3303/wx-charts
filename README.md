@@ -244,6 +244,19 @@ new wxCharts({
 ![lineChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/line.png)
 ![lineChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/line.gif)
 
+### curve line chart
+
+```javascript
+new wxCharts({
+    ...
+    extra: {
+        lineStyle: 'curve'
+    }
+});
+```
+
+![curveLineChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/curve-line.png)
+
 ### columnChart
 
 ```javascript
