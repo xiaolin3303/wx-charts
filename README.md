@@ -17,6 +17,7 @@
 # 更新记录 
 
 - [ ] 动画性能优化
+- [x] 新增曲线的绘制 2017-03-06
 - [x] 新增更新数据、终止进行中的动画方法，渲染完成事件回调 2017-02-17
 - [x] 新增圆环图title, subtitle 2017-01-10
 - [x] x轴文案碰撞避让 2016-12-30
@@ -108,6 +109,8 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 `opts.extra` Object 其他非通用配置项
 
 `opts.extra.ringWidth` Number `ringChart`圆环宽度，单位为`px`
+
+`opts.extra.lineStyle` String (仅对`line`, `area`图表有效) 可选值：`curve`曲线，`straight`直线 (default)
 
 `opts.series` Array **required** 数据列表
 
