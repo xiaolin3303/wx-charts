@@ -128,6 +128,35 @@ function calRotateTranslate(x, y, h) {
     };
 }
 
+function createCurveControlPoints(points, i) {
+    var a = 0.2;
+    var b = 0.2;
+    var pAx = null;
+    var pAy = null;
+    var pBx = null;
+    var pBy = null;
+    if (i < 1) {
+        pAx = points[0].x + (points[1].x - points[0].x) * a;
+        pAy = points[0].y + (points[1].y - points[0].y) * a;
+    } else {
+        pAx = points[i].x + (points[i + 1].x - points[i - 1].x) * a;
+        pAy = points[i].y + (points[i + 1].y - points[i - 1].y) * a;
+    }
+
+    if (i > points.length - 3) {
+        var last = points.length - 1;
+        pBx = points[last].x - (points[last].x - points[last - 1].x) * b;
+        pBy = points[last].y - (points[last].y - points[last - 1].y) * b;
+    } else {
+        pBx = points[i + 1].x - (points[i + 2].x - points[i].x) * b;
+        pBy = points[i + 1].y - (points[i + 2].y - points[i].y) * b;
+    }
+    return {
+        ctrA: { x: pAx, y: pAy },
+        ctrB: { x: pBx, y: pBy }
+    };
+}
+
 function convertCoordinateOrigin(x, y, center) {
     return {
         x: center.x + x,
@@ -775,11 +804,20 @@ function drawAreaDataPoints(series, opts, config, context) {
                 var lastPoint = points[points.length - 1];
 
                 context.moveTo(firstPoint.x, firstPoint.y);
-                points.forEach(function (item, index) {
-                    if (index > 0) {
-                        context.lineTo(item.x, item.y);
-                    }
-                });
+                if (opts.extra.lineStyle === 'curve') {
+                    points.forEach(function (item, index) {
+                        if (index > 0) {
+                            var ctrlPoint = createCurveControlPoints(points, index - 1);
+                            context.bezierCurveTo(ctrlPoint.ctrA.x, ctrlPoint.ctrA.y, ctrlPoint.ctrB.x, ctrlPoint.ctrB.y, item.x, item.y);
+                        }
+                    });
+                } else {
+                    points.forEach(function (item, index) {
+                        if (index > 0) {
+                            context.lineTo(item.x, item.y);
+                        }
+                    });
+                }
 
                 context.lineTo(lastPoint.x, endY);
                 context.lineTo(firstPoint.x, endY);
@@ -840,11 +878,20 @@ function drawLineDataPoints(series, opts, config, context) {
                 context.arc(points[0].x, points[0].y, 1, 0, 2 * Math.PI);
             } else {
                 context.moveTo(points[0].x, points[0].y);
-                points.forEach(function (item, index) {
-                    if (index > 0) {
-                        context.lineTo(item.x, item.y);
-                    }
-                });
+                if (opts.extra.lineStyle === 'curve') {
+                    points.forEach(function (item, index) {
+                        if (index > 0) {
+                            var ctrlPoint = createCurveControlPoints(points, index - 1);
+                            context.bezierCurveTo(ctrlPoint.ctrA.x, ctrlPoint.ctrA.y, ctrlPoint.ctrB.x, ctrlPoint.ctrB.y, item.x, item.y);
+                        }
+                    });
+                } else {
+                    points.forEach(function (item, index) {
+                        if (index > 0) {
+                            context.lineTo(item.x, item.y);
+                        }
+                    });
+                }
                 context.moveTo(points[0].x, points[0].y);
             }
             context.closePath();

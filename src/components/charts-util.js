@@ -42,6 +42,35 @@ export function calRotateTranslate(x, y, h) {
     };
 }
 
+export function createCurveControlPoints(points, i) {
+    const a = 0.2;
+    const b = 0.2;
+    let pAx = null;
+    let pAy = null;
+    let pBx = null;
+    let pBy = null;
+    if(i < 1){
+        pAx = points[0].x + (points[1].x-points[0].x) * a;
+        pAy = points[0].y + (points[1].y-points[0].y) * a;
+    }else{
+        pAx = points[i].x + (points[i + 1].x - points[i-1].x) * a;
+        pAy = points[i].y + (points[i + 1].y - points[i-1].y) * a;
+    }
+
+    if(i > points.length - 3){
+        let last =points.length - 1;
+        pBx = points[last].x - (points[last].x - points[last - 1].x) * b;
+        pBy = points[last].y - (points[last].y - points[last - 1].y) * b;
+    }else{
+        pBx = points[i + 1].x - (points[i + 2].x-points[i].x) * b;
+        pBy = points[i + 1].y - (points[i + 2].y-points[i].y) * b;
+    }
+    return {
+        ctrA: {x: pAx, y: pAy},
+        ctrB: {x: pBx, y: pBy}
+    }
+}
+
 export function convertCoordinateOrigin (x, y, center) {
     return {
         x: center.x + x,

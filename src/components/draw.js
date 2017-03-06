@@ -1,5 +1,5 @@
 import { splitPoints, getPieDataPoints, calYAxisData, getXAxisPoints, getDataPoints, fixColumeData, calLegendData } from './charts-data'
-import { measureText, calRotateTranslate } from './charts-util'
+import { measureText, calRotateTranslate, createCurveControlPoints } from './charts-util'
 import Util from '../util/util'
 import drawPointShape from './draw-data-shape'
 import { drawPointText, drawPieText, drawRingTitle } from './draw-data-text'
@@ -81,11 +81,20 @@ export function drawAreaDataPoints (series, opts, config, context, process = 1) 
                 let lastPoint = points[points.length - 1];
                 
                 context.moveTo(firstPoint.x, firstPoint.y);
-                points.forEach(function(item, index) {
-                    if (index > 0) {
-                        context.lineTo(item.x, item.y);
-                    }
-                });
+                if (opts.extra.lineStyle === 'curve') {
+                    points.forEach(function(item, index) {
+                        if (index > 0) {
+                            let ctrlPoint = createCurveControlPoints(points, index - 1);
+                            context.bezierCurveTo(ctrlPoint.ctrA.x, ctrlPoint.ctrA.y, ctrlPoint.ctrB.x,ctrlPoint.ctrB.y, item.x, item.y);
+                        }
+                    });
+                } else {
+                    points.forEach(function(item, index) {
+                        if (index > 0) {
+                            context.lineTo(item.x, item.y);
+                        }
+                    });
+                }
 
                 context.lineTo(lastPoint.x, endY);
                 context.lineTo(firstPoint.x, endY);
@@ -139,11 +148,20 @@ export function drawLineDataPoints (series, opts, config, context, process = 1) 
                 context.arc(points[0].x, points[0].y, 1, 0, 2 * Math.PI);
             } else {
                 context.moveTo(points[0].x, points[0].y);
-                points.forEach(function(item, index) {
-                    if (index > 0) {
-                        context.lineTo(item.x, item.y);
-                    }
-                });
+                if (opts.extra.lineStyle === 'curve') {
+                    points.forEach(function(item, index) {
+                        if (index > 0) {
+                            let ctrlPoint = createCurveControlPoints(points, index - 1);
+                            context.bezierCurveTo(ctrlPoint.ctrA.x, ctrlPoint.ctrA.y, ctrlPoint.ctrB.x,ctrlPoint.ctrB.y, item.x, item.y);
+                        }
+                    });
+                } else {
+                    points.forEach(function(item, index) {
+                        if (index > 0) {
+                            context.lineTo(item.x, item.y);
+                        }
+                    });
+                }
                 context.moveTo(points[0].x, points[0].y);
             }
             context.closePath();
