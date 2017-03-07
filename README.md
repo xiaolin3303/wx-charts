@@ -55,7 +55,7 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 ![lineChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/line.png)
 ![columnChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/column.png)
 ![areaChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/area.png)
-![curveLineChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/curve-line.png)
+![curveLineChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/4636c9d2fbbaaa7944ee48e02b3a595e77c099e5/example/curve-line.png)
 
 ![pieChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/pie.gif)
 ![ringChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/ring.gif)
