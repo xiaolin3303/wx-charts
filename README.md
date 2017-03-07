@@ -136,7 +136,7 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 
 `getCurrentDataIndex(e)` 获取图表中点击时的数据序列编号(-1表示未找到对应的数据区域), `e`: `Object`微信小程序标准事件，需要手动的去绑定touch事件，具体可参考[wx-charts-demo](https://github.com/xiaolin3303/wx-charts-demo)中`column`图示例
 
-`showToolTip(e, options?)` 图表中展示数据详细内容，`e`: `Object`微信小程序标准事件，`options`: `Object`可选，tooltip的自定义配置，目前支持`option.background`，默认为`#000000`, 具体可参考[wx-charts-demo](https://github.com/xiaolin3303/wx-charts-demo)中`line`图示例
+`showToolTip(e, options?)` 图表中展示数据详细内容(目前仅支持`line`和`area`图表类型)，`e`: `Object`微信小程序标准事件，`options`: `Object`可选，tooltip的自定义配置，目前支持`option.background`，默认为`#000000`, 具体可参考[wx-charts-demo](https://github.com/xiaolin3303/wx-charts-demo)中`line`图示例
 
 # 事件
 
