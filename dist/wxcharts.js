@@ -1602,26 +1602,28 @@ Charts.prototype.getCurrentDataIndex = function (e) {
 Charts.prototype.showToolTip = function (e) {
     var option = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-    var index = this.getCurrentDataIndex(e);
-    var opts = assign({}, this.opts, { animation: false });
-    if (index > -1) {
-        var seriesData = getSeriesDataItem(this.opts.series, index);
-        if (seriesData.length === 0) {
-            drawCharts.call(this, opts.type, opts, this.config, this.context);
-        } else {
-            var _getToolTipData = getToolTipData(seriesData, this.chartData.calPoints, index),
-                textList = _getToolTipData.textList,
-                offset = _getToolTipData.offset;
+    if (this.opts.type === 'line' || this.opts.type === 'area') {
+        var index = this.getCurrentDataIndex(e);
+        var opts = assign({}, this.opts, { animation: false });
+        if (index > -1) {
+            var seriesData = getSeriesDataItem(this.opts.series, index);
+            if (seriesData.length === 0) {
+                drawCharts.call(this, opts.type, opts, this.config, this.context);
+            } else {
+                var _getToolTipData = getToolTipData(seriesData, this.chartData.calPoints, index),
+                    textList = _getToolTipData.textList,
+                    offset = _getToolTipData.offset;
 
-            opts.tooltip = {
-                textList: textList,
-                offset: offset,
-                option: option
-            };
+                opts.tooltip = {
+                    textList: textList,
+                    offset: offset,
+                    option: option
+                };
+                drawCharts.call(this, opts.type, opts, this.config, this.context);
+            }
+        } else {
             drawCharts.call(this, opts.type, opts, this.config, this.context);
         }
-    } else {
-        drawCharts.call(this, opts.type, opts, this.config, this.context);
     }
 };
 

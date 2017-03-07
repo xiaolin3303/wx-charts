@@ -59,23 +59,25 @@ Charts.prototype.getCurrentDataIndex = function (e) {
 }
 
 Charts.prototype.showToolTip = function (e, option = {}) {
-    let index = this.getCurrentDataIndex(e);
-    let opts = assign({}, this.opts, {animation: false});
-    if (index > -1) {
-        let seriesData = getSeriesDataItem(this.opts.series, index);
-        if (seriesData.length === 0) {
-            drawCharts.call(this, opts.type, opts, this.config, this.context);
-        } else {        
-            let { textList, offset } = getToolTipData(seriesData, this.chartData.calPoints, index);
-            opts.tooltip = {
-                textList,
-                offset,
-                option
-            };
+    if (this.opts.type === 'line' || this.opts.type === 'area') {
+        let index = this.getCurrentDataIndex(e);
+        let opts = assign({}, this.opts, {animation: false});
+        if (index > -1) {
+            let seriesData = getSeriesDataItem(this.opts.series, index);
+            if (seriesData.length === 0) {
+                drawCharts.call(this, opts.type, opts, this.config, this.context);
+            } else {        
+                let { textList, offset } = getToolTipData(seriesData, this.chartData.calPoints, index);
+                opts.tooltip = {
+                    textList,
+                    offset,
+                    option
+                };
+                drawCharts.call(this, opts.type, opts, this.config, this.context);
+            }
+        } else {
             drawCharts.call(this, opts.type, opts, this.config, this.context);
         }
-    } else {
-        drawCharts.call(this, opts.type, opts, this.config, this.context);
     }
 }
 
