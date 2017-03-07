@@ -50,7 +50,21 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 
 # Example
 
-[Example - wxCharts使用说明](https://github.com/xiaolin3303/wx-charts/issues/58)
+![pieChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/pie.png)
+![ringChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/ring.png)
+![lineChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/line.png)
+![curveLineChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/curve-line.png)
+![columnChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/column.png)
+![areaChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/area.png)
+
+![pieChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/pie.gif)
+![ringChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/ring.gif)
+![lineChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/line.gif)
+![columnChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/column.gif)
+![areaChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/area.gif)
+![tooltip](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/tooltip.gif)
+
+更多内容请查看[Example - wxCharts使用说明](https://github.com/xiaolin3303/wx-charts/issues/58)
 
 # 测试 
 1. iPhone 6s, IOS 9.3.5
