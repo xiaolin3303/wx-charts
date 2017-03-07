@@ -3,6 +3,7 @@ import { measureText, calRotateTranslate, createCurveControlPoints } from './cha
 import Util from '../util/util'
 import drawPointShape from './draw-data-shape'
 import { drawPointText, drawPieText, drawRingTitle } from './draw-data-text'
+import { drawToolTip, drawToolTipSplitLine } from './draw-tooltip'
 
 function drawYAxisTitle (title, opts, config, context) {
     let startX = config.xAxisHeight + (opts.height - config.xAxisHeight - measureText(title)) / 2;
@@ -62,10 +63,16 @@ export function drawAreaDataPoints (series, opts, config, context, process = 1) 
     let minRange = ranges.pop();
     let maxRange = ranges.shift();
     let endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
+    let calPoints = [];
+
+    if (opts.tooltip && opts.tooltip.textList && opts.tooltip.textList.length && process === 1) {
+        drawToolTipSplitLine(opts.tooltip.offset.x, opts, config, context);
+    }
 
     series.forEach(function(eachSeries, seriesIndex) {
         let data = eachSeries.data;
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
+        calPoints.push(points);
 
         let splitPointList = splitPoints(points);
 
@@ -125,7 +132,14 @@ export function drawAreaDataPoints (series, opts, config, context, process = 1) 
         });
     }
 
-    return xAxisPoints;
+    if (opts.tooltip && opts.tooltip.textList && opts.tooltip.textList.length && process === 1) {
+        drawToolTip(opts.tooltip.textList, opts.tooltip.offset, opts, config, context);
+    }
+
+    return {
+        xAxisPoints,
+        calPoints
+    };
 }
 
 export function drawLineDataPoints (series, opts, config, context, process = 1) {
@@ -133,10 +147,16 @@ export function drawLineDataPoints (series, opts, config, context, process = 1) 
     let { xAxisPoints, eachSpacing } = getXAxisPoints(opts.categories, opts, config);
     let minRange = ranges.pop();
     let maxRange = ranges.shift();
+    let calPoints = [];
+
+    if (opts.tooltip && opts.tooltip.textList && opts.tooltip.textList.length && process === 1) {
+        drawToolTipSplitLine(opts.tooltip.offset.x, opts, config, context);
+    }
 
     series.forEach(function(eachSeries, seriesIndex) {
         let data = eachSeries.data;
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
+        calPoints.push(points);
         let splitPointList = splitPoints(points);
 
         splitPointList.forEach((points, index) => {
@@ -181,7 +201,14 @@ export function drawLineDataPoints (series, opts, config, context, process = 1) 
         });
     }
 
-    return xAxisPoints;
+    if (opts.tooltip && opts.tooltip.textList && opts.tooltip.textList.length && process === 1) {
+        drawToolTip(opts.tooltip.textList, opts.tooltip.offset, opts, config, context);
+    }
+
+    return {
+        xAxisPoints,
+        calPoints
+    };
 }
 
 export function drawXAxis (categories, opts, config, context) {

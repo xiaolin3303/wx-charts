@@ -2,7 +2,7 @@ import Config from './config';
 import { assign } from './util/polyfill/index';
 import drawCharts from './components/draw-charts';
 import Event from './util/event';
-import { findCurrentIndex, findPieChartCurrentIndex } from  './components/charts-data'
+import { findCurrentIndex, findPieChartCurrentIndex, getSeriesDataItem, getToolTipData } from  './components/charts-data'
 
 let Charts = function(opts) {
     opts.title = opts.title || {};
@@ -51,11 +51,32 @@ Charts.prototype.getCurrentDataIndex = function (e) {
         let {x, y} = e.touches[0];
         if (this.opts.type === 'pie' || this.opts.type === 'ring') {
             return findPieChartCurrentIndex({ x, y }, this.chartData.pieData);
-        } else {        
+        } else {
             return findCurrentIndex({ x, y }, this.chartData.xAxisPoints, this.opts, this.config);
         }
     }
     return -1;
+}
+
+Charts.prototype.showToolTip = function (e, option = {}) {
+    let index = this.getCurrentDataIndex(e);
+    let opts = assign({}, this.opts, {animation: false});
+    if (index > -1) {
+        let seriesData = getSeriesDataItem(this.opts.series, index);
+        if (seriesData.length === 0) {
+            drawCharts.call(this, opts.type, opts, this.config, this.context);
+        } else {        
+            let { textList, offset } = getToolTipData(seriesData, this.chartData.calPoints, index);
+            opts.tooltip = {
+                textList,
+                offset,
+                option
+            };
+            drawCharts.call(this, opts.type, opts, this.config, this.context);
+        }
+    } else {
+        drawCharts.call(this, opts.type, opts, this.config, this.context);
+    }
 }
 
 export default Charts;

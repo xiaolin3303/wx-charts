@@ -8,6 +8,47 @@ function dataCombine(series) {
     }, []);
 }
 
+export function getSeriesDataItem(series, index) {
+    let data = [];
+    series.forEach((item) => {
+        if (item.data[index] !== null && typeof item.data[index] !== 'undefinded') {
+            let seriesItem = {};
+            seriesItem.color = item.color;
+            seriesItem.name = item.name;
+            seriesItem.data = item.format ? item.format(item.data[index]) : item.data[index];
+            data.push(seriesItem);
+        }
+    });
+
+    return data;
+}
+
+export function getToolTipData(seriesData, calPoints, index) {
+    let textList = seriesData.map(item => {
+        return {
+            text: `${item.name}: ${item.data}`,
+            color: item.color
+        }
+    });
+    let validCalPoints = [];
+    let offset = {
+        x: 0,
+        y: 0
+    };
+    calPoints.forEach(points => {
+        if (typeof points[index] !== 'undefinded' && points[index] !== null) {
+            validCalPoints.push(points[index]);
+        }
+    });
+    validCalPoints.forEach(item => {
+        offset.x = Math.round(item.x);
+        offset.y += item.y;
+    })
+
+    offset.y /= validCalPoints.length;
+    return { textList, offset };
+}
+
 export function findCurrentIndex (currentPoints, xAxisPoints, opts, config) {
     let currentIndex = -1;
     if (isInExactChartArea(currentPoints, opts, config)) {

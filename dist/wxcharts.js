@@ -27,7 +27,11 @@ var config = {
     titleColor: '#333333',
     titleFontSize: 20,
     subtitleColor: '#999999',
-    subtitleFontSize: 15
+    subtitleFontSize: 15,
+    toolTipPadding: 3,
+    toolTipBackground: '#000000',
+    toolTipOpacity: 0.7,
+    toolTipLineHeight: 14
 };
 
 // Object.assign polyfill
@@ -254,6 +258,47 @@ function dataCombine(series) {
     return series.reduce(function (a, b) {
         return (a.data ? a.data : a).concat(b.data);
     }, []);
+}
+
+function getSeriesDataItem(series, index) {
+    var data = [];
+    series.forEach(function (item) {
+        if (item.data[index] !== null && typeof item.data[index] !== 'undefinded') {
+            var seriesItem = {};
+            seriesItem.color = item.color;
+            seriesItem.name = item.name;
+            seriesItem.data = item.format ? item.format(item.data[index]) : item.data[index];
+            data.push(seriesItem);
+        }
+    });
+
+    return data;
+}
+
+function getToolTipData(seriesData, calPoints, index) {
+    var textList = seriesData.map(function (item) {
+        return {
+            text: item.name + ': ' + item.data,
+            color: item.color
+        };
+    });
+    var validCalPoints = [];
+    var offset = {
+        x: 0,
+        y: 0
+    };
+    calPoints.forEach(function (points) {
+        if (typeof points[index] !== 'undefinded' && points[index] !== null) {
+            validCalPoints.push(points[index]);
+        }
+    });
+    validCalPoints.forEach(function (item) {
+        offset.x = Math.round(item.x);
+        offset.y += item.y;
+    });
+
+    offset.y /= validCalPoints.length;
+    return { textList: textList, offset: offset };
 }
 
 function findCurrentIndex(currentPoints, xAxisPoints, opts, config) {
@@ -713,6 +758,91 @@ function drawPieText(series, opts, config, context, radius, center) {
     });
 }
 
+function drawToolTipSplitLine(offsetX, opts, config, context) {
+    var startY = config.padding;
+    var endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
+    context.beginPath();
+    context.setStrokeStyle('#cccccc');
+    context.setLineWidth(1);
+    context.moveTo(offsetX, startY);
+    context.lineTo(offsetX, endY);
+    context.stroke();
+    context.closePath();
+}
+
+function drawToolTip(textList, offset, opts, config, context) {
+    var legendWidth = 4;
+    var legendMarginRight = 5;
+    var arrowWidth = 8;
+    var isOverRightBorder = false;
+    offset = assign({
+        x: 0,
+        y: 0
+    }, offset);
+    offset.y -= 8;
+    var textWidth = textList.map(function (item) {
+        return measureText(item.text);
+    });
+
+    var toolTipWidth = legendWidth + legendMarginRight + 4 * config.toolTipPadding + Math.max.apply(null, textWidth);
+    var toolTipHeight = 2 * config.toolTipPadding + textList.length * config.toolTipLineHeight;
+
+    // if over the right border
+    if (offset.x + arrowWidth + toolTipWidth > opts.width) {
+        isOverRightBorder = true;
+    }
+
+    // draw background rect
+    context.beginPath();
+    context.setFillStyle(opts.tooltip.option.background || config.toolTipBackground);
+    context.setGlobalAlpha(config.toolTipOpacity);
+    if (isOverRightBorder) {
+        context.moveTo(offset.x, offset.y + 10);
+        context.lineTo(offset.x - arrowWidth, offset.y + 10 - 5);
+        context.lineTo(offset.x - arrowWidth, offset.y + 10 + 5);
+        context.moveTo(offset.x, offset.y + 10);
+        context.fillRect(offset.x - toolTipWidth - arrowWidth, offset.y, toolTipWidth, toolTipHeight);
+    } else {
+        context.moveTo(offset.x, offset.y + 10);
+        context.lineTo(offset.x + arrowWidth, offset.y + 10 - 5);
+        context.lineTo(offset.x + arrowWidth, offset.y + 10 + 5);
+        context.moveTo(offset.x, offset.y + 10);
+        context.fillRect(offset.x + arrowWidth, offset.y, toolTipWidth, toolTipHeight);
+    }
+
+    context.closePath();
+    context.fill();
+    context.setGlobalAlpha(1);
+
+    // draw legend
+    textList.forEach(function (item, index) {
+        context.beginPath();
+        context.setFillStyle(item.color);
+        var startX = offset.x + arrowWidth + 2 * config.toolTipPadding;
+        var startY = offset.y + (config.toolTipLineHeight - config.fontSize) / 2 + config.toolTipLineHeight * index + config.toolTipPadding;
+        if (isOverRightBorder) {
+            startX = offset.x - toolTipWidth - arrowWidth + 2 * config.toolTipPadding;
+        }
+        context.fillRect(startX, startY, legendWidth, config.fontSize);
+        context.closePath();
+    });
+
+    // draw text list
+    context.beginPath();
+    context.setFontSize(config.fontSize);
+    context.setFillStyle('#ffffff');
+    textList.forEach(function (item, index) {
+        var startX = offset.x + arrowWidth + 2 * config.toolTipPadding + legendWidth + legendMarginRight;
+        if (isOverRightBorder) {
+            startX = offset.x - toolTipWidth - arrowWidth + 2 * config.toolTipPadding + +legendWidth + legendMarginRight;
+        }
+        var startY = offset.y + (config.toolTipLineHeight - config.fontSize) / 2 + config.toolTipLineHeight * index + config.toolTipPadding;
+        context.fillText(item.text, startX, startY + config.fontSize);
+    });
+    context.stroke();
+    context.closePath();
+}
+
 function drawYAxisTitle(title, opts, config, context) {
     var startX = config.xAxisHeight + (opts.height - config.xAxisHeight - measureText(title)) / 2;
     context.save();
@@ -785,10 +915,16 @@ function drawAreaDataPoints(series, opts, config, context) {
     var minRange = ranges.pop();
     var maxRange = ranges.shift();
     var endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
+    var calPoints = [];
+
+    if (opts.tooltip && opts.tooltip.textList && opts.tooltip.textList.length && process === 1) {
+        drawToolTipSplitLine(opts.tooltip.offset.x, opts, config, context);
+    }
 
     series.forEach(function (eachSeries, seriesIndex) {
         var data = eachSeries.data;
         var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
+        calPoints.push(points);
 
         var splitPointList = splitPoints(points);
 
@@ -848,7 +984,14 @@ function drawAreaDataPoints(series, opts, config, context) {
         });
     }
 
-    return xAxisPoints;
+    if (opts.tooltip && opts.tooltip.textList && opts.tooltip.textList.length && process === 1) {
+        drawToolTip(opts.tooltip.textList, opts.tooltip.offset, opts, config, context);
+    }
+
+    return {
+        xAxisPoints: xAxisPoints,
+        calPoints: calPoints
+    };
 }
 
 function drawLineDataPoints(series, opts, config, context) {
@@ -863,10 +1006,16 @@ function drawLineDataPoints(series, opts, config, context) {
 
     var minRange = ranges.pop();
     var maxRange = ranges.shift();
+    var calPoints = [];
+
+    if (opts.tooltip && opts.tooltip.textList && opts.tooltip.textList.length && process === 1) {
+        drawToolTipSplitLine(opts.tooltip.offset.x, opts, config, context);
+    }
 
     series.forEach(function (eachSeries, seriesIndex) {
         var data = eachSeries.data;
         var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
+        calPoints.push(points);
         var splitPointList = splitPoints(points);
 
         splitPointList.forEach(function (points, index) {
@@ -911,7 +1060,14 @@ function drawLineDataPoints(series, opts, config, context) {
         });
     }
 
-    return xAxisPoints;
+    if (opts.tooltip && opts.tooltip.textList && opts.tooltip.textList.length && process === 1) {
+        drawToolTip(opts.tooltip.textList, opts.tooltip.offset, opts, config, context);
+    }
+
+    return {
+        xAxisPoints: xAxisPoints,
+        calPoints: calPoints
+    };
 }
 
 function drawXAxis(categories, opts, config, context) {
@@ -1284,7 +1440,13 @@ function drawCharts(type, opts, config, context) {
                 onProcess: function onProcess(process) {
                     drawYAxis(series, opts, config, context);
                     drawXAxis(categories, opts, config, context);
-                    _this.chartData.xAxisPoints = drawLineDataPoints(series, opts, config, context, process);
+
+                    var _drawLineDataPoints = drawLineDataPoints(series, opts, config, context, process),
+                        xAxisPoints = _drawLineDataPoints.xAxisPoints,
+                        calPoints = _drawLineDataPoints.calPoints;
+
+                    _this.chartData.xAxisPoints = xAxisPoints;
+                    _this.chartData.calPoints = calPoints;
                     drawLegend(opts.series, opts, config, context);
                     drawCanvas(opts, context);
                 },
@@ -1316,7 +1478,13 @@ function drawCharts(type, opts, config, context) {
                 onProcess: function onProcess(process) {
                     drawYAxis(series, opts, config, context);
                     drawXAxis(categories, opts, config, context);
-                    _this.chartData.xAxisPoints = drawAreaDataPoints(series, opts, config, context, process);
+
+                    var _drawAreaDataPoints = drawAreaDataPoints(series, opts, config, context, process),
+                        xAxisPoints = _drawAreaDataPoints.xAxisPoints,
+                        calPoints = _drawAreaDataPoints.calPoints;
+
+                    _this.chartData.xAxisPoints = xAxisPoints;
+                    _this.chartData.calPoints = calPoints;
                     drawLegend(opts.series, opts, config, context);
                     drawCanvas(opts, context);
                 },
@@ -1429,6 +1597,32 @@ Charts.prototype.getCurrentDataIndex = function (e) {
         }
     }
     return -1;
+};
+
+Charts.prototype.showToolTip = function (e) {
+    var option = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    var index = this.getCurrentDataIndex(e);
+    var opts = assign({}, this.opts, { animation: false });
+    if (index > -1) {
+        var seriesData = getSeriesDataItem(this.opts.series, index);
+        if (seriesData.length === 0) {
+            drawCharts.call(this, opts.type, opts, this.config, this.context);
+        } else {
+            var _getToolTipData = getToolTipData(seriesData, this.chartData.calPoints, index),
+                textList = _getToolTipData.textList,
+                offset = _getToolTipData.offset;
+
+            opts.tooltip = {
+                textList: textList,
+                offset: offset,
+                option: option
+            };
+            drawCharts.call(this, opts.type, opts, this.config, this.context);
+        }
+    } else {
+        drawCharts.call(this, opts.type, opts, this.config, this.context);
+    }
 };
 
 module.exports = Charts;

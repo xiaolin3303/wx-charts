@@ -16,7 +16,11 @@ const config = {
     titleColor: '#333333',
     titleFontSize: 20,
     subtitleColor: '#999999',
-    subtitleFontSize: 15
+    subtitleFontSize: 15,
+    toolTipPadding: 3,
+    toolTipBackground: '#000000',
+    toolTipOpacity: 0.7,
+    toolTipLineHeight: 14
 }
 
 export default config;
