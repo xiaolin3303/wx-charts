@@ -259,6 +259,10 @@ new wxCharts({
 
 ![curveLineChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/curve-line.png)
 
+### line chart tooltip
+
+![curveLineChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/tooltip.gif)
+
 ### columnChart
 
 ```javascript
