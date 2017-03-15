@@ -13,7 +13,7 @@ export function drawRingTitle(opts, config, context) {
     let margin = 5;
     if (subtitle) {
         let textWidth = measureText(subtitle, subtitlefontSize);
-        let startX = (opts.width - textWidth) / 2;
+        let startX = (opts.width - textWidth) / 2 + (opts.subtitle.offsetX || 0);
         let startY = (opts.height - config.legendHeight + subtitlefontSize) / 2;
         if (title) {
             startY -= (titleHeight + margin) / 2;
@@ -27,7 +27,7 @@ export function drawRingTitle(opts, config, context) {
     }
     if (title) {
         let textWidth = measureText(title, titlefontSize);
-        let startX = (opts.width - textWidth) / 2;
+        let startX = (opts.width - textWidth) / 2 + (opts.title.offsetX || 0);
         let startY = (opts.height - config.legendHeight + titlefontSize) / 2;
         if (subtitle) {
             startY += (subtitleHeight + margin) / 2;
