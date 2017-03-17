@@ -20,7 +20,9 @@ const config = {
     toolTipPadding: 3,
     toolTipBackground: '#000000',
     toolTipOpacity: 0.7,
-    toolTipLineHeight: 14
+    toolTipLineHeight: 14,
+    radarGridCount: 3,
+    radarLabelTextMargin: 15
 }
 
 export default config;

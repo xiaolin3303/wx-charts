@@ -31,7 +31,9 @@ var config = {
     toolTipPadding: 3,
     toolTipBackground: '#000000',
     toolTipOpacity: 0.7,
-    toolTipLineHeight: 14
+    toolTipLineHeight: 14,
+    radarGridCount: 3,
+    radarLabelTextMargin: 15
 };
 
 // Object.assign polyfill
@@ -70,6 +72,9 @@ var util = {
     },
     isFloat: function isFloat(num) {
         return num % 1 !== 0;
+    },
+    approximatelyEqual: function approximatelyEqual(num1, num2) {
+        return Math.abs(num1 - num2) < 1e-10;
     },
     isSameSign: function isSameSign(num1, num2) {
         return Math.abs(num1) === num1 && Math.abs(num2) === num2 || Math.abs(num1) !== num1 && Math.abs(num2) !== num2;
@@ -275,6 +280,25 @@ function getSeriesDataItem(series, index) {
     return data;
 }
 
+function getMaxTextListLength(list) {
+    var lengthList = list.map(function (item) {
+        return measureText(item);
+    });
+    return Math.max.apply(null, lengthList);
+}
+
+function getRadarCoordinateSeries(length) {
+    var eachAngle = 2 * Math.PI / length;
+    var CoordinateSeries = [];
+    for (var i = 0; i < length; i++) {
+        CoordinateSeries.push(eachAngle * i);
+    }
+
+    return CoordinateSeries.map(function (item) {
+        return -1 * item + Math.PI / 2;
+    });
+}
+
 function getToolTipData(seriesData, calPoints, index) {
     var textList = seriesData.map(function (item) {
         return {
@@ -316,6 +340,49 @@ function findCurrentIndex(currentPoints, xAxisPoints, opts, config) {
 
 function isInExactChartArea(currentPoints, opts, config) {
     return currentPoints.x < opts.width - config.padding && currentPoints.x > config.padding + config.yAxisWidth + config.yAxisTitleWidth && currentPoints.y > config.padding && currentPoints.y < opts.height - config.legendHeight - config.xAxisHeight - config.padding;
+}
+
+function findRadarChartCurrentIndex(currentPoints, radarData, count) {
+    var eachAngleArea = 2 * Math.PI / count;
+    var currentIndex = -1;
+    if (isInExactPieChartArea(currentPoints, radarData.center, radarData.radius)) {
+        (function () {
+            var fixAngle = function fixAngle(angle) {
+                if (angle < 0) {
+                    angle += 2 * Math.PI;
+                }
+                if (angle > 2 * Math.PI) {
+                    angle -= 2 * Math.PI;
+                }
+                return angle;
+            };
+
+            var angle = Math.atan2(radarData.center.y - currentPoints.y, currentPoints.x - radarData.center.x);
+            angle = -1 * angle;
+            if (angle < 0) {
+                angle += 2 * Math.PI;
+            }
+
+            var angleList = radarData.angleList.map(function (item) {
+                item = fixAngle(-1 * item);
+
+                return item;
+            });
+
+            angleList.forEach(function (item, index) {
+                var rangeStart = fixAngle(item - eachAngleArea / 2);
+                var rangeEnd = fixAngle(item + eachAngleArea / 2);
+                if (rangeEnd < rangeStart) {
+                    rangeEnd += 2 * Math.PI;
+                }
+                if (angle >= rangeStart && angle <= rangeEnd || angle + 2 * Math.PI >= rangeStart && angle + 2 * Math.PI <= rangeEnd) {
+                    currentIndex = index;
+                }
+            });
+        })();
+    }
+
+    return currentIndex;
 }
 
 function findPieChartCurrentIndex(currentPoints, pieData) {
@@ -420,6 +487,33 @@ function calCategoriesData(categories, opts, config) {
     }
 
     return result;
+}
+
+function getRadarDataPoints(angleList, center, radius, series, opts) {
+    var process = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 1;
+
+    var radarOption = opts.extra.radar || {};
+    radarOption.max = radarOption.max || 0;
+    var maxData = Math.max(radarOption.max, Math.max.apply(null, dataCombine(series)));
+
+    var data = [];
+    series.forEach(function (each) {
+        var listItem = {};
+        listItem.color = each.color;
+        listItem.data = [];
+        each.data.forEach(function (item, index) {
+            var tmp = {};
+            tmp.angle = angleList[index];
+
+            tmp.proportion = item / maxData;
+            tmp.position = convertCoordinateOrigin(radius * tmp.proportion * process * Math.cos(tmp.angle), radius * tmp.proportion * process * Math.sin(tmp.angle), center);
+            listItem.data.push(tmp);
+        });
+
+        data.push(listItem);
+    });
+
+    return data;
 }
 
 function getPieDataPoints(series) {
@@ -656,6 +750,31 @@ function drawPointText(points, series, config, context) {
     });
     context.closePath();
     context.stroke();
+}
+
+function drawRadarLabel(angleList, radius, centerPosition, opts, config, context) {
+    var radarOption = opts.extra.radar || {};
+    radius += config.radarLabelTextMargin;
+    context.beginPath();
+    context.setFontSize(config.fontSize);
+    context.setFillStyle(radarOption.labelColor || '#666666');
+    angleList.forEach(function (angle, index) {
+        var pos = {
+            x: radius * Math.cos(angle),
+            y: radius * Math.sin(angle)
+        };
+        var posRelativeCanvas = convertCoordinateOrigin(pos.x, pos.y, centerPosition);
+        var startX = posRelativeCanvas.x;
+        var startY = posRelativeCanvas.y;
+        if (util.approximatelyEqual(pos.x, 0)) {
+            startX -= measureText(opts.categories[index] || '') / 2;
+        } else if (pos.x < 0) {
+            startX -= measureText(opts.categories[index] || '');
+        }
+        context.fillText(opts.categories[index] || '', startX, startY + config.fontSize / 2);
+    });
+    context.stroke();
+    context.closePath();
 }
 
 function drawPieText(series, opts, config, context, radius, center) {
@@ -1320,6 +1439,92 @@ function drawPieDataPoints(series, opts, config, context) {
     };
 }
 
+function drawRadarDataPoints(series, opts, config, context) {
+    var process = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
+
+    var radarOption = opts.extra.radar || {};
+    var coordinateAngle = getRadarCoordinateSeries(opts.categories.length);
+    var centerPosition = {
+        x: opts.width / 2,
+        y: (opts.height - config.legendHeight) / 2
+    };
+
+    var radius = Math.min(centerPosition.x - (getMaxTextListLength(opts.categories) + config.radarLabelTextMargin), centerPosition.y - config.radarLabelTextMargin);
+
+    radius -= config.padding;
+
+    // draw grid
+    context.beginPath();
+    context.setLineWidth(1);
+    context.setStrokeStyle(radarOption.gridColor || "#cccccc");
+    coordinateAngle.forEach(function (angle) {
+        var pos = convertCoordinateOrigin(radius * Math.cos(angle), radius * Math.sin(angle), centerPosition);
+        context.moveTo(centerPosition.x, centerPosition.y);
+        context.lineTo(pos.x, pos.y);
+    });
+    context.stroke();
+    context.closePath();
+
+    // draw split line grid
+
+    var _loop = function _loop(i) {
+        var startPos = {};
+        context.beginPath();
+        context.setLineWidth(1);
+        context.setStrokeStyle(radarOption.gridColor || "#cccccc");
+        coordinateAngle.forEach(function (angle, index) {
+            var pos = convertCoordinateOrigin(radius / config.radarGridCount * i * Math.cos(angle), radius / config.radarGridCount * i * Math.sin(angle), centerPosition);
+            if (index === 0) {
+                startPos = pos;
+                context.moveTo(pos.x, pos.y);
+            } else {
+                context.lineTo(pos.x, pos.y);
+            }
+        });
+        context.lineTo(startPos.x, startPos.y);
+        context.stroke();
+        context.closePath();
+    };
+
+    for (var i = 1; i <= config.radarGridCount; i++) {
+        _loop(i);
+    }
+
+    var radarDataPoints = getRadarDataPoints(coordinateAngle, centerPosition, radius, series, opts, process);
+    radarDataPoints.forEach(function (eachSeries, seriesIndex) {
+        // 绘制区域数据
+        context.beginPath();
+        context.setFillStyle(eachSeries.color);
+        context.setGlobalAlpha(0.6);
+        eachSeries.data.forEach(function (item, index) {
+            if (index === 0) {
+                context.moveTo(item.position.x, item.position.y);
+            } else {
+                context.lineTo(item.position.x, item.position.y);
+            }
+        });
+        context.closePath();
+        context.fill();
+        context.setGlobalAlpha(1);
+
+        if (opts.dataPointShape !== false) {
+            var shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
+            var points = eachSeries.data.map(function (item) {
+                return item.position;
+            });
+            drawPointShape(points, eachSeries.color, shape, context);
+        }
+    });
+    // draw label text
+    drawRadarLabel(coordinateAngle, radius, centerPosition, opts, config, context);
+
+    return {
+        center: centerPosition,
+        radius: radius,
+        angleList: coordinateAngle
+    };
+}
+
 function drawCanvas(opts, context) {
     context.draw();
 }
@@ -1508,6 +1713,20 @@ function drawCharts(type, opts, config, context) {
                 }
             });
             break;
+        case 'radar':
+            this.animationInstance = new Animation({
+                timing: 'easeInOut',
+                duration: duration,
+                onProcess: function onProcess(process) {
+                    _this.chartData.radarData = drawRadarDataPoints(series, opts, config, context, process);
+                    drawLegend(opts.series, opts, config, context);
+                    drawCanvas(opts, context);
+                },
+                onAnimationFinish: function onAnimationFinish() {
+                    _this.event.trigger('renderComplete');
+                }
+            });
+            break;
     }
 }
 
@@ -1592,6 +1811,8 @@ Charts.prototype.getCurrentDataIndex = function (e) {
 
         if (this.opts.type === 'pie' || this.opts.type === 'ring') {
             return findPieChartCurrentIndex({ x: x, y: y }, this.chartData.pieData);
+        } else if (this.opts.type === 'radar') {
+            return findRadarChartCurrentIndex({ x: x, y: y }, this.chartData.radarData, this.opts.categories.length);
         } else {
             return findCurrentIndex({ x: x, y: y }, this.chartData.xAxisPoints, this.opts, this.config);
         }

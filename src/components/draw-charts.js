@@ -1,4 +1,4 @@
-import { drawCanvas, drawLegend, drawPieDataPoints, drawLineDataPoints, drawAreaDataPoints, drawColumnDataPoints, drawYAxis, drawXAxis } from './draw'
+import { drawRadarDataPoints, drawCanvas, drawLegend, drawPieDataPoints, drawLineDataPoints, drawAreaDataPoints, drawColumnDataPoints, drawYAxis, drawXAxis } from './draw'
 import { calYAxisData, getPieTextMaxLength, calCategoriesData, calLegendData } from './charts-data'
 import { fillSeriesColor } from './charts-util';
 import Animation from './animation'
@@ -84,6 +84,20 @@ export default function drawCharts (type, opts, config, context) {
                 duration: duration,
                 onProcess: (process) => {
                     this.chartData.pieData = drawPieDataPoints(series, opts, config, context, process);
+                    drawLegend(opts.series, opts, config, context);
+                    drawCanvas(opts, context);
+                },
+                onAnimationFinish: () => {
+                    this.event.trigger('renderComplete');
+                }
+            });
+            break;
+        case 'radar':
+            this.animationInstance = new Animation({
+                timing: 'easeInOut',
+                duration: duration,
+                onProcess: (process) => {
+                    this.chartData.radarData = drawRadarDataPoints(series, opts, config, context, process);
                     drawLegend(opts.series, opts, config, context);
                     drawCanvas(opts, context);
                 },

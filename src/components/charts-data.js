@@ -1,6 +1,6 @@
 import { getDataRange } from './charts-util'
 import Util from '../util/util'
-import { measureText } from './charts-util'
+import { measureText, convertCoordinateOrigin } from './charts-util'
 
 function dataCombine(series) {
     return series.reduce(function(a, b) {
@@ -21,6 +21,21 @@ export function getSeriesDataItem(series, index) {
     });
 
     return data;
+}
+
+export function getMaxTextListLength(list) {
+    let lengthList = list.map(item => measureText(item));
+    return Math.max.apply(null, lengthList);
+}
+
+export function getRadarCoordinateSeries(length) {
+    let eachAngle = 2 * Math.PI / length;
+    let CoordinateSeries = [];
+    for (let i = 0; i < length; i++) {
+        CoordinateSeries.push(eachAngle * i);
+    }
+
+    return CoordinateSeries.map(item => -1 * item + Math.PI / 2);
 }
 
 export function getToolTipData(seriesData, calPoints, index) {
@@ -69,6 +84,46 @@ export function isInExactChartArea (currentPoints, opts, config) {
         && currentPoints.y < opts.height - config.legendHeight - config.xAxisHeight - config.padding
 }
 
+export function findRadarChartCurrentIndex (currentPoints, radarData, count) {
+    let eachAngleArea = 2 * Math.PI / count;
+    let currentIndex = -1;
+    if (isInExactPieChartArea(currentPoints, radarData.center, radarData.radius)) {
+        let angle = Math.atan2(radarData.center.y - currentPoints.y, currentPoints.x - radarData.center.x);
+        angle =  -1 * angle;
+        if (angle < 0) {
+            angle += 2 * Math.PI;
+        }
+
+        function fixAngle (angle) {
+            if (angle < 0) {
+                angle += 2 * Math.PI;
+            }
+            if (angle > 2 * Math.PI) {
+                angle -= 2 * Math.PI;
+            }
+            return angle;
+        }
+        let angleList = radarData.angleList.map(item => {
+            item = fixAngle(-1 * item);
+
+            return item;
+        });
+
+        angleList.forEach((item, index) => {
+            let rangeStart = fixAngle(item - eachAngleArea / 2);
+            let rangeEnd = fixAngle(item + eachAngleArea / 2);
+            if (rangeEnd < rangeStart) {
+                rangeEnd += 2 * Math.PI;
+            }
+            if ((angle >= rangeStart && angle <= rangeEnd)
+                || (angle + 2 * Math.PI >= rangeStart && angle + 2 * Math.PI <= rangeEnd)) {
+                currentIndex = index;
+            }
+        });
+    }
+
+    return currentIndex;
+}
 
 export function findPieChartCurrentIndex (currentPoints, pieData) {
     let currentIndex = -1;
@@ -166,6 +221,31 @@ export function calCategoriesData(categories, opts, config) {
     }
 
     return result;
+}
+
+export function getRadarDataPoints(angleList, center, radius, series, opts, process = 1 ) {
+    let radarOption = opts.extra.radar || {};
+    radarOption.max = radarOption.max || 0;
+    let maxData = Math.max(radarOption.max, Math.max.apply(null, dataCombine(series)));
+
+    let data = [];
+    series.forEach(each => {
+        let listItem = {};
+        listItem.color = each.color;
+        listItem.data = [];
+        each.data.forEach((item, index) => {
+            let tmp = {};
+            tmp.angle = angleList[index];
+
+            tmp.proportion = item / maxData;
+            tmp.position = convertCoordinateOrigin(radius * tmp.proportion * process * Math.cos(tmp.angle), radius * tmp.proportion * process * Math.sin(tmp.angle), center);
+            listItem.data.push(tmp);
+        });
+
+        data.push(listItem);
+    });
+
+    return data;
 }
 
 export function getPieDataPoints(series, process = 1) {

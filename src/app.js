@@ -2,7 +2,7 @@ import Config from './config';
 import { assign } from './util/polyfill/index';
 import drawCharts from './components/draw-charts';
 import Event from './util/event';
-import { findCurrentIndex, findPieChartCurrentIndex, getSeriesDataItem, getToolTipData } from  './components/charts-data'
+import { findCurrentIndex, findRadarChartCurrentIndex, findPieChartCurrentIndex, getSeriesDataItem, getToolTipData } from  './components/charts-data'
 
 let Charts = function(opts) {
     opts.title = opts.title || {};
@@ -51,6 +51,8 @@ Charts.prototype.getCurrentDataIndex = function (e) {
         let {x, y} = e.touches[0];
         if (this.opts.type === 'pie' || this.opts.type === 'ring') {
             return findPieChartCurrentIndex({ x, y }, this.chartData.pieData);
+        } else if (this.opts.type === 'radar') {
+            return findRadarChartCurrentIndex({ x, y }, this.chartData.radarData, this.opts.categories.length);
         } else {
             return findCurrentIndex({ x, y }, this.chartData.xAxisPoints, this.opts, this.config);
         }

@@ -58,6 +58,31 @@ export function drawPointText (points, series, config, context) {
     context.stroke();
 }
 
+export function drawRadarLabel(angleList, radius, centerPosition, opts, config, context) {
+    let radarOption = opts.extra.radar || {};    
+    radius += config.radarLabelTextMargin;
+    context.beginPath();
+    context.setFontSize(config.fontSize);
+    context.setFillStyle(radarOption.labelColor || '#666666');
+    angleList.forEach((angle, index) => {
+        let pos = {
+            x: radius * Math.cos(angle),
+            y: radius * Math.sin(angle)
+        }
+        let posRelativeCanvas = convertCoordinateOrigin(pos.x, pos.y, centerPosition);
+        let startX = posRelativeCanvas.x;
+        let startY = posRelativeCanvas.y;
+        if (Util.approximatelyEqual(pos.x, 0)) {
+            startX -= measureText(opts.categories[index] || '') / 2;
+        } else if (pos.x < 0) {
+            startX -= measureText(opts.categories[index] || '');
+        }
+        context.fillText(opts.categories[index] || '', startX, startY + config.fontSize / 2);
+    });
+    context.stroke();
+    context.closePath();
+}
+
 export function drawPieText (series, opts, config, context, radius, center) {
     let lineRadius = radius + config.pieChartLinePadding;
     let textRadius = lineRadius + config.pieChartTextPadding;

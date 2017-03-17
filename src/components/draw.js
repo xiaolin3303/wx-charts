@@ -1,8 +1,8 @@
-import { splitPoints, getPieDataPoints, calYAxisData, getXAxisPoints, getDataPoints, fixColumeData, calLegendData } from './charts-data'
-import { measureText, calRotateTranslate, createCurveControlPoints } from './charts-util'
+import { getRadarDataPoints, getRadarCoordinateSeries, getMaxTextListLength, splitPoints, getPieDataPoints, calYAxisData, getXAxisPoints, getDataPoints, fixColumeData, calLegendData } from './charts-data'
+import { convertCoordinateOrigin, measureText, calRotateTranslate, createCurveControlPoints } from './charts-util'
 import Util from '../util/util'
 import drawPointShape from './draw-data-shape'
-import { drawPointText, drawPieText, drawRingTitle } from './draw-data-text'
+import { drawPointText, drawPieText, drawRingTitle, drawRadarLabel } from './draw-data-text'
 import { drawToolTip, drawToolTipSplitLine } from './draw-tooltip'
 
 function drawYAxisTitle (title, opts, config, context) {
@@ -443,6 +443,88 @@ export function drawPieDataPoints (series, opts, config, context, process = 1) {
         center: centerPosition,
         radius,
         series
+    }
+}
+
+export function drawRadarDataPoints (series, opts, config, context, process = 1) {
+    let radarOption = opts.extra.radar || {};    
+    let coordinateAngle = getRadarCoordinateSeries(opts.categories.length);
+    let centerPosition = {
+        x: opts.width / 2,
+        y: (opts.height - config.legendHeight) / 2
+    }
+
+    let radius = Math.min(
+        centerPosition.x - (getMaxTextListLength(opts.categories) + config.radarLabelTextMargin),
+        centerPosition.y - config.radarLabelTextMargin
+    );
+
+    radius -= config.padding;
+
+    // draw grid
+    context.beginPath();
+    context.setLineWidth(1);
+    context.setStrokeStyle(radarOption.gridColor || "#cccccc");
+    coordinateAngle.forEach(angle => {
+        let pos = convertCoordinateOrigin(radius * Math.cos(angle), radius * Math.sin(angle), centerPosition);
+        context.moveTo(centerPosition.x, centerPosition.y);
+        context.lineTo(pos.x, pos.y);
+    });
+    context.stroke();
+    context.closePath();
+
+    // draw split line grid
+    for (let i = 1; i <= config.radarGridCount; i++) {
+        let startPos = {};
+        context.beginPath();
+        context.setLineWidth(1);
+        context.setStrokeStyle(radarOption.gridColor || "#cccccc");
+        coordinateAngle.forEach((angle, index) => {
+            let pos = convertCoordinateOrigin(radius / config.radarGridCount * i * Math.cos(angle), radius / config.radarGridCount * i * Math.sin(angle), centerPosition);
+            if (index === 0) {
+                startPos = pos;
+                context.moveTo(pos.x, pos.y);
+            } else {            
+                context.lineTo(pos.x, pos.y);
+            }
+        });
+        context.lineTo(startPos.x, startPos.y);
+        context.stroke();
+        context.closePath();
+    }
+
+    let radarDataPoints = getRadarDataPoints(coordinateAngle, centerPosition, radius, series, opts, process);
+    radarDataPoints.forEach((eachSeries, seriesIndex) => {
+        // 绘制区域数据
+        context.beginPath();
+        context.setFillStyle(eachSeries.color);
+        context.setGlobalAlpha(0.6);
+        eachSeries.data.forEach((item, index) => {
+            if (index === 0) {            
+                context.moveTo(item.position.x, item.position.y);
+            } else {
+                context.lineTo(item.position.x, item.position.y);
+            }
+        });
+        context.closePath();
+        context.fill();
+        context.setGlobalAlpha(1);
+
+        if (opts.dataPointShape !== false) {        
+            let shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
+            let points = eachSeries.data.map(item => {
+                return item.position;
+            });
+            drawPointShape(points, eachSeries.color, shape, context);
+        }
+    });
+    // draw label text
+    drawRadarLabel(coordinateAngle, radius, centerPosition, opts, config, context);
+
+    return {
+        center: centerPosition,
+        radius,
+        angleList: coordinateAngle
     }
 }
 

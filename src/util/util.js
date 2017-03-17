@@ -9,6 +9,9 @@ let util = {
     isFloat: function (num) {
         return num % 1 !== 0;
     },
+    approximatelyEqual: function (num1, num2) {
+        return Math.abs(num1 - num2) < 1e-10;
+    },
     isSameSign: function (num1, num2) {
         return (Math.abs(num1) === num1 && Math.abs(num2) === num2)
             || (Math.abs(num1) !== num1 && Math.abs(num2) !== num2)
