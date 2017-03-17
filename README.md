@@ -11,12 +11,14 @@
 - 线图   `line`
 - 柱状图 `column`
 - 区域图 `area`
+- 雷达图 `radar`
 
 代码分析 [Here](https://segmentfault.com/a/1190000007649376)
 
 # 更新记录 
 
 - [ ] 动画性能优化
+- [x] 新增雷达图 2017-03-17
 - [x] 新增tooltip 2017-03-07
 - [x] 新增曲线的绘制 2017-03-06
 - [x] 新增更新数据、终止进行中的动画方法，渲染完成事件回调 2017-02-17
@@ -56,6 +58,7 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 ![curveLineChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/4636c9d2fbbaaa7944ee48e02b3a595e77c099e5/example/curve-line.png)
 ![columnChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/column.png)
 ![areaChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/area.png)
+![areaChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/radar.png)
 
 ![pieChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/pie.gif)
 ![ringChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/ring.gif)
