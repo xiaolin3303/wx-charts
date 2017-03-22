@@ -3,7 +3,7 @@
 
 基于canvas绘制，体积小巧
 
-**持续优化更新中，请保持关注~ 有任何问题欢迎在[Issues](https://github.com/xiaolin3303/wx-charts/issues)中讨论**
+**持续优化更新中，请保持关注~ 有任何问题欢迎在[Issues](https://github.com/xiaolin3303/wx-charts/issues)中讨论，[提出issue前请先阅读此须知](https://github.com/xiaolin3303/wx-charts/issues/67)**
 
 # 支持图表类型
 - 饼图   `pie`
