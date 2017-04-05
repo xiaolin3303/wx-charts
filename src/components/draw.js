@@ -29,7 +29,7 @@ export function drawColumnDataPoints (series, opts, config, context, process = 1
     series.forEach(function(eachSeries, seriesIndex) {
         let data = eachSeries.data;
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
-        points = fixColumeData(points, eachSpacing, series.length, seriesIndex, config);
+        points = fixColumeData(points, eachSpacing, series.length, seriesIndex, config, opts);
 
         // 绘制柱状数据图
         context.beginPath();
@@ -48,7 +48,7 @@ export function drawColumnDataPoints (series, opts, config, context, process = 1
     series.forEach(function(eachSeries, seriesIndex) {
         let data = eachSeries.data;
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
-        points = fixColumeData(points, eachSpacing, series.length, seriesIndex, config);
+        points = fixColumeData(points, eachSpacing, series.length, seriesIndex, config, opts);
         if (opts.dataLabel !== false && process === 1) {
             drawPointText(points, eachSeries, config, context);
         }

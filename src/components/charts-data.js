@@ -278,13 +278,21 @@ export function getPieTextMaxLength(series) {
     return maxLength;
 }
 
-export function fixColumeData(points, eachSpacing, columnLen, index, config) {
+export function fixColumeData(points, eachSpacing, columnLen, index, config, opts) {
     return points.map(function(item) {
         if (item === null) {
             return null;
         }
         item.width = (eachSpacing - 2 * config.columePadding) / columnLen;
-        item.width = Math.min(item.width, 25);
+        
+        if (opts.extra.column && opts.extra.column.width && +opts.extra.column.width > 0) {
+            // customer column width
+            item.width = Math.min(item.width, +opts.extra.column.width);
+        } else {
+            // default width should less tran 25px
+            // don't ask me why, I don't know
+            item.width = Math.min(item.width, 25);
+        }
         item.x += (index + 0.5 - (columnLen) / 2) * item.width;
 
         return item;
