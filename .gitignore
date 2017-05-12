@@ -1,2 +1,4 @@
 build.sh
 node_modules/
+/.history/
+/.vscode/
