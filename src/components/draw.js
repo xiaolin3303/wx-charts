@@ -47,11 +47,13 @@ export function drawColumnDataPoints(series, opts, config, context, process = 1)
     let minRange = ranges.pop();
     let maxRange = ranges.shift();
     let endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
+    let calPoints = [];
 
     series.forEach(function (eachSeries, seriesIndex) {
         let data = eachSeries.data;
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
         points = fixColumeData(points, eachSpacing, series.length, seriesIndex, config, opts);
+        calPoints.push(points)
 
         // 绘制柱状数据图
         context.beginPath();
@@ -75,8 +77,10 @@ export function drawColumnDataPoints(series, opts, config, context, process = 1)
             drawPointText(points, eachSeries, config, context);
         }
     });
-
-    return xAxisPoints;
+    if (opts.tooltip && opts.tooltip.textList && opts.tooltip.textList.length && process === 1) {
+        drawToolTip(opts.tooltip.textList, opts.tooltip.offset, opts, config, context);
+    }
+    return {xAxisPoints,calPoints};
 }
 
 export function drawAreaDataPoints(series, opts, config, context, process = 1) {
@@ -435,7 +439,7 @@ export function drawPieDataPoints(series, opts, config, context, process = 1) {
     }
     series.forEach(function (eachSeries) {
         context.beginPath();
-        context.setLineWidth(2);
+        context.setLineWidth(1);
         context.setStrokeStyle('#ffffff');
         context.setFillStyle(eachSeries.color);
         context.moveTo(centerPosition.x, centerPosition.y);
@@ -453,7 +457,7 @@ export function drawPieDataPoints(series, opts, config, context, process = 1) {
             innerPieWidth = Math.max(0, radius - opts.extra.ringWidth);
         }
         context.beginPath();
-        context.setFillStyle('#ffffff');
+        context.setFillStyle('#111c24');
         context.moveTo(centerPosition.x, centerPosition.y);
         context.arc(centerPosition.x, centerPosition.y, innerPieWidth, 0, 2 * Math.PI);
         context.closePath();

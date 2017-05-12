@@ -50,7 +50,9 @@ export default function drawCharts (type, opts, config, context) {
                 onProcess: (process) => {
                     drawYAxis(series, opts, config, context);
                     drawXAxis(categories, opts, config, context);
-                    this.chartData.xAxisPoints = drawColumnDataPoints(series, opts, config, context, process);
+                     let { xAxisPoints, calPoints } = drawColumnDataPoints(series, opts, config, context, process);
+                     this.chartData.xAxisPoints = xAxisPoints;
+                    this.chartData.calPoints = calPoints;
                     drawLegend(opts.series, opts, config, context);                    
                     drawCanvas(opts, context);
                 },

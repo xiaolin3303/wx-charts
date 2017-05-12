@@ -20,7 +20,7 @@ var config = {
     columePadding: 3,
     fontSize: 10,
     dataPointShape: ['diamond', 'circle', 'triangle', 'rect'],
-    colors: ['#7cb5ec', '#f7a35c', '#434348', '#90ed7d', '#f15c80', '#8085e9'],
+    colors: ['#266a99', '#fa9a00', 'green', '#ce1d31', '#73d2fd', '#8085e9'],
     pieChartLinePadding: 25,
     pieChartTextPadding: 15,
     xAxisTextPadding: 3,
@@ -1003,11 +1003,13 @@ function drawColumnDataPoints(series, opts, config, context) {
     var minRange = ranges.pop();
     var maxRange = ranges.shift();
     var endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
+    var calPoints = [];
 
     series.forEach(function (eachSeries, seriesIndex) {
         var data = eachSeries.data;
         var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
         points = fixColumeData(points, eachSpacing, series.length, seriesIndex, config, opts);
+        calPoints.push(points);
 
         // 绘制柱状数据图
         context.beginPath();
@@ -1031,8 +1033,10 @@ function drawColumnDataPoints(series, opts, config, context) {
             drawPointText(points, eachSeries, config, context);
         }
     });
-
-    return xAxisPoints;
+    if (opts.tooltip && opts.tooltip.textList && opts.tooltip.textList.length && process === 1) {
+        drawToolTip(opts.tooltip.textList, opts.tooltip.offset, opts, config, context);
+    }
+    return { xAxisPoints: xAxisPoints, calPoints: calPoints };
 }
 
 function drawAreaDataPoints(series, opts, config, context) {
@@ -1420,7 +1424,7 @@ function drawPieDataPoints(series, opts, config, context) {
     }
     series.forEach(function (eachSeries) {
         context.beginPath();
-        context.setLineWidth(2);
+        context.setLineWidth(1);
         context.setStrokeStyle('#ffffff');
         context.setFillStyle(eachSeries.color);
         context.moveTo(centerPosition.x, centerPosition.y);
@@ -1438,7 +1442,7 @@ function drawPieDataPoints(series, opts, config, context) {
             innerPieWidth = Math.max(0, radius - opts.extra.ringWidth);
         }
         context.beginPath();
-        context.setFillStyle('#ffffff');
+        context.setFillStyle('#111c24');
         context.moveTo(centerPosition.x, centerPosition.y);
         context.arc(centerPosition.x, centerPosition.y, innerPieWidth, 0, 2 * Math.PI);
         context.closePath();
@@ -1688,7 +1692,13 @@ function drawCharts(type, opts, config, context) {
                 onProcess: function onProcess(process) {
                     drawYAxis(series, opts, config, context);
                     drawXAxis(categories, opts, config, context);
-                    _this.chartData.xAxisPoints = drawColumnDataPoints(series, opts, config, context, process);
+
+                    var _drawColumnDataPoints = drawColumnDataPoints(series, opts, config, context, process),
+                        xAxisPoints = _drawColumnDataPoints.xAxisPoints,
+                        calPoints = _drawColumnDataPoints.calPoints;
+
+                    _this.chartData.xAxisPoints = xAxisPoints;
+                    _this.chartData.calPoints = calPoints;
                     drawLegend(opts.series, opts, config, context);
                     drawCanvas(opts, context);
                 },
@@ -1845,7 +1855,7 @@ Charts.prototype.getCurrentDataIndex = function (e) {
 Charts.prototype.showToolTip = function (e) {
     var option = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-    if (this.opts.type === 'line' || this.opts.type === 'area') {
+    if (this.opts.type === 'line' || this.opts.type === 'area' || this.opts.type === 'column') {
         var index = this.getCurrentDataIndex(e);
         var opts = assign({}, this.opts, { animation: false });
         if (index > -1) {

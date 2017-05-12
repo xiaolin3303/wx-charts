@@ -61,7 +61,7 @@ Charts.prototype.getCurrentDataIndex = function (e) {
 }
 
 Charts.prototype.showToolTip = function (e, option = {}) {
-    if (this.opts.type === 'line' || this.opts.type === 'area') {
+    if (this.opts.type === 'line' || this.opts.type === 'area' || this.opts.type === 'column') {
         let index = this.getCurrentDataIndex(e);
         let opts = assign({}, this.opts, {animation: false});
         if (index > -1) {
