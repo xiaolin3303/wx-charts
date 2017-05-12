@@ -406,7 +406,7 @@ export function drawPieDataPoints (series, opts, config, context, process = 1) {
     }
     series.forEach(function(eachSeries) {
         context.beginPath();
-        context.setLineWidth(2);
+        context.setLineWidth(1);
         context.setStrokeStyle('#ffffff');
         context.setFillStyle(eachSeries.color);
         context.moveTo(centerPosition.x, centerPosition.y);
@@ -424,7 +424,7 @@ export function drawPieDataPoints (series, opts, config, context, process = 1) {
             innerPieWidth = Math.max(0, radius - opts.extra.ringWidth);
         }
         context.beginPath();
-        context.setFillStyle('#ffffff');
+        context.setFillStyle('#111c24');
         context.moveTo(centerPosition.x, centerPosition.y);
         context.arc(centerPosition.x, centerPosition.y, innerPieWidth, 0, 2 * Math.PI);
         context.closePath();

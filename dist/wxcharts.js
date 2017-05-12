@@ -20,7 +20,7 @@ var config = {
     columePadding: 3,
     fontSize: 10,
     dataPointShape: ['diamond', 'circle', 'triangle', 'rect'],
-    colors: ['#7cb5ec', '#f7a35c', '#434348', '#90ed7d', '#f15c80', '#8085e9'],
+    colors: ['#266a99', '#fa9a00', 'green', '#ce1d31', '#73d2fd', '#8085e9'],
     pieChartLinePadding: 25,
     pieChartTextPadding: 15,
     xAxisTextPadding: 3,
@@ -346,40 +346,38 @@ function findRadarChartCurrentIndex(currentPoints, radarData, count) {
     var eachAngleArea = 2 * Math.PI / count;
     var currentIndex = -1;
     if (isInExactPieChartArea(currentPoints, radarData.center, radarData.radius)) {
-        (function () {
-            var fixAngle = function fixAngle(angle) {
-                if (angle < 0) {
-                    angle += 2 * Math.PI;
-                }
-                if (angle > 2 * Math.PI) {
-                    angle -= 2 * Math.PI;
-                }
-                return angle;
-            };
-
-            var angle = Math.atan2(radarData.center.y - currentPoints.y, currentPoints.x - radarData.center.x);
-            angle = -1 * angle;
+        var fixAngle = function fixAngle(angle) {
             if (angle < 0) {
                 angle += 2 * Math.PI;
             }
+            if (angle > 2 * Math.PI) {
+                angle -= 2 * Math.PI;
+            }
+            return angle;
+        };
 
-            var angleList = radarData.angleList.map(function (item) {
-                item = fixAngle(-1 * item);
+        var angle = Math.atan2(radarData.center.y - currentPoints.y, currentPoints.x - radarData.center.x);
+        angle = -1 * angle;
+        if (angle < 0) {
+            angle += 2 * Math.PI;
+        }
 
-                return item;
-            });
+        var angleList = radarData.angleList.map(function (item) {
+            item = fixAngle(-1 * item);
 
-            angleList.forEach(function (item, index) {
-                var rangeStart = fixAngle(item - eachAngleArea / 2);
-                var rangeEnd = fixAngle(item + eachAngleArea / 2);
-                if (rangeEnd < rangeStart) {
-                    rangeEnd += 2 * Math.PI;
-                }
-                if (angle >= rangeStart && angle <= rangeEnd || angle + 2 * Math.PI >= rangeStart && angle + 2 * Math.PI <= rangeEnd) {
-                    currentIndex = index;
-                }
-            });
-        })();
+            return item;
+        });
+
+        angleList.forEach(function (item, index) {
+            var rangeStart = fixAngle(item - eachAngleArea / 2);
+            var rangeEnd = fixAngle(item + eachAngleArea / 2);
+            if (rangeEnd < rangeStart) {
+                rangeEnd += 2 * Math.PI;
+            }
+            if (angle >= rangeStart && angle <= rangeEnd || angle + 2 * Math.PI >= rangeStart && angle + 2 * Math.PI <= rangeEnd) {
+                currentIndex = index;
+            }
+        });
     }
 
     return currentIndex;
@@ -388,18 +386,16 @@ function findRadarChartCurrentIndex(currentPoints, radarData, count) {
 function findPieChartCurrentIndex(currentPoints, pieData) {
     var currentIndex = -1;
     if (isInExactPieChartArea(currentPoints, pieData.center, pieData.radius)) {
-        (function () {
-            var angle = Math.atan2(pieData.center.y - currentPoints.y, currentPoints.x - pieData.center.x);
-            if (angle < 0) {
-                angle += 2 * Math.PI;
+        var angle = Math.atan2(pieData.center.y - currentPoints.y, currentPoints.x - pieData.center.x);
+        if (angle < 0) {
+            angle += 2 * Math.PI;
+        }
+        angle = 2 * Math.PI - angle;
+        pieData.series.forEach(function (item, index) {
+            if (angle > item._start_) {
+                currentIndex = index;
             }
-            angle = 2 * Math.PI - angle;
-            pieData.series.forEach(function (item, index) {
-                if (angle > item._start_) {
-                    currentIndex = index;
-                }
-            });
-        })();
+        });
     }
 
     return currentIndex;
@@ -1407,7 +1403,7 @@ function drawPieDataPoints(series, opts, config, context) {
     }
     series.forEach(function (eachSeries) {
         context.beginPath();
-        context.setLineWidth(2);
+        context.setLineWidth(1);
         context.setStrokeStyle('#ffffff');
         context.setFillStyle(eachSeries.color);
         context.moveTo(centerPosition.x, centerPosition.y);
@@ -1425,7 +1421,7 @@ function drawPieDataPoints(series, opts, config, context) {
             innerPieWidth = Math.max(0, radius - opts.extra.ringWidth);
         }
         context.beginPath();
-        context.setFillStyle('#ffffff');
+        context.setFillStyle('#111c24');
         context.moveTo(centerPosition.x, centerPosition.y);
         context.arc(centerPosition.x, centerPosition.y, innerPieWidth, 0, 2 * Math.PI);
         context.closePath();
