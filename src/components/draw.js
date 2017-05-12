@@ -25,11 +25,13 @@ export function drawColumnDataPoints (series, opts, config, context, process = 1
     let minRange = ranges.pop();
     let maxRange = ranges.shift();
     let endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
+    let calPoints = [];
 
     series.forEach(function(eachSeries, seriesIndex) {
         let data = eachSeries.data;
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
         points = fixColumeData(points, eachSpacing, series.length, seriesIndex, config, opts);
+        calPoints.push(points)
 
         // 绘制柱状数据图
         context.beginPath();
@@ -53,8 +55,10 @@ export function drawColumnDataPoints (series, opts, config, context, process = 1
             drawPointText(points, eachSeries, config, context);
         }
     });
-
-    return xAxisPoints;
+    if (opts.tooltip && opts.tooltip.textList && opts.tooltip.textList.length && process === 1) {
+        drawToolTip(opts.tooltip.textList, opts.tooltip.offset, opts, config, context);
+    }
+    return {xAxisPoints,calPoints};
 }
 
 export function drawAreaDataPoints (series, opts, config, context, process = 1) {
