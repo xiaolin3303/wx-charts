@@ -346,40 +346,38 @@ function findRadarChartCurrentIndex(currentPoints, radarData, count) {
     var eachAngleArea = 2 * Math.PI / count;
     var currentIndex = -1;
     if (isInExactPieChartArea(currentPoints, radarData.center, radarData.radius)) {
-        (function () {
-            var fixAngle = function fixAngle(angle) {
-                if (angle < 0) {
-                    angle += 2 * Math.PI;
-                }
-                if (angle > 2 * Math.PI) {
-                    angle -= 2 * Math.PI;
-                }
-                return angle;
-            };
-
-            var angle = Math.atan2(radarData.center.y - currentPoints.y, currentPoints.x - radarData.center.x);
-            angle = -1 * angle;
+        var fixAngle = function fixAngle(angle) {
             if (angle < 0) {
                 angle += 2 * Math.PI;
             }
+            if (angle > 2 * Math.PI) {
+                angle -= 2 * Math.PI;
+            }
+            return angle;
+        };
 
-            var angleList = radarData.angleList.map(function (item) {
-                item = fixAngle(-1 * item);
+        var angle = Math.atan2(radarData.center.y - currentPoints.y, currentPoints.x - radarData.center.x);
+        angle = -1 * angle;
+        if (angle < 0) {
+            angle += 2 * Math.PI;
+        }
 
-                return item;
-            });
+        var angleList = radarData.angleList.map(function (item) {
+            item = fixAngle(-1 * item);
 
-            angleList.forEach(function (item, index) {
-                var rangeStart = fixAngle(item - eachAngleArea / 2);
-                var rangeEnd = fixAngle(item + eachAngleArea / 2);
-                if (rangeEnd < rangeStart) {
-                    rangeEnd += 2 * Math.PI;
-                }
-                if (angle >= rangeStart && angle <= rangeEnd || angle + 2 * Math.PI >= rangeStart && angle + 2 * Math.PI <= rangeEnd) {
-                    currentIndex = index;
-                }
-            });
-        })();
+            return item;
+        });
+
+        angleList.forEach(function (item, index) {
+            var rangeStart = fixAngle(item - eachAngleArea / 2);
+            var rangeEnd = fixAngle(item + eachAngleArea / 2);
+            if (rangeEnd < rangeStart) {
+                rangeEnd += 2 * Math.PI;
+            }
+            if (angle >= rangeStart && angle <= rangeEnd || angle + 2 * Math.PI >= rangeStart && angle + 2 * Math.PI <= rangeEnd) {
+                currentIndex = index;
+            }
+        });
     }
 
     return currentIndex;
@@ -388,18 +386,16 @@ function findRadarChartCurrentIndex(currentPoints, radarData, count) {
 function findPieChartCurrentIndex(currentPoints, pieData) {
     var currentIndex = -1;
     if (isInExactPieChartArea(currentPoints, pieData.center, pieData.radius)) {
-        (function () {
-            var angle = Math.atan2(pieData.center.y - currentPoints.y, currentPoints.x - pieData.center.x);
-            if (angle < 0) {
-                angle += 2 * Math.PI;
+        var angle = Math.atan2(pieData.center.y - currentPoints.y, currentPoints.x - pieData.center.x);
+        if (angle < 0) {
+            angle += 2 * Math.PI;
+        }
+        angle = 2 * Math.PI - angle;
+        pieData.series.forEach(function (item, index) {
+            if (angle > item._start_) {
+                currentIndex = index;
             }
-            angle = 2 * Math.PI - angle;
-            pieData.series.forEach(function (item, index) {
-                if (angle > item._start_) {
-                    currentIndex = index;
-                }
-            });
-        })();
+        });
     }
 
     return currentIndex;
@@ -983,7 +979,17 @@ function drawYAxisTitle(title, opts, config, context) {
     context.closePath();
     context.restore();
 }
+function dashedLineTodashedLineTo(context, x, y, startX, startY, dashLength) {
+    dashLength = dashLength === 0 || dashLength === undefined ? dashLength = 5 : dashLength = dashLength;
+    //这个this就是context哈
 
+    //线段数量
+    var dashNum = Math.floor(Math.sqrt(Math.pow(startX - x, 2) + Math.pow(startY - y, 2)) / dashLength);
+    for (var i = 0; i < dashNum; i++) {
+        context[i % 2 === 0 ? "moveTo" : "lineTo"](startX + i * (x - startX) / dashNum, startY + i * (y - startY) / dashNum);
+    }
+    context.stroke();
+}
 function drawColumnDataPoints(series, opts, config, context) {
     var process = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
 
@@ -1211,19 +1217,22 @@ function drawXAxis(categories, opts, config, context) {
     context.setStrokeStyle(opts.xAxis.gridColor || "#cccccc");
     context.setLineWidth(1);
     context.moveTo(startX, startY);
+    //dashedLineTodashedLineTo(context, endX, startY,startX,startY);
     context.lineTo(endX, startY);
     if (opts.xAxis.disableGrid !== true) {
         if (opts.xAxis.type === 'calibration') {
             xAxisPoints.forEach(function (item, index) {
                 if (index > 0) {
                     context.moveTo(item - eachSpacing / 2, startY);
-                    context.lineTo(item - eachSpacing / 2, startY + 4);
+                    dashedLineTodashedLineTo(context, item - eachSpacing / 2, startY + 4, item - eachSpacing / 2, startY);
+                    // context.lineTo(item - eachSpacing / 2, startY + 4);
                 }
             });
         } else {
             xAxisPoints.forEach(function (item, index) {
                 context.moveTo(item, startY);
-                context.lineTo(item, endY);
+                dashedLineTodashedLineTo(context, item, endY, item, startY);
+                // context.lineTo(item, endY);
             });
         }
     }
@@ -1299,7 +1308,11 @@ function drawYAxis(series, opts, config, context) {
     context.setLineWidth(1);
     points.forEach(function (item, index) {
         context.moveTo(startX, item);
-        context.lineTo(endX, item);
+        if (opts.yAxis.lineType === 'dashed') {
+            dashedLineTodashedLineTo(context, endX, item, startX, item);
+        } else {
+            context.lineTo(endX, item);
+        }
     });
     context.closePath();
     context.stroke();
@@ -1767,6 +1780,7 @@ Event.prototype.trigger = function () {
 	}
 };
 
+console.log('123');
 var Charts = function Charts(opts) {
     opts.title = opts.title || {};
     opts.subtitle = opts.subtitle || {};

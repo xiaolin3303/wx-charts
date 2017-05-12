@@ -1,11 +1,22 @@
-import { getRadarDataPoints, getRadarCoordinateSeries, getMaxTextListLength, splitPoints, getPieDataPoints, calYAxisData, getXAxisPoints, getDataPoints, fixColumeData, calLegendData } from './charts-data'
-import { convertCoordinateOrigin, measureText, calRotateTranslate, createCurveControlPoints } from './charts-util'
+import {
+    getRadarDataPoints,
+    getRadarCoordinateSeries,
+    getMaxTextListLength,
+    splitPoints,
+    getPieDataPoints,
+    calYAxisData,
+    getXAxisPoints,
+    getDataPoints,
+    fixColumeData,
+    calLegendData
+} from './charts-data'
+import {convertCoordinateOrigin, measureText, calRotateTranslate, createCurveControlPoints} from './charts-util'
 import Util from '../util/util'
 import drawPointShape from './draw-data-shape'
-import { drawPointText, drawPieText, drawRingTitle, drawRadarLabel } from './draw-data-text'
-import { drawToolTip, drawToolTipSplitLine } from './draw-tooltip'
+import {drawPointText, drawPieText, drawRingTitle, drawRadarLabel} from './draw-data-text'
+import {drawToolTip, drawToolTipSplitLine} from './draw-tooltip'
 
-function drawYAxisTitle (title, opts, config, context) {
+function drawYAxisTitle(title, opts, config, context) {
     let startX = config.xAxisHeight + (opts.height - config.xAxisHeight - measureText(title)) / 2;
     context.save();
     context.beginPath();
@@ -18,15 +29,26 @@ function drawYAxisTitle (title, opts, config, context) {
     context.closePath();
     context.restore();
 }
+function dashedLineTodashedLineTo(context, x, y,startX,startY, dashLength) {
+    dashLength = dashLength === 0 || dashLength === undefined ?
+        dashLength = 5 : dashLength = dashLength;
+    //这个this就是context哈
 
-export function drawColumnDataPoints (series, opts, config, context, process = 1) {
-    let { ranges } = calYAxisData(series, opts, config);
-    let { xAxisPoints, eachSpacing } = getXAxisPoints(opts.categories, opts, config);
+    //线段数量
+    var dashNum = Math.floor(Math.sqrt(Math.pow(startX - x, 2) + Math.pow(startY - y, 2)) / dashLength);
+    for (var i = 0; i < dashNum; i++) {
+        context[i % 2 === 0 ? "moveTo" : "lineTo"](startX + i * (x - startX) / dashNum, startY + i * (y - startY) / dashNum);
+    }
+    context.stroke();
+};
+export function drawColumnDataPoints(series, opts, config, context, process = 1) {
+    let {ranges} = calYAxisData(series, opts, config);
+    let {xAxisPoints, eachSpacing} = getXAxisPoints(opts.categories, opts, config);
     let minRange = ranges.pop();
     let maxRange = ranges.shift();
     let endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
 
-    series.forEach(function(eachSeries, seriesIndex) {
+    series.forEach(function (eachSeries, seriesIndex) {
         let data = eachSeries.data;
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
         points = fixColumeData(points, eachSpacing, series.length, seriesIndex, config, opts);
@@ -34,8 +56,8 @@ export function drawColumnDataPoints (series, opts, config, context, process = 1
         // 绘制柱状数据图
         context.beginPath();
         context.setFillStyle(eachSeries.color);
-        points.forEach(function(item, index) {
-            if (item !== null) { 
+        points.forEach(function (item, index) {
+            if (item !== null) {
                 let startX = item.x - item.width / 2 + 1;
                 let height = opts.height - item.y - config.padding - config.xAxisHeight - config.legendHeight;
                 context.moveTo(startX, item.y);
@@ -45,7 +67,7 @@ export function drawColumnDataPoints (series, opts, config, context, process = 1
         context.closePath();
         context.fill();
     });
-    series.forEach(function(eachSeries, seriesIndex) {
+    series.forEach(function (eachSeries, seriesIndex) {
         let data = eachSeries.data;
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
         points = fixColumeData(points, eachSpacing, series.length, seriesIndex, config, opts);
@@ -57,9 +79,9 @@ export function drawColumnDataPoints (series, opts, config, context, process = 1
     return xAxisPoints;
 }
 
-export function drawAreaDataPoints (series, opts, config, context, process = 1) {
-    let { ranges } = calYAxisData(series, opts, config);
-    let { xAxisPoints, eachSpacing } = getXAxisPoints(opts.categories, opts, config);
+export function drawAreaDataPoints(series, opts, config, context, process = 1) {
+    let {ranges} = calYAxisData(series, opts, config);
+    let {xAxisPoints, eachSpacing} = getXAxisPoints(opts.categories, opts, config);
     let minRange = ranges.pop();
     let maxRange = ranges.shift();
     let endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
@@ -69,7 +91,7 @@ export function drawAreaDataPoints (series, opts, config, context, process = 1) 
         drawToolTipSplitLine(opts.tooltip.offset.x, opts, config, context);
     }
 
-    series.forEach(function(eachSeries, seriesIndex) {
+    series.forEach(function (eachSeries, seriesIndex) {
         let data = eachSeries.data;
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
         calPoints.push(points);
@@ -86,17 +108,17 @@ export function drawAreaDataPoints (series, opts, config, context, process = 1) 
             if (points.length > 1) {
                 let firstPoint = points[0];
                 let lastPoint = points[points.length - 1];
-                
+
                 context.moveTo(firstPoint.x, firstPoint.y);
                 if (opts.extra.lineStyle === 'curve') {
-                    points.forEach(function(item, index) {
+                    points.forEach(function (item, index) {
                         if (index > 0) {
                             let ctrlPoint = createCurveControlPoints(points, index - 1);
-                            context.bezierCurveTo(ctrlPoint.ctrA.x, ctrlPoint.ctrA.y, ctrlPoint.ctrB.x,ctrlPoint.ctrB.y, item.x, item.y);
+                            context.bezierCurveTo(ctrlPoint.ctrA.x, ctrlPoint.ctrA.y, ctrlPoint.ctrB.x, ctrlPoint.ctrB.y, item.x, item.y);
                         }
                     });
                 } else {
-                    points.forEach(function(item, index) {
+                    points.forEach(function (item, index) {
                         if (index > 0) {
                             context.lineTo(item.x, item.y);
                         }
@@ -119,13 +141,13 @@ export function drawAreaDataPoints (series, opts, config, context, process = 1) 
             context.setGlobalAlpha(1);
         });
 
-        if (opts.dataPointShape !== false) {          
+        if (opts.dataPointShape !== false) {
             let shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
             drawPointShape(points, eachSeries.color, shape, context);
         }
     });
     if (opts.dataLabel !== false && process === 1) {
-        series.forEach(function(eachSeries, seriesIndex) {
+        series.forEach(function (eachSeries, seriesIndex) {
             let data = eachSeries.data;
             let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
             drawPointText(points, eachSeries, config, context);
@@ -142,9 +164,9 @@ export function drawAreaDataPoints (series, opts, config, context, process = 1) 
     };
 }
 
-export function drawLineDataPoints (series, opts, config, context, process = 1) {
-    let { ranges } = calYAxisData(series, opts, config);
-    let { xAxisPoints, eachSpacing } = getXAxisPoints(opts.categories, opts, config);
+export function drawLineDataPoints(series, opts, config, context, process = 1) {
+    let {ranges} = calYAxisData(series, opts, config);
+    let {xAxisPoints, eachSpacing} = getXAxisPoints(opts.categories, opts, config);
     let minRange = ranges.pop();
     let maxRange = ranges.shift();
     let calPoints = [];
@@ -153,7 +175,7 @@ export function drawLineDataPoints (series, opts, config, context, process = 1) 
         drawToolTipSplitLine(opts.tooltip.offset.x, opts, config, context);
     }
 
-    series.forEach(function(eachSeries, seriesIndex) {
+    series.forEach(function (eachSeries, seriesIndex) {
         let data = eachSeries.data;
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
         calPoints.push(points);
@@ -169,14 +191,14 @@ export function drawLineDataPoints (series, opts, config, context, process = 1) 
             } else {
                 context.moveTo(points[0].x, points[0].y);
                 if (opts.extra.lineStyle === 'curve') {
-                    points.forEach(function(item, index) {
+                    points.forEach(function (item, index) {
                         if (index > 0) {
                             let ctrlPoint = createCurveControlPoints(points, index - 1);
-                            context.bezierCurveTo(ctrlPoint.ctrA.x, ctrlPoint.ctrA.y, ctrlPoint.ctrB.x,ctrlPoint.ctrB.y, item.x, item.y);
+                            context.bezierCurveTo(ctrlPoint.ctrA.x, ctrlPoint.ctrA.y, ctrlPoint.ctrB.x, ctrlPoint.ctrB.y, item.x, item.y);
                         }
                     });
                 } else {
-                    points.forEach(function(item, index) {
+                    points.forEach(function (item, index) {
                         if (index > 0) {
                             context.lineTo(item.x, item.y);
                         }
@@ -188,13 +210,13 @@ export function drawLineDataPoints (series, opts, config, context, process = 1) 
             context.stroke();
         });
 
-        if (opts.dataPointShape !== false) {        
+        if (opts.dataPointShape !== false) {
             let shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
             drawPointShape(points, eachSeries.color, shape, context);
         }
     });
     if (opts.dataLabel !== false && process === 1) {
-        series.forEach(function(eachSeries, seriesIndex) {
+        series.forEach(function (eachSeries, seriesIndex) {
             let data = eachSeries.data;
             let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
             drawPointText(points, eachSeries, config, context);
@@ -211,8 +233,8 @@ export function drawLineDataPoints (series, opts, config, context, process = 1) 
     };
 }
 
-export function drawXAxis (categories, opts, config, context) {
-    let { xAxisPoints, startX, endX, eachSpacing } = getXAxisPoints(categories, opts, config);
+export function drawXAxis(categories, opts, config, context) {
+    let {xAxisPoints, startX, endX, eachSpacing} = getXAxisPoints(categories, opts, config);
     let startY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
     let endY = startY + config.xAxisLineHeight;
 
@@ -220,19 +242,22 @@ export function drawXAxis (categories, opts, config, context) {
     context.setStrokeStyle(opts.xAxis.gridColor || "#cccccc");
     context.setLineWidth(1);
     context.moveTo(startX, startY);
+    //dashedLineTodashedLineTo(context, endX, startY,startX,startY);
     context.lineTo(endX, startY);
     if (opts.xAxis.disableGrid !== true) {
         if (opts.xAxis.type === 'calibration') {
-            xAxisPoints.forEach(function(item, index) {
-                if (index > 0) {                
+            xAxisPoints.forEach(function (item, index) {
+                if (index > 0) {
                     context.moveTo(item - eachSpacing / 2, startY);
-                    context.lineTo(item - eachSpacing / 2, startY + 4);
+                    dashedLineTodashedLineTo(context, item - eachSpacing / 2, startY + 4,item - eachSpacing / 2, startY);
+                    // context.lineTo(item - eachSpacing / 2, startY + 4);
                 }
             });
         } else {
-            xAxisPoints.forEach(function(item, index) {
+            xAxisPoints.forEach(function (item, index) {
                 context.moveTo(item, startY);
-                context.lineTo(item, endY);
+                dashedLineTodashedLineTo(context, item, endY,item, startY);
+                // context.lineTo(item, endY);
             });
         }
     }
@@ -252,21 +277,21 @@ export function drawXAxis (categories, opts, config, context) {
         context.beginPath();
         context.setFontSize(config.fontSize);
         context.setFillStyle(opts.xAxis.fontColor || '#666666');
-        categories.forEach(function(item, index) {
+        categories.forEach(function (item, index) {
             let offset = eachSpacing / 2 - measureText(item) / 2;
             context.fillText(item, xAxisPoints[index] + offset, startY + config.fontSize + 5);
         });
         context.closePath();
         context.stroke();
     } else {
-        categories.forEach(function(item, index) {
+        categories.forEach(function (item, index) {
             context.save();
             context.beginPath();
             context.setFontSize(config.fontSize);
             context.setFillStyle(opts.xAxis.fontColor || '#666666');
             let textWidth = measureText(item);
             let offset = eachSpacing / 2 - textWidth;
-            let { transX, transY }  = calRotateTranslate(xAxisPoints[index] + eachSpacing / 2, startY + config.fontSize / 2 + 5, opts.height);
+            let {transX, transY} = calRotateTranslate(xAxisPoints[index] + eachSpacing / 2, startY + config.fontSize / 2 + 5, opts.height);
             context.rotate(-1 * config._xAxisTextAngle_);
             context.translate(transX, transY);
             context.fillText(item, xAxisPoints[index] + offset, startY + config.fontSize + 5);
@@ -277,11 +302,11 @@ export function drawXAxis (categories, opts, config, context) {
     }
 }
 
-export function drawYAxis (series, opts, config, context) {
+export function drawYAxis(series, opts, config, context) {
     if (opts.yAxis.disabled === true) {
         return;
     }
-    let { rangesFormat } = calYAxisData(series, opts, config);
+    let {rangesFormat} = calYAxisData(series, opts, config);
     let yAxisTotalWidth = config.yAxisWidth + config.yAxisTitleWidth;
 
     let spacingValid = opts.height - 2 * config.padding - config.xAxisHeight - config.legendHeight;
@@ -299,28 +324,32 @@ export function drawYAxis (series, opts, config, context) {
     context.beginPath();
     context.setStrokeStyle(opts.yAxis.gridColor || "#cccccc")
     context.setLineWidth(1);
-    points.forEach(function(item, index) {
+    points.forEach(function (item, index) {
         context.moveTo(startX, item);
-        context.lineTo(endX, item);
+        if(opts.yAxis.lineType==='dashed'){
+            dashedLineTodashedLineTo(context,endX, item,startX, item);
+        } else{
+            context.lineTo(endX, item);
+        }
     });
     context.closePath();
     context.stroke();
     context.beginPath();
     context.setFontSize(config.fontSize);
     context.setFillStyle(opts.yAxis.fontColor || '#666666')
-    rangesFormat.forEach(function(item, index) {
+    rangesFormat.forEach(function (item, index) {
         let pos = points[index] ? points[index] : endY;
         context.fillText(item, config.padding + config.yAxisTitleWidth, pos + config.fontSize / 2);
     });
     context.closePath();
     context.stroke();
 
-    if (opts.yAxis.title) {  
+    if (opts.yAxis.title) {
         drawYAxisTitle(opts.yAxis.title, opts, config, context);
     }
 }
 
-export function drawLegend (series, opts, config, context) {
+export function drawLegend(series, opts, config, context) {
     if (!opts.legend) {
         return;
     }
@@ -328,7 +357,7 @@ export function drawLegend (series, opts, config, context) {
     // the spacing between shape and text in each legend is the `padding`
     // each legend spacing is the `padding`
     // legend margin top `config.padding`
-    let { legendList, legendHeight } = calLegendData(series, opts, config);
+    let {legendList, legendHeight} = calLegendData(series, opts, config);
     let padding = 5;
     let marginTop = 8;
     let shapeWidth = 15;
@@ -385,11 +414,11 @@ export function drawLegend (series, opts, config, context) {
             context.fillText(item.name, startX, startY + 9);
             context.closePath();
             context.stroke();
-            startX += measureText(item.name) + 2 * padding; 
+            startX += measureText(item.name) + 2 * padding;
         });
     });
 }
-export function drawPieDataPoints (series, opts, config, context, process = 1) {
+export function drawPieDataPoints(series, opts, config, context, process = 1) {
     series = getPieDataPoints(series, process);
     let centerPosition = {
         x: opts.width / 2,
@@ -404,7 +433,7 @@ export function drawPieDataPoints (series, opts, config, context, process = 1) {
     } else {
         radius -= 2 * config.padding;
     }
-    series.forEach(function(eachSeries) {
+    series.forEach(function (eachSeries) {
         context.beginPath();
         context.setLineWidth(2);
         context.setStrokeStyle('#ffffff');
@@ -413,7 +442,7 @@ export function drawPieDataPoints (series, opts, config, context, process = 1) {
         context.arc(centerPosition.x, centerPosition.y, radius, eachSeries._start_, eachSeries._start_ + 2 * eachSeries._proportion_ * Math.PI);
         context.closePath();
         context.fill();
-        if (opts.disablePieStroke !== true) {        
+        if (opts.disablePieStroke !== true) {
             context.stroke();
         }
     });
@@ -446,8 +475,8 @@ export function drawPieDataPoints (series, opts, config, context, process = 1) {
     }
 }
 
-export function drawRadarDataPoints (series, opts, config, context, process = 1) {
-    let radarOption = opts.extra.radar || {};    
+export function drawRadarDataPoints(series, opts, config, context, process = 1) {
+    let radarOption = opts.extra.radar || {};
     let coordinateAngle = getRadarCoordinateSeries(opts.categories.length);
     let centerPosition = {
         x: opts.width / 2,
@@ -484,7 +513,7 @@ export function drawRadarDataPoints (series, opts, config, context, process = 1)
             if (index === 0) {
                 startPos = pos;
                 context.moveTo(pos.x, pos.y);
-            } else {            
+            } else {
                 context.lineTo(pos.x, pos.y);
             }
         });
@@ -500,7 +529,7 @@ export function drawRadarDataPoints (series, opts, config, context, process = 1)
         context.setFillStyle(eachSeries.color);
         context.setGlobalAlpha(0.6);
         eachSeries.data.forEach((item, index) => {
-            if (index === 0) {            
+            if (index === 0) {
                 context.moveTo(item.position.x, item.position.y);
             } else {
                 context.lineTo(item.position.x, item.position.y);
@@ -510,7 +539,7 @@ export function drawRadarDataPoints (series, opts, config, context, process = 1)
         context.fill();
         context.setGlobalAlpha(1);
 
-        if (opts.dataPointShape !== false) {        
+        if (opts.dataPointShape !== false) {
             let shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
             let points = eachSeries.data.map(item => {
                 return item.position;
@@ -528,6 +557,6 @@ export function drawRadarDataPoints (series, opts, config, context, process = 1)
     }
 }
 
-export function drawCanvas (opts, context) {
+export function drawCanvas(opts, context) {
     context.draw();
 }
