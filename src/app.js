@@ -3,7 +3,6 @@ import { assign } from './util/polyfill/index';
 import drawCharts from './components/draw-charts';
 import Event from './util/event';
 import { findCurrentIndex, findRadarChartCurrentIndex, findPieChartCurrentIndex, getSeriesDataItem, getToolTipData } from  './components/charts-data'
-console.log('123');
 let Charts = function(opts) {
     opts.title = opts.title || {};
     opts.subtitle = opts.subtitle || {};

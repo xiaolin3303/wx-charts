@@ -246,22 +246,19 @@ export function drawXAxis(categories, opts, config, context) {
     context.setStrokeStyle(opts.xAxis.gridColor || "#cccccc");
     context.setLineWidth(1);
     context.moveTo(startX, startY);
-    //dashedLineTodashedLineTo(context, endX, startY,startX,startY);
     context.lineTo(endX, startY);
     if (opts.xAxis.disableGrid !== true) {
         if (opts.xAxis.type === 'calibration') {
             xAxisPoints.forEach(function (item, index) {
                 if (index > 0) {
                     context.moveTo(item - eachSpacing / 2, startY);
-                    dashedLineTodashedLineTo(context, item - eachSpacing / 2, startY + 4,item - eachSpacing / 2, startY);
-                    // context.lineTo(item - eachSpacing / 2, startY + 4);
+                    context.lineTo(item - eachSpacing / 2, startY + 4);
                 }
             });
         } else {
             xAxisPoints.forEach(function (item, index) {
                 context.moveTo(item, startY);
-                dashedLineTodashedLineTo(context, item, endY,item, startY);
-                // context.lineTo(item, endY);
+                context.lineTo(item, endY);
             });
         }
     }
