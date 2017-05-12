@@ -3,7 +3,6 @@ import { assign } from './util/polyfill/index';
 import drawCharts from './components/draw-charts';
 import Event from './util/event';
 import { findCurrentIndex, findRadarChartCurrentIndex, findPieChartCurrentIndex, getSeriesDataItem, getToolTipData } from  './components/charts-data'
-
 let Charts = function(opts) {
     opts.title = opts.title || {};
     opts.subtitle = opts.subtitle || {};
@@ -61,7 +60,7 @@ Charts.prototype.getCurrentDataIndex = function (e) {
 }
 
 Charts.prototype.showToolTip = function (e, option = {}) {
-    if (this.opts.type === 'line' || this.opts.type === 'area') {
+    if (this.opts.type === 'line' || this.opts.type === 'area' || this.opts.type === 'column') {
         let index = this.getCurrentDataIndex(e);
         let opts = assign({}, this.opts, {animation: false});
         if (index > -1) {
