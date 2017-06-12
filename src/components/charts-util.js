@@ -27,6 +27,31 @@ function findRange (num, type, limit) {
     return num / multiple;
 }
 
+export function isInAngleRange(angle, startAngle, endAngle) {
+    function adjust (angle) {
+        while (angle < 0) {
+            angle += 2 * Math.PI;
+        }
+        while (angle > 2 * Math.PI) {
+            angle -= 2 * Math.PI;
+        }
+
+        return angle;
+    }
+
+    angle = adjust(angle);
+    startAngle = adjust(startAngle);
+    endAngle = adjust(endAngle);
+    if (startAngle > endAngle) {
+        endAngle += 2 * Math.PI;
+        if (angle < startAngle) {        
+            angle += 2 * Math.PI;
+        }
+    }
+
+    return angle >= startAngle && angle <= endAngle;
+}
+
 export function calRotateTranslate(x, y, h) {
     var xv = x;
     var yv = h - y;

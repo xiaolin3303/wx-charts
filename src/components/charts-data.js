@@ -1,6 +1,6 @@
 import { getDataRange } from './charts-util'
 import Util from '../util/util'
-import { measureText, convertCoordinateOrigin } from './charts-util'
+import { measureText, convertCoordinateOrigin, isInAngleRange } from './charts-util'
 
 function dataCombine(series) {
     return series.reduce(function(a, b) {
@@ -129,15 +129,14 @@ export function findPieChartCurrentIndex (currentPoints, pieData) {
     let currentIndex = -1;
     if (isInExactPieChartArea(currentPoints, pieData.center, pieData.radius)) {
         let angle = Math.atan2(pieData.center.y - currentPoints.y, currentPoints.x - pieData.center.x);
-        if (angle < 0) {
-            angle += 2 * Math.PI;
-        }
-        angle = 2 * Math.PI - angle;
-        pieData.series.forEach((item, index) => {
-            if (angle > item._start_) {
-                currentIndex = index;
+        angle = -angle;
+        for (let i = 0, len = pieData.series.length; i < len; i++) {
+            let item = pieData.series[i];
+            if (isInAngleRange(angle, item._start_, item._start_ + item._proportion_ * 2 * Math.PI)) {
+                currentIndex = i;
+                break;
             }
-        });
+        }
     }
 
     return currentIndex;

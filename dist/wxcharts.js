@@ -122,6 +122,31 @@ function findRange(num, type, limit) {
     return num / multiple;
 }
 
+function isInAngleRange(angle, startAngle, endAngle) {
+    function adjust(angle) {
+        while (angle < 0) {
+            angle += 2 * Math.PI;
+        }
+        while (angle > 2 * Math.PI) {
+            angle -= 2 * Math.PI;
+        }
+
+        return angle;
+    }
+
+    angle = adjust(angle);
+    startAngle = adjust(startAngle);
+    endAngle = adjust(endAngle);
+    if (startAngle > endAngle) {
+        endAngle += 2 * Math.PI;
+        if (angle < startAngle) {
+            angle += 2 * Math.PI;
+        }
+    }
+
+    return angle >= startAngle && angle <= endAngle;
+}
+
 function calRotateTranslate(x, y, h) {
     var xv = x;
     var yv = h - y;
@@ -388,18 +413,15 @@ function findRadarChartCurrentIndex(currentPoints, radarData, count) {
 function findPieChartCurrentIndex(currentPoints, pieData) {
     var currentIndex = -1;
     if (isInExactPieChartArea(currentPoints, pieData.center, pieData.radius)) {
-        (function () {
-            var angle = Math.atan2(pieData.center.y - currentPoints.y, currentPoints.x - pieData.center.x);
-            if (angle < 0) {
-                angle += 2 * Math.PI;
+        var angle = Math.atan2(pieData.center.y - currentPoints.y, currentPoints.x - pieData.center.x);
+        angle = -angle;
+        for (var i = 0, len = pieData.series.length; i < len; i++) {
+            var item = pieData.series[i];
+            if (isInAngleRange(angle, item._start_, item._start_ + item._proportion_ * 2 * Math.PI)) {
+                currentIndex = i;
+                break;
             }
-            angle = 2 * Math.PI - angle;
-            pieData.series.forEach(function (item, index) {
-                if (angle > item._start_) {
-                    currentIndex = index;
-                }
-            });
-        })();
+        }
     }
 
     return currentIndex;
@@ -1394,6 +1416,7 @@ function drawLegend(series, opts, config, context) {
 function drawPieDataPoints(series, opts, config, context) {
     var process = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
 
+    var pieOption = opts.extra.pie || {};
     series = getPieDataPoints(series, process);
     var centerPosition = {
         x: opts.width / 2,
@@ -1405,6 +1428,10 @@ function drawPieDataPoints(series, opts, config, context) {
     } else {
         radius -= 2 * config.padding;
     }
+    series = series.map(function (eachSeries) {
+        eachSeries._start_ += (pieOption.offsetAngle || 0) * Math.PI / 180;
+        return eachSeries;
+    });
     series.forEach(function (eachSeries) {
         context.beginPath();
         context.setLineWidth(2);

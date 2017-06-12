@@ -390,6 +390,7 @@ export function drawLegend (series, opts, config, context) {
     });
 }
 export function drawPieDataPoints (series, opts, config, context, process = 1) {
+    let pieOption = opts.extra.pie || {};
     series = getPieDataPoints(series, process);
     let centerPosition = {
         x: opts.width / 2,
@@ -404,6 +405,10 @@ export function drawPieDataPoints (series, opts, config, context, process = 1) {
     } else {
         radius -= 2 * config.padding;
     }
+    series = series.map((eachSeries) => {
+        eachSeries._start_ += (pieOption.offsetAngle || 0) * Math.PI / 180;
+        return eachSeries;
+    });
     series.forEach(function(eachSeries) {
         context.beginPath();
         context.setLineWidth(2);
