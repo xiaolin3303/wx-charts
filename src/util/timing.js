@@ -4,7 +4,7 @@ export default {
     },
 
     easeOut: function(pos){
-        return (Math.pow((pos - 1), 3) +1);
+        return (Math.pow((pos - 1), 3) + 1);
     },
 
     easeInOut: function(pos){

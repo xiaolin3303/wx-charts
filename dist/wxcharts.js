@@ -163,6 +163,15 @@ function calRotateTranslate(x, y, h) {
 }
 
 function createCurveControlPoints(points, i) {
+
+    function isNotMiddlePoint(points, i) {
+        if (points[i - 1] && points[i + 1]) {
+            return points[i].y >= Math.max(points[i - 1].y, points[i + 1].y) || points[i].y <= Math.min(points[i - 1].y, points[i + 1].y);
+        } else {
+            return false;
+        }
+    }
+
     var a = 0.2;
     var b = 0.2;
     var pAx = null;
@@ -185,6 +194,15 @@ function createCurveControlPoints(points, i) {
         pBx = points[i + 1].x - (points[i + 2].x - points[i].x) * b;
         pBy = points[i + 1].y - (points[i + 2].y - points[i].y) * b;
     }
+
+    // fix issue https://github.com/xiaolin3303/wx-charts/issues/79
+    if (isNotMiddlePoint(points, i + 1)) {
+        pBy = points[i + 1].y;
+    }
+    if (isNotMiddlePoint(points, i)) {
+        pAy = points[i].y;
+    }
+
     return {
         ctrA: { x: pAx, y: pAy },
         ctrB: { x: pBx, y: pBy }
