@@ -1478,7 +1478,18 @@ function drawPieDataPoints(series, opts, config, context) {
     }
 
     if (opts.dataLabel !== false && process === 1) {
-        drawPieText(series, opts, config, context, radius, centerPosition);
+        // fix https://github.com/xiaolin3303/wx-charts/issues/132
+        var valid = false;
+        for (var i = 0, len = series.length; i < len; i++) {
+            if (series[i].data > 0) {
+                valid = true;
+                break;
+            }
+        }
+
+        if (valid) {
+            drawPieText(series, opts, config, context, radius, centerPosition);
+        }
     }
 
     if (process === 1 && opts.type === 'ring') {
