@@ -64,11 +64,12 @@ export function getToolTipData(seriesData, calPoints, index) {
     return { textList, offset };
 }
 
-export function findCurrentIndex (currentPoints, xAxisPoints, opts, config) {
+export function findCurrentIndex (currentPoints, xAxisPoints, opts, config, distance) {
+    distance = distance || 0;
     let currentIndex = -1;
     if (isInExactChartArea(currentPoints, opts, config)) {
         xAxisPoints.forEach((item, index) => {
-            if (currentPoints.x > item) {
+            if (currentPoints.x > item + distance) {
                 currentIndex = index;
             }
         });
@@ -283,7 +284,7 @@ export function fixColumeData(points, eachSpacing, columnLen, index, config, opt
             return null;
         }
         item.width = (eachSpacing - 2 * config.columePadding) / columnLen;
-        
+
         if (opts.extra.column && opts.extra.column.width && +opts.extra.column.width > 0) {
             // customer column width
             item.width = Math.min(item.width, +opts.extra.column.width);
@@ -301,10 +302,16 @@ export function fixColumeData(points, eachSpacing, columnLen, index, config, opt
 export function getXAxisPoints(categories, opts, config) {
     let yAxisTotalWidth = config.yAxisWidth + config.yAxisTitleWidth;
     let spacingValid = opts.width - 2 * config.padding - yAxisTotalWidth;
-    let eachSpacing = spacingValid / categories.length;
+    let eachSpacing = spacingValid / (opts.scrollEnable ? 5 : categories.length);
 
     let xAxisPoints = [];
-    let startX = config.padding + yAxisTotalWidth;
+    let startX;
+    if (opts.scrollEnable) {
+        startX = -eachSpacing * (categories.length - 5);
+    } else {
+        startX = config.padding + yAxisTotalWidth;
+    }
+
     let endX = opts.width - config.padding;
     categories.forEach(function(item, index) {
         xAxisPoints.push(startX + index * eachSpacing);
@@ -320,7 +327,7 @@ export function getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing
     data.forEach(function(item, index) {
         if (item === null) {
             points.push(null);
-        } else {        
+        } else {
             let point = {};
             point.x = xAxisPoints[index] + Math.round(eachSpacing / 2);
             let height = validHeight * (item - minRange) / (maxRange - minRange);

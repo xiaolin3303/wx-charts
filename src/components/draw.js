@@ -19,6 +19,11 @@ function drawYAxisTitle (title, opts, config, context) {
     context.restore();
 }
 
+function drawYAxisBackground(startX,endY,context) {
+    context.setFillStyle('white');
+    context.fillRect(0, 0, startX, endY + 20);
+}
+
 export function drawColumnDataPoints (series, opts, config, context, process = 1) {
     let { ranges } = calYAxisData(series, opts, config);
     let { xAxisPoints, eachSpacing } = getXAxisPoints(opts.categories, opts, config);
@@ -35,7 +40,7 @@ export function drawColumnDataPoints (series, opts, config, context, process = 1
         context.beginPath();
         context.setFillStyle(eachSeries.color);
         points.forEach(function(item, index) {
-            if (item !== null) { 
+            if (item !== null) {
                 let startX = item.x - item.width / 2 + 1;
                 let height = opts.height - item.y - config.padding - config.xAxisHeight - config.legendHeight;
                 context.moveTo(startX, item.y);
@@ -86,7 +91,7 @@ export function drawAreaDataPoints (series, opts, config, context, process = 1) 
             if (points.length > 1) {
                 let firstPoint = points[0];
                 let lastPoint = points[points.length - 1];
-                
+
                 context.moveTo(firstPoint.x, firstPoint.y);
                 if (opts.extra.lineStyle === 'curve') {
                     points.forEach(function(item, index) {
@@ -119,7 +124,7 @@ export function drawAreaDataPoints (series, opts, config, context, process = 1) 
             context.setGlobalAlpha(1);
         });
 
-        if (opts.dataPointShape !== false) {          
+        if (opts.dataPointShape !== false) {
             let shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
             drawPointShape(points, eachSeries.color, shape, context);
         }
@@ -155,6 +160,7 @@ export function drawLineDataPoints (series, opts, config, context, process = 1) 
 
     series.forEach(function(eachSeries, seriesIndex) {
         let data = eachSeries.data;
+        var areaStyle = eachSeries.areaStyle;
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
         calPoints.push(points);
         let splitPointList = splitPoints(points);
@@ -182,13 +188,27 @@ export function drawLineDataPoints (series, opts, config, context, process = 1) 
                         }
                     });
                 }
-                context.moveTo(points[0].x, points[0].y);
+                // 暂时注释掉，为了显示图表的区域颜色
+                // context.moveTo(points[0].x, points[0].y);
+            }
+
+            var startY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
+            if (areaStyle) {
+                context.stroke();
+                context.setLineWidth(0.0001);
+                context.lineTo(points[points.length - 1].x,startY);
+                context.lineTo(points[0].x,startY);
+                context.lineTo(points[0].x,points[0].y);
             }
             context.closePath();
+            if (areaStyle && areaStyle.color) {
+                context.setFillStyle(areaStyle.color);
+                context.fill();
+            }
             context.stroke();
         });
 
-        if (opts.dataPointShape !== false) {        
+        if (opts.dataPointShape !== false) {
             let shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
             drawPointShape(points, eachSeries.color, shape, context);
         }
@@ -224,7 +244,7 @@ export function drawXAxis (categories, opts, config, context) {
     if (opts.xAxis.disableGrid !== true) {
         if (opts.xAxis.type === 'calibration') {
             xAxisPoints.forEach(function(item, index) {
-                if (index > 0) {                
+                if (index > 0) {
                     context.moveTo(item - eachSpacing / 2, startY);
                     context.lineTo(item - eachSpacing / 2, startY + 4);
                 }
@@ -291,21 +311,23 @@ export function drawYAxis (series, opts, config, context) {
     let startY = config.padding;
     let endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
 
+    drawYAxisBackground(startX,endY,context);
+
     let points = [];
     for (let i = 0; i < config.yAxisSplit; i++) {
         points.push(config.padding + eachSpacing * i);
     }
 
     context.beginPath();
-    context.setStrokeStyle(opts.yAxis.gridColor || "#cccccc")
-    context.setLineWidth(1);
-    points.forEach(function(item, index) {
-        context.moveTo(startX, item);
-        context.lineTo(endX, item);
-    });
-    context.closePath();
-    context.stroke();
-    context.beginPath();
+    // context.setStrokeStyle(opts.yAxis.gridColor || "#cccccc")
+    // context.setLineWidth(1);
+    // points.forEach(function(item, index) {
+    //     context.moveTo(startX, item);
+    //     context.lineTo(endX, item);
+    // });
+    // context.closePath();
+    // context.stroke();
+    // context.beginPath();
     context.setFontSize(config.fontSize);
     context.setFillStyle(opts.yAxis.fontColor || '#666666')
     rangesFormat.forEach(function(item, index) {
@@ -315,9 +337,39 @@ export function drawYAxis (series, opts, config, context) {
     context.closePath();
     context.stroke();
 
-    if (opts.yAxis.title) {  
+    if (opts.yAxis.title) {
         drawYAxisTitle(opts.yAxis.title, opts, config, context);
     }
+}
+
+export function drawYAxisLine(series, opts, config, context) {
+    if (opts.yAxis.disabled === true) {
+        return;
+    }
+
+    var yAxisTotalWidth = config.yAxisWidth + config.yAxisTitleWidth;
+
+    var spacingValid = opts.height - 2 * config.padding - config.xAxisHeight - config.legendHeight;
+    var eachSpacing = Math.floor(spacingValid / config.yAxisSplit);
+    var startX = config.padding + yAxisTotalWidth;
+    var endX = opts.width - config.padding;
+    var startY = config.padding;
+    var endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
+
+    var points = [];
+    for (var i = 0; i < config.yAxisSplit; i++) {
+        points.push(config.padding + eachSpacing * i);
+    }
+
+    context.beginPath();
+    context.setStrokeStyle(opts.yAxis.gridColor || "#cccccc");
+    context.setLineWidth(1);
+    points.forEach(function (item, index) {
+        context.moveTo(startX, item);
+        context.lineTo(endX, item);
+    });
+    context.closePath();
+    context.stroke();
 }
 
 export function drawLegend (series, opts, config, context) {
@@ -385,7 +437,7 @@ export function drawLegend (series, opts, config, context) {
             context.fillText(item.name, startX, startY + 9);
             context.closePath();
             context.stroke();
-            startX += measureText(item.name) + 2 * padding; 
+            startX += measureText(item.name) + 2 * padding;
         });
     });
 }
@@ -418,7 +470,7 @@ export function drawPieDataPoints (series, opts, config, context, process = 1) {
         context.arc(centerPosition.x, centerPosition.y, radius, eachSeries._start_, eachSeries._start_ + 2 * eachSeries._proportion_ * Math.PI);
         context.closePath();
         context.fill();
-        if (opts.disablePieStroke !== true) {        
+        if (opts.disablePieStroke !== true) {
             context.stroke();
         }
     });
@@ -463,7 +515,7 @@ export function drawPieDataPoints (series, opts, config, context, process = 1) {
 }
 
 export function drawRadarDataPoints (series, opts, config, context, process = 1) {
-    let radarOption = opts.extra.radar || {};    
+    let radarOption = opts.extra.radar || {};
     let coordinateAngle = getRadarCoordinateSeries(opts.categories.length);
     let centerPosition = {
         x: opts.width / 2,
@@ -500,7 +552,7 @@ export function drawRadarDataPoints (series, opts, config, context, process = 1)
             if (index === 0) {
                 startPos = pos;
                 context.moveTo(pos.x, pos.y);
-            } else {            
+            } else {
                 context.lineTo(pos.x, pos.y);
             }
         });
@@ -516,7 +568,7 @@ export function drawRadarDataPoints (series, opts, config, context, process = 1)
         context.setFillStyle(eachSeries.color);
         context.setGlobalAlpha(0.6);
         eachSeries.data.forEach((item, index) => {
-            if (index === 0) {            
+            if (index === 0) {
                 context.moveTo(item.position.x, item.position.y);
             } else {
                 context.lineTo(item.position.x, item.position.y);
@@ -526,7 +578,7 @@ export function drawRadarDataPoints (series, opts, config, context, process = 1)
         context.fill();
         context.setGlobalAlpha(1);
 
-        if (opts.dataPointShape !== false) {        
+        if (opts.dataPointShape !== false) {
             let shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
             let points = eachSeries.data.map(item => {
                 return item.position;
