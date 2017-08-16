@@ -342,10 +342,12 @@ function getRadarCoordinateSeries(length) {
     });
 }
 
-function getToolTipData(seriesData, calPoints, index) {
+function getToolTipData(seriesData, calPoints, index, categories) {
+    var option = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
+
     var textList = seriesData.map(function (item) {
         return {
-            text: item.name + ': ' + item.data,
+            text: option.format ? option.format(item, categories[index]) : item.name + ': ' + item.data,
             color: item.color
         };
     });
@@ -1895,7 +1897,7 @@ Charts.prototype.showToolTip = function (e) {
             if (seriesData.length === 0) {
                 drawCharts.call(this, opts.type, opts, this.config, this.context);
             } else {
-                var _getToolTipData = getToolTipData(seriesData, this.chartData.calPoints, index),
+                var _getToolTipData = getToolTipData(seriesData, this.chartData.calPoints, index, this.opts.categories, option),
                     textList = _getToolTipData.textList,
                     offset = _getToolTipData.offset;
 

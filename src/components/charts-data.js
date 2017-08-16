@@ -38,10 +38,10 @@ export function getRadarCoordinateSeries(length) {
     return CoordinateSeries.map(item => -1 * item + Math.PI / 2);
 }
 
-export function getToolTipData(seriesData, calPoints, index) {
+export function getToolTipData(seriesData, calPoints, index, categories, option = {}) {
     let textList = seriesData.map(item => {
         return {
-            text: `${item.name}: ${item.data}`,
+            text: option.format ? option.format(item, categories[index]) : `${item.name}: ${item.data}`,
             color: item.color
         }
     });

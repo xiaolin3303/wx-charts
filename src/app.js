@@ -69,7 +69,7 @@ Charts.prototype.showToolTip = function (e, option = {}) {
             if (seriesData.length === 0) {
                 drawCharts.call(this, opts.type, opts, this.config, this.context);
             } else {        
-                let { textList, offset } = getToolTipData(seriesData, this.chartData.calPoints, index);
+                let { textList, offset } = getToolTipData(seriesData, this.chartData.calPoints, index, this.opts.categories, option);
                 opts.tooltip = {
                     textList,
                     offset,
