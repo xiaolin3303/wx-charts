@@ -1711,6 +1711,7 @@ function drawCharts(type, opts, config, context) {
                 onProcess: function onProcess(process) {
                     drawYAxis(series, opts, config, context);
                     drawXAxis(categories, opts, config, context);
+                    drawLegend(opts.series, opts, config, context);
 
                     var _drawLineDataPoints = drawLineDataPoints(series, opts, config, context, process),
                         xAxisPoints = _drawLineDataPoints.xAxisPoints,
@@ -1718,7 +1719,6 @@ function drawCharts(type, opts, config, context) {
 
                     _this.chartData.xAxisPoints = xAxisPoints;
                     _this.chartData.calPoints = calPoints;
-                    drawLegend(opts.series, opts, config, context);
                     drawCanvas(opts, context);
                 },
                 onAnimationFinish: function onAnimationFinish() {
@@ -1749,6 +1749,7 @@ function drawCharts(type, opts, config, context) {
                 onProcess: function onProcess(process) {
                     drawYAxis(series, opts, config, context);
                     drawXAxis(categories, opts, config, context);
+                    drawLegend(opts.series, opts, config, context);
 
                     var _drawAreaDataPoints = drawAreaDataPoints(series, opts, config, context, process),
                         xAxisPoints = _drawAreaDataPoints.xAxisPoints,
@@ -1756,7 +1757,6 @@ function drawCharts(type, opts, config, context) {
 
                     _this.chartData.xAxisPoints = xAxisPoints;
                     _this.chartData.calPoints = calPoints;
-                    drawLegend(opts.series, opts, config, context);
                     drawCanvas(opts, context);
                 },
                 onAnimationFinish: function onAnimationFinish() {

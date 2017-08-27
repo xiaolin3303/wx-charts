@@ -32,10 +32,10 @@ export default function drawCharts (type, opts, config, context) {
                 onProcess: (process) => {
                     drawYAxis(series, opts, config, context);
                     drawXAxis(categories, opts, config, context);
+                    drawLegend(opts.series, opts, config, context);                    
                     let { xAxisPoints, calPoints } = drawLineDataPoints(series, opts, config, context, process);
                     this.chartData.xAxisPoints = xAxisPoints;
                     this.chartData.calPoints = calPoints;
-                    drawLegend(opts.series, opts, config, context);                    
                     drawCanvas(opts, context);
                 },
                 onAnimationFinish: () => {
@@ -66,10 +66,10 @@ export default function drawCharts (type, opts, config, context) {
                 onProcess: (process) => {
                     drawYAxis(series, opts, config, context);
                     drawXAxis(categories, opts, config, context);
+                    drawLegend(opts.series, opts, config, context);                    
                     let { xAxisPoints, calPoints } = drawAreaDataPoints(series, opts, config, context, process);
                     this.chartData.xAxisPoints = xAxisPoints;
                     this.chartData.calPoints = calPoints;
-                    drawLegend(opts.series, opts, config, context);                    
                     drawCanvas(opts, context);
                 },
                 onAnimationFinish: () => {
