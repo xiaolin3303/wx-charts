@@ -51,7 +51,7 @@ export function getToolTipData(seriesData, calPoints, index, categories, option 
         y: 0
     };
     calPoints.forEach(points => {
-        if (typeof points[index] !== 'undefinded' && points[index] !== null) {
+        if (typeof points[index] !== 'undefined' && points[index] !== null) {
             validCalPoints.push(points[index]);
         }
     });
