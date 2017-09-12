@@ -23,6 +23,13 @@ export function getSeriesDataItem(series, index) {
     return data;
 }
 
+export function getChartDataAreaBoundary (xAxisPoints) {
+    return {
+        leftBorder: xAxisPoints[0],
+        rightBorder: xAxisPoints[xAxisPoints.length - 1]
+    }
+}
+
 export function getMaxTextListLength(list) {
     let lengthList = list.map(item => measureText(item));
     return Math.max.apply(null, lengthList);
@@ -64,11 +71,11 @@ export function getToolTipData(seriesData, calPoints, index, categories, option 
     return { textList, offset };
 }
 
-export function findCurrentIndex (currentPoints, xAxisPoints, opts, config) {
+export function findCurrentIndex (currentPoints, xAxisPoints, opts, config, offset = 0) {
     let currentIndex = -1;
     if (isInExactChartArea(currentPoints, opts, config)) {
         xAxisPoints.forEach((item, index) => {
-            if (currentPoints.x > item) {
+            if (currentPoints.x + offset > item) {
                 currentIndex = index;
             }
         });
@@ -301,7 +308,8 @@ export function fixColumeData(points, eachSpacing, columnLen, index, config, opt
 export function getXAxisPoints(categories, opts, config) {
     let yAxisTotalWidth = config.yAxisWidth + config.yAxisTitleWidth;
     let spacingValid = opts.width - 2 * config.padding - yAxisTotalWidth;
-    let eachSpacing = spacingValid / categories.length;
+    let dataCount = opts.enableScroll ? Math.min(5, categories.length) : categories.length;
+    let eachSpacing = spacingValid / dataCount;
 
     let xAxisPoints = [];
     let startX = config.padding + yAxisTotalWidth;
@@ -309,7 +317,11 @@ export function getXAxisPoints(categories, opts, config) {
     categories.forEach(function(item, index) {
         xAxisPoints.push(startX + index * eachSpacing);
     });
-    xAxisPoints.push(endX);
+    if (opts.enableScroll === true) {
+        xAxisPoints.push(startX + categories.length * eachSpacing);
+    } else {    
+        xAxisPoints.push(endX);
+    }
 
     return { xAxisPoints, startX, endX, eachSpacing };
 }

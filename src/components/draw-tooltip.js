@@ -30,8 +30,8 @@ export function drawToolTip(textList, offset, opts, config, context) {
     let toolTipWidth = legendWidth + legendMarginRight + 4 * config.toolTipPadding + Math.max.apply(null, textWidth);
     let toolTipHeight = 2 * config.toolTipPadding + textList.length * config.toolTipLineHeight;
 
-    // if over the right border
-    if (offset.x + arrowWidth + toolTipWidth > opts.width) {
+    // if beyond the right border
+    if (offset.x - Math.abs(opts._scrollDistance_) + arrowWidth + toolTipWidth > opts.width) {
         isOverRightBorder = true;
     }
 

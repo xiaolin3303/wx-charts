@@ -122,6 +122,19 @@ function findRange(num, type, limit) {
     return num / multiple;
 }
 
+function calValidDistance(distance, chartData, config, opts) {
+
+    var dataChartAreaWidth = opts.width - config.padding - chartData.xAxisPoints[0];
+    var dataChartWidth = chartData.eachSpacing * opts.categories.length;
+    var validDistance = distance;
+    if (distance >= 0) {
+        validDistance = 0;
+    } else if (Math.abs(distance) >= dataChartWidth - dataChartAreaWidth) {
+        validDistance = dataChartAreaWidth - dataChartWidth;
+    }
+    return validDistance;
+}
+
 function isInAngleRange(angle, startAngle, endAngle) {
     function adjust(angle) {
         while (angle < 0) {
@@ -323,6 +336,8 @@ function getSeriesDataItem(series, index) {
     return data;
 }
 
+
+
 function getMaxTextListLength(list) {
     var lengthList = list.map(function (item) {
         return measureText(item);
@@ -371,10 +386,12 @@ function getToolTipData(seriesData, calPoints, index, categories) {
 }
 
 function findCurrentIndex(currentPoints, xAxisPoints, opts, config) {
+    var offset = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+
     var currentIndex = -1;
     if (isInExactChartArea(currentPoints, opts, config)) {
         xAxisPoints.forEach(function (item, index) {
-            if (currentPoints.x > item) {
+            if (currentPoints.x + offset > item) {
                 currentIndex = index;
             }
         });
@@ -391,40 +408,38 @@ function findRadarChartCurrentIndex(currentPoints, radarData, count) {
     var eachAngleArea = 2 * Math.PI / count;
     var currentIndex = -1;
     if (isInExactPieChartArea(currentPoints, radarData.center, radarData.radius)) {
-        (function () {
-            var fixAngle = function fixAngle(angle) {
-                if (angle < 0) {
-                    angle += 2 * Math.PI;
-                }
-                if (angle > 2 * Math.PI) {
-                    angle -= 2 * Math.PI;
-                }
-                return angle;
-            };
-
-            var angle = Math.atan2(radarData.center.y - currentPoints.y, currentPoints.x - radarData.center.x);
-            angle = -1 * angle;
+        var fixAngle = function fixAngle(angle) {
             if (angle < 0) {
                 angle += 2 * Math.PI;
             }
+            if (angle > 2 * Math.PI) {
+                angle -= 2 * Math.PI;
+            }
+            return angle;
+        };
 
-            var angleList = radarData.angleList.map(function (item) {
-                item = fixAngle(-1 * item);
+        var angle = Math.atan2(radarData.center.y - currentPoints.y, currentPoints.x - radarData.center.x);
+        angle = -1 * angle;
+        if (angle < 0) {
+            angle += 2 * Math.PI;
+        }
 
-                return item;
-            });
+        var angleList = radarData.angleList.map(function (item) {
+            item = fixAngle(-1 * item);
 
-            angleList.forEach(function (item, index) {
-                var rangeStart = fixAngle(item - eachAngleArea / 2);
-                var rangeEnd = fixAngle(item + eachAngleArea / 2);
-                if (rangeEnd < rangeStart) {
-                    rangeEnd += 2 * Math.PI;
-                }
-                if (angle >= rangeStart && angle <= rangeEnd || angle + 2 * Math.PI >= rangeStart && angle + 2 * Math.PI <= rangeEnd) {
-                    currentIndex = index;
-                }
-            });
-        })();
+            return item;
+        });
+
+        angleList.forEach(function (item, index) {
+            var rangeStart = fixAngle(item - eachAngleArea / 2);
+            var rangeEnd = fixAngle(item + eachAngleArea / 2);
+            if (rangeEnd < rangeStart) {
+                rangeEnd += 2 * Math.PI;
+            }
+            if (angle >= rangeStart && angle <= rangeEnd || angle + 2 * Math.PI >= rangeStart && angle + 2 * Math.PI <= rangeEnd) {
+                currentIndex = index;
+            }
+        });
     }
 
     return currentIndex;
@@ -614,7 +629,8 @@ function fixColumeData(points, eachSpacing, columnLen, index, config, opts) {
 function getXAxisPoints(categories, opts, config) {
     var yAxisTotalWidth = config.yAxisWidth + config.yAxisTitleWidth;
     var spacingValid = opts.width - 2 * config.padding - yAxisTotalWidth;
-    var eachSpacing = spacingValid / categories.length;
+    var dataCount = opts.enableScroll ? Math.min(5, categories.length) : categories.length;
+    var eachSpacing = spacingValid / dataCount;
 
     var xAxisPoints = [];
     var startX = config.padding + yAxisTotalWidth;
@@ -622,7 +638,11 @@ function getXAxisPoints(categories, opts, config) {
     categories.forEach(function (item, index) {
         xAxisPoints.push(startX + index * eachSpacing);
     });
-    xAxisPoints.push(endX);
+    if (opts.enableScroll === true) {
+        xAxisPoints.push(startX + categories.length * eachSpacing);
+    } else {
+        xAxisPoints.push(endX);
+    }
 
     return { xAxisPoints: xAxisPoints, startX: startX, endX: endX, eachSpacing: eachSpacing };
 }
@@ -829,7 +849,6 @@ function drawRadarLabel(angleList, radius, centerPosition, opts, config, context
 
 function drawPieText(series, opts, config, context, radius, center) {
     var lineRadius = radius + config.pieChartLinePadding;
-    var textRadius = lineRadius + config.pieChartTextPadding;
     var textObjectCollection = [];
     var lastTextObject = null;
 
@@ -956,8 +975,8 @@ function drawToolTip(textList, offset, opts, config, context) {
     var toolTipWidth = legendWidth + legendMarginRight + 4 * config.toolTipPadding + Math.max.apply(null, textWidth);
     var toolTipHeight = 2 * config.toolTipPadding + textList.length * config.toolTipLineHeight;
 
-    // if over the right border
-    if (offset.x + arrowWidth + toolTipWidth > opts.width) {
+    // if beyond the right border
+    if (offset.x - Math.abs(opts._scrollDistance_) + arrowWidth + toolTipWidth > opts.width) {
         isOverRightBorder = true;
     }
 
@@ -1038,7 +1057,10 @@ function drawColumnDataPoints(series, opts, config, context) {
 
     var minRange = ranges.pop();
     var maxRange = ranges.shift();
-    var endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
+    context.save();
+    if (opts._scrollDistance_ && opts._scrollDistance_ !== 0 && opts.enableScroll === true) {
+        context.translate(opts._scrollDistance_, 0);
+    }
 
     series.forEach(function (eachSeries, seriesIndex) {
         var data = eachSeries.data;
@@ -1067,8 +1089,11 @@ function drawColumnDataPoints(series, opts, config, context) {
             drawPointText(points, eachSeries, config, context);
         }
     });
-
-    return xAxisPoints;
+    context.restore();
+    return {
+        xAxisPoints: xAxisPoints,
+        eachSpacing: eachSpacing
+    };
 }
 
 function drawAreaDataPoints(series, opts, config, context) {
@@ -1085,6 +1110,11 @@ function drawAreaDataPoints(series, opts, config, context) {
     var maxRange = ranges.shift();
     var endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
     var calPoints = [];
+
+    context.save();
+    if (opts._scrollDistance_ && opts._scrollDistance_ !== 0 && opts.enableScroll === true) {
+        context.translate(opts._scrollDistance_, 0);
+    }
 
     if (opts.tooltip && opts.tooltip.textList && opts.tooltip.textList.length && process === 1) {
         drawToolTipSplitLine(opts.tooltip.offset.x, opts, config, context);
@@ -1153,13 +1183,12 @@ function drawAreaDataPoints(series, opts, config, context) {
         });
     }
 
-    if (opts.tooltip && opts.tooltip.textList && opts.tooltip.textList.length && process === 1) {
-        drawToolTip(opts.tooltip.textList, opts.tooltip.offset, opts, config, context);
-    }
+    context.restore();
 
     return {
         xAxisPoints: xAxisPoints,
-        calPoints: calPoints
+        calPoints: calPoints,
+        eachSpacing: eachSpacing
     };
 }
 
@@ -1176,6 +1205,11 @@ function drawLineDataPoints(series, opts, config, context) {
     var minRange = ranges.pop();
     var maxRange = ranges.shift();
     var calPoints = [];
+
+    context.save();
+    if (opts._scrollDistance_ && opts._scrollDistance_ !== 0 && opts.enableScroll === true) {
+        context.translate(opts._scrollDistance_, 0);
+    }
 
     if (opts.tooltip && opts.tooltip.textList && opts.tooltip.textList.length && process === 1) {
         drawToolTipSplitLine(opts.tooltip.offset.x, opts, config, context);
@@ -1229,14 +1263,24 @@ function drawLineDataPoints(series, opts, config, context) {
         });
     }
 
-    if (opts.tooltip && opts.tooltip.textList && opts.tooltip.textList.length && process === 1) {
-        drawToolTip(opts.tooltip.textList, opts.tooltip.offset, opts, config, context);
-    }
+    context.restore();
 
     return {
         xAxisPoints: xAxisPoints,
-        calPoints: calPoints
+        calPoints: calPoints,
+        eachSpacing: eachSpacing
     };
+}
+
+function drawToolTipBridge(opts, config, context, process) {
+    context.save();
+    if (opts._scrollDistance_ && opts._scrollDistance_ !== 0 && opts.enableScroll === true) {
+        context.translate(opts._scrollDistance_, 0);
+    }
+    if (opts.tooltip && opts.tooltip.textList && opts.tooltip.textList.length && process === 1) {
+        drawToolTip(opts.tooltip.textList, opts.tooltip.offset, opts, config, context);
+    }
+    context.restore();
 }
 
 function drawXAxis(categories, opts, config, context) {
@@ -1249,11 +1293,14 @@ function drawXAxis(categories, opts, config, context) {
     var startY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
     var endY = startY + config.xAxisLineHeight;
 
+    context.save();
+    if (opts._scrollDistance_ && opts._scrollDistance_ !== 0) {
+        context.translate(opts._scrollDistance_, 0);
+    }
+
     context.beginPath();
     context.setStrokeStyle(opts.xAxis.gridColor || "#cccccc");
-    context.setLineWidth(1);
-    context.moveTo(startX, startY);
-    context.lineTo(endX, startY);
+
     if (opts.xAxis.disableGrid !== true) {
         if (opts.xAxis.type === 'calibration') {
             xAxisPoints.forEach(function (item, index) {
@@ -1312,6 +1359,32 @@ function drawXAxis(categories, opts, config, context) {
             context.restore();
         });
     }
+
+    context.restore();
+}
+
+function drawYAxisGrid(opts, config, context) {
+    var spacingValid = opts.height - 2 * config.padding - config.xAxisHeight - config.legendHeight;
+    var eachSpacing = Math.floor(spacingValid / config.yAxisSplit);
+    var yAxisTotalWidth = config.yAxisWidth + config.yAxisTitleWidth;
+    var startX = config.padding + yAxisTotalWidth;
+    var endX = opts.width - config.padding;
+
+    var points = [];
+    for (var i = 0; i < config.yAxisSplit; i++) {
+        points.push(config.padding + eachSpacing * i);
+    }
+    points.push(config.padding + eachSpacing * config.yAxisSplit + 2);
+
+    context.beginPath();
+    context.setStrokeStyle(opts.yAxis.gridColor || "#cccccc");
+    context.setLineWidth(1);
+    points.forEach(function (item, index) {
+        context.moveTo(startX, item);
+        context.lineTo(endX, item);
+    });
+    context.closePath();
+    context.stroke();
 }
 
 function drawYAxis(series, opts, config, context) {
@@ -1328,22 +1401,20 @@ function drawYAxis(series, opts, config, context) {
     var eachSpacing = Math.floor(spacingValid / config.yAxisSplit);
     var startX = config.padding + yAxisTotalWidth;
     var endX = opts.width - config.padding;
-    var startY = config.padding;
     var endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
 
+    // set YAxis background
+    context.setFillStyle(opts.background || '#ffffff');
+    if (opts._scrollDistance_ < 0) {
+        context.fillRect(0, 0, startX, endY + config.xAxisHeight + 5);
+    }
+    context.fillRect(endX, 0, opts.width, endY + config.xAxisHeight + 5);
+
     var points = [];
-    for (var i = 0; i < config.yAxisSplit; i++) {
+    for (var i = 0; i <= config.yAxisSplit; i++) {
         points.push(config.padding + eachSpacing * i);
     }
 
-    context.beginPath();
-    context.setStrokeStyle(opts.yAxis.gridColor || "#cccccc");
-    context.setLineWidth(1);
-    points.forEach(function (item, index) {
-        context.moveTo(startX, item);
-        context.lineTo(endX, item);
-    });
-    context.closePath();
     context.stroke();
     context.beginPath();
     context.setFontSize(config.fontSize);
@@ -1370,8 +1441,7 @@ function drawLegend(series, opts, config, context) {
     // legend margin top `config.padding`
 
     var _calLegendData = calLegendData(series, opts, config),
-        legendList = _calLegendData.legendList,
-        legendHeight = _calLegendData.legendHeight;
+        legendList = _calLegendData.legendList;
 
     var padding = 5;
     var marginTop = 8;
@@ -1472,7 +1542,7 @@ function drawPieDataPoints(series, opts, config, context) {
             innerPieWidth = Math.max(0, radius - opts.extra.ringWidth);
         }
         context.beginPath();
-        context.setFillStyle('#ffffff');
+        context.setFillStyle(opts.background || '#ffffff');
         context.moveTo(centerPosition.x, centerPosition.y);
         context.arc(centerPosition.x, centerPosition.y, innerPieWidth, 0, 2 * Math.PI);
         context.closePath();
@@ -1709,16 +1779,20 @@ function drawCharts(type, opts, config, context) {
                 timing: 'easeIn',
                 duration: duration,
                 onProcess: function onProcess(process) {
-                    drawYAxis(series, opts, config, context);
-                    drawXAxis(categories, opts, config, context);
-                    drawLegend(opts.series, opts, config, context);
+                    drawYAxisGrid(opts, config, context);
 
                     var _drawLineDataPoints = drawLineDataPoints(series, opts, config, context, process),
                         xAxisPoints = _drawLineDataPoints.xAxisPoints,
-                        calPoints = _drawLineDataPoints.calPoints;
+                        calPoints = _drawLineDataPoints.calPoints,
+                        eachSpacing = _drawLineDataPoints.eachSpacing;
 
                     _this.chartData.xAxisPoints = xAxisPoints;
                     _this.chartData.calPoints = calPoints;
+                    _this.chartData.eachSpacing = eachSpacing;
+                    drawXAxis(categories, opts, config, context);
+                    drawLegend(opts.series, opts, config, context);
+                    drawYAxis(series, opts, config, context);
+                    drawToolTipBridge(opts, config, context, process);
                     drawCanvas(opts, context);
                 },
                 onAnimationFinish: function onAnimationFinish() {
@@ -1731,10 +1805,17 @@ function drawCharts(type, opts, config, context) {
                 timing: 'easeIn',
                 duration: duration,
                 onProcess: function onProcess(process) {
-                    drawYAxis(series, opts, config, context);
+                    drawYAxisGrid(opts, config, context);
+
+                    var _drawColumnDataPoints = drawColumnDataPoints(series, opts, config, context, process),
+                        xAxisPoints = _drawColumnDataPoints.xAxisPoints,
+                        eachSpacing = _drawColumnDataPoints.eachSpacing;
+
+                    _this.chartData.xAxisPoints = xAxisPoints;
+                    _this.chartData.eachSpacing = eachSpacing;
                     drawXAxis(categories, opts, config, context);
-                    _this.chartData.xAxisPoints = drawColumnDataPoints(series, opts, config, context, process);
                     drawLegend(opts.series, opts, config, context);
+                    drawYAxis(series, opts, config, context);
                     drawCanvas(opts, context);
                 },
                 onAnimationFinish: function onAnimationFinish() {
@@ -1747,16 +1828,20 @@ function drawCharts(type, opts, config, context) {
                 timing: 'easeIn',
                 duration: duration,
                 onProcess: function onProcess(process) {
-                    drawYAxis(series, opts, config, context);
-                    drawXAxis(categories, opts, config, context);
-                    drawLegend(opts.series, opts, config, context);
+                    drawYAxisGrid(opts, config, context);
 
                     var _drawAreaDataPoints = drawAreaDataPoints(series, opts, config, context, process),
                         xAxisPoints = _drawAreaDataPoints.xAxisPoints,
-                        calPoints = _drawAreaDataPoints.calPoints;
+                        calPoints = _drawAreaDataPoints.calPoints,
+                        eachSpacing = _drawAreaDataPoints.eachSpacing;
 
                     _this.chartData.xAxisPoints = xAxisPoints;
                     _this.chartData.calPoints = calPoints;
+                    _this.chartData.eachSpacing = eachSpacing;
+                    drawXAxis(categories, opts, config, context);
+                    drawLegend(opts.series, opts, config, context);
+                    drawYAxis(series, opts, config, context);
+                    drawToolTipBridge(opts, config, context, process);
                     drawCanvas(opts, context);
                 },
                 onAnimationFinish: function onAnimationFinish() {
@@ -1845,6 +1930,11 @@ var Charts = function Charts(opts) {
     // such as chart point coordinate
     this.chartData = {};
     this.event = new Event();
+    this.scrollOption = {
+        currentOffset: 0,
+        startTouchX: 0,
+        distance: 0
+    };
 
     drawCharts.call(this, opts.type, opts, config$$1, this.context);
 };
@@ -1870,17 +1960,18 @@ Charts.prototype.addEventListener = function (type, listener) {
 };
 
 Charts.prototype.getCurrentDataIndex = function (e) {
-    if (e.touches && e.touches.length) {
-        var _e$touches$ = e.touches[0],
-            x = _e$touches$.x,
-            y = _e$touches$.y;
+    var touches = e.touches && e.touches.length ? e.touches : e.changedTouches;
+    if (touches && touches.length) {
+        var _touches$ = touches[0],
+            x = _touches$.x,
+            y = _touches$.y;
 
         if (this.opts.type === 'pie' || this.opts.type === 'ring') {
             return findPieChartCurrentIndex({ x: x, y: y }, this.chartData.pieData);
         } else if (this.opts.type === 'radar') {
             return findRadarChartCurrentIndex({ x: x, y: y }, this.chartData.radarData, this.opts.categories.length);
         } else {
-            return findCurrentIndex({ x: x, y: y }, this.chartData.xAxisPoints, this.opts, this.config);
+            return findCurrentIndex({ x: x, y: y }, this.chartData.xAxisPoints, this.opts, this.config, Math.abs(this.scrollOption.currentOffset));
         }
     }
     return -1;
@@ -1891,7 +1982,12 @@ Charts.prototype.showToolTip = function (e) {
 
     if (this.opts.type === 'line' || this.opts.type === 'area') {
         var index = this.getCurrentDataIndex(e);
-        var opts = assign({}, this.opts, { animation: false });
+        var currentOffset = this.scrollOption.currentOffset;
+
+        var opts = assign({}, this.opts, {
+            _scrollDistance_: currentOffset,
+            animation: false
+        });
         if (index > -1) {
             var seriesData = getSeriesDataItem(this.opts.series, index);
             if (seriesData.length === 0) {
@@ -1911,6 +2007,41 @@ Charts.prototype.showToolTip = function (e) {
         } else {
             drawCharts.call(this, opts.type, opts, this.config, this.context);
         }
+    }
+};
+
+Charts.prototype.scrollStart = function (e) {
+    if (e.touches[0] && this.opts.enableScroll === true) {
+        this.scrollOption.startTouchX = e.touches[0].x;
+    }
+};
+
+Charts.prototype.scroll = function (e) {
+    // TODO throtting...
+    if (e.touches[0] && this.opts.enableScroll === true) {
+        var _distance = e.touches[0].x - this.scrollOption.startTouchX;
+        var currentOffset = this.scrollOption.currentOffset;
+
+        var validDistance = calValidDistance(currentOffset + _distance, this.chartData, this.config, this.opts);
+
+        this.scrollOption.distance = _distance = validDistance - currentOffset;
+        var opts = assign({}, this.opts, {
+            _scrollDistance_: currentOffset + _distance,
+            animation: false
+        });
+
+        drawCharts.call(this, opts.type, opts, this.config, this.context);
+    }
+};
+
+Charts.prototype.scrollEnd = function (e) {
+    if (this.opts.enableScroll === true) {
+        var _scrollOption = this.scrollOption,
+            currentOffset = _scrollOption.currentOffset,
+            distance = _scrollOption.distance;
+
+        this.scrollOption.currentOffset = currentOffset + distance;
+        this.scrollOption.distance = 0;
     }
 };
 

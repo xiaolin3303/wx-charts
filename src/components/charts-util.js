@@ -27,6 +27,19 @@ function findRange (num, type, limit) {
     return num / multiple;
 }
 
+export function calValidDistance (distance, chartData, config, opts) {
+
+    let dataChartAreaWidth = opts.width - config.padding - chartData.xAxisPoints[0];
+    let dataChartWidth = chartData.eachSpacing * opts.categories.length;
+    let validDistance = distance;
+    if (distance >= 0) {
+        validDistance = 0;
+    } else if (Math.abs(distance) >= (dataChartWidth - dataChartAreaWidth)) {
+        validDistance = dataChartAreaWidth - dataChartWidth;
+    }
+    return validDistance;
+}
+
 export function isInAngleRange(angle, startAngle, endAngle) {
     function adjust (angle) {
         while (angle < 0) {

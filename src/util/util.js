@@ -32,7 +32,7 @@ let util = {
                 || obj2.start.y < obj1.end.y;
 
         return !flag;
-    }
+    },
 }
 
 export default util;

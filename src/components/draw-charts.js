@@ -1,4 +1,4 @@
-import { drawRadarDataPoints, drawCanvas, drawLegend, drawPieDataPoints, drawLineDataPoints, drawAreaDataPoints, drawColumnDataPoints, drawYAxis, drawXAxis } from './draw'
+import { drawYAxisGrid, drawToolTipBridge, drawRadarDataPoints, drawCanvas, drawLegend, drawPieDataPoints, drawLineDataPoints, drawAreaDataPoints, drawColumnDataPoints, drawYAxis, drawXAxis } from './draw'
 import { calYAxisData, getPieTextMaxLength, calCategoriesData, calLegendData } from './charts-data'
 import { fillSeriesColor } from './charts-util';
 import Animation from './animation'
@@ -30,12 +30,15 @@ export default function drawCharts (type, opts, config, context) {
                 timing: 'easeIn',
                 duration: duration,
                 onProcess: (process) => {
-                    drawYAxis(series, opts, config, context);
-                    drawXAxis(categories, opts, config, context);
-                    drawLegend(opts.series, opts, config, context);                    
-                    let { xAxisPoints, calPoints } = drawLineDataPoints(series, opts, config, context, process);
+                    drawYAxisGrid(opts, config, context);
+                    let { xAxisPoints, calPoints, eachSpacing } = drawLineDataPoints(series, opts, config, context, process);
                     this.chartData.xAxisPoints = xAxisPoints;
                     this.chartData.calPoints = calPoints;
+                    this.chartData.eachSpacing = eachSpacing;
+                    drawXAxis(categories, opts, config, context);
+                    drawLegend(opts.series, opts, config, context);                   
+                    drawYAxis(series, opts, config, context);
+                    drawToolTipBridge(opts, config, context, process);
                     drawCanvas(opts, context);
                 },
                 onAnimationFinish: () => {
@@ -48,10 +51,13 @@ export default function drawCharts (type, opts, config, context) {
                 timing: 'easeIn',
                 duration: duration,
                 onProcess: (process) => {
-                    drawYAxis(series, opts, config, context);
+                    drawYAxisGrid(opts, config, context);                    
+                    let { xAxisPoints, eachSpacing } = drawColumnDataPoints(series, opts, config, context, process);
+                    this.chartData.xAxisPoints = xAxisPoints;
+                    this.chartData.eachSpacing = eachSpacing;
                     drawXAxis(categories, opts, config, context);
-                    this.chartData.xAxisPoints = drawColumnDataPoints(series, opts, config, context, process);
                     drawLegend(opts.series, opts, config, context);                    
+                    drawYAxis(series, opts, config, context);
                     drawCanvas(opts, context);
                 },
                 onAnimationFinish: () => {
@@ -64,12 +70,15 @@ export default function drawCharts (type, opts, config, context) {
                 timing: 'easeIn',
                 duration: duration,
                 onProcess: (process) => {
-                    drawYAxis(series, opts, config, context);
-                    drawXAxis(categories, opts, config, context);
-                    drawLegend(opts.series, opts, config, context);                    
-                    let { xAxisPoints, calPoints } = drawAreaDataPoints(series, opts, config, context, process);
+                    drawYAxisGrid(opts, config, context);                    
+                    let { xAxisPoints, calPoints, eachSpacing } = drawAreaDataPoints(series, opts, config, context, process);
                     this.chartData.xAxisPoints = xAxisPoints;
                     this.chartData.calPoints = calPoints;
+                    this.chartData.eachSpacing = eachSpacing;
+                    drawXAxis(categories, opts, config, context);
+                    drawLegend(opts.series, opts, config, context);
+                    drawYAxis(series, opts, config, context);
+                    drawToolTipBridge(opts, config, context, process);                                      
                     drawCanvas(opts, context);
                 },
                 onAnimationFinish: () => {

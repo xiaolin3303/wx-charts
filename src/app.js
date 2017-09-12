@@ -3,6 +3,7 @@ import { assign } from './util/polyfill/index';
 import drawCharts from './components/draw-charts';
 import Event from './util/event';
 import { findCurrentIndex, findRadarChartCurrentIndex, findPieChartCurrentIndex, getSeriesDataItem, getToolTipData } from  './components/charts-data'
+import { calValidDistance } from './components/charts-util';
 
 let Charts = function(opts) {
     opts.title = opts.title || {};
@@ -24,6 +25,11 @@ let Charts = function(opts) {
     // such as chart point coordinate
     this.chartData = {};
     this.event = new Event();
+    this.scrollOption = {
+        currentOffset: 0,
+        startTouchX: 0,
+        distance: 0
+    }
 
     drawCharts.call(this, opts.type, opts, config, this.context);
 }
@@ -47,14 +53,15 @@ Charts.prototype.addEventListener = function (type, listener) {
 }
 
 Charts.prototype.getCurrentDataIndex = function (e) {
-    if (e.touches && e.touches.length) {
-        let {x, y} = e.touches[0];
+    let touches = e.touches && e.touches.length ? e.touches : e.changedTouches;
+    if (touches && touches.length) {
+        let {x, y} = touches[0];
         if (this.opts.type === 'pie' || this.opts.type === 'ring') {
             return findPieChartCurrentIndex({ x, y }, this.chartData.pieData);
         } else if (this.opts.type === 'radar') {
             return findRadarChartCurrentIndex({ x, y }, this.chartData.radarData, this.opts.categories.length);
         } else {
-            return findCurrentIndex({ x, y }, this.chartData.xAxisPoints, this.opts, this.config);
+            return findCurrentIndex({ x, y }, this.chartData.xAxisPoints, this.opts, this.config, Math.abs(this.scrollOption.currentOffset));
         }
     }
     return -1;
@@ -63,7 +70,11 @@ Charts.prototype.getCurrentDataIndex = function (e) {
 Charts.prototype.showToolTip = function (e, option = {}) {
     if (this.opts.type === 'line' || this.opts.type === 'area') {
         let index = this.getCurrentDataIndex(e);
-        let opts = assign({}, this.opts, {animation: false});
+        let { currentOffset } = this.scrollOption;
+        let opts = assign({}, this.opts, {
+            _scrollDistance_: currentOffset,
+            animation: false
+        });
         if (index > -1) {
             let seriesData = getSeriesDataItem(this.opts.series, index);
             if (seriesData.length === 0) {
@@ -80,6 +91,37 @@ Charts.prototype.showToolTip = function (e, option = {}) {
         } else {
             drawCharts.call(this, opts.type, opts, this.config, this.context);
         }
+    }
+}
+
+Charts.prototype.scrollStart = function (e) {
+    if (e.touches[0] && this.opts.enableScroll === true) {
+        this.scrollOption.startTouchX = e.touches[0].x;
+    }
+}
+
+Charts.prototype.scroll = function (e) {
+    // TODO throtting...
+    if (e.touches[0] && this.opts.enableScroll === true) {
+        let _distance = e.touches[0].x - this.scrollOption.startTouchX;
+        let { currentOffset } = this.scrollOption;
+        let validDistance = calValidDistance(currentOffset + _distance, this.chartData, this.config, this.opts);
+
+        this.scrollOption.distance = _distance = validDistance - currentOffset;
+        let opts = assign({}, this.opts, {
+            _scrollDistance_: currentOffset + _distance,
+            animation: false
+        });
+        
+        drawCharts.call(this, opts.type, opts, this.config, this.context);
+    }
+}
+
+Charts.prototype.scrollEnd = function (e) {
+    if (this.opts.enableScroll === true) {    
+        let { currentOffset, distance } = this.scrollOption;
+        this.scrollOption.currentOffset = currentOffset + distance;
+        this.scrollOption.distance = 0;
     }
 }
 
