@@ -68,6 +68,7 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 ![columnChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/column.gif)
 ![areaChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/area.gif)
 ![tooltip](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/tooltip.gif)
+![scrollLineChart](https://raw.githubusercontent.com/xiaolin3303/wx-charts/master/example/scrollLine.gif)
 
 更多内容请查看[Example - wxCharts使用说明](https://github.com/xiaolin3303/wx-charts/issues/58)
 
