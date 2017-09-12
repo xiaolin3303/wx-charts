@@ -18,6 +18,7 @@
 # 更新记录 
 
 - [ ] 动画性能优化
+- [x] 图表滚动的支持，感谢[@jxintang](https://github.com/jxintang)
 - [x] [优化曲线绘制](https://github.com/xiaolin3303/wx-charts/issues/79)
 - [x] 新增雷达图 2017-03-17
 - [x] 新增tooltip 2017-03-07
