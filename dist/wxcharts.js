@@ -1990,9 +1990,7 @@ Charts.prototype.showToolTip = function (e) {
         });
         if (index > -1) {
             var seriesData = getSeriesDataItem(this.opts.series, index);
-            if (seriesData.length === 0) {
-                drawCharts.call(this, opts.type, opts, this.config, this.context);
-            } else {
+            if (seriesData.length !== 0) {
                 var _getToolTipData = getToolTipData(seriesData, this.chartData.calPoints, index, this.opts.categories, option),
                     textList = _getToolTipData.textList,
                     offset = _getToolTipData.offset;
@@ -2002,11 +2000,9 @@ Charts.prototype.showToolTip = function (e) {
                     offset: offset,
                     option: option
                 };
-                drawCharts.call(this, opts.type, opts, this.config, this.context);
             }
-        } else {
-            drawCharts.call(this, opts.type, opts, this.config, this.context);
         }
+        drawCharts.call(this, opts.type, opts, this.config, this.context);
     }
 };
 
