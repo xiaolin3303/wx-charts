@@ -77,20 +77,16 @@ Charts.prototype.showToolTip = function (e, option = {}) {
         });
         if (index > -1) {
             let seriesData = getSeriesDataItem(this.opts.series, index);
-            if (seriesData.length === 0) {
-                drawCharts.call(this, opts.type, opts, this.config, this.context);
-            } else {        
+            if (seriesData.length !== 0) {
                 let { textList, offset } = getToolTipData(seriesData, this.chartData.calPoints, index, this.opts.categories, option);
                 opts.tooltip = {
                     textList,
                     offset,
                     option
                 };
-                drawCharts.call(this, opts.type, opts, this.config, this.context);
             }
-        } else {
-            drawCharts.call(this, opts.type, opts, this.config, this.context);
         }
+        drawCharts.call(this, opts.type, opts, this.config, this.context);        
     }
 }
 
