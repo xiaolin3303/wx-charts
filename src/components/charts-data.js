@@ -11,7 +11,7 @@ function dataCombine(series) {
 export function getSeriesDataItem(series, index) {
     let data = [];
     series.forEach((item) => {
-        if (item.data[index] !== null && typeof item.data[index] !== 'undefinded') {
+        if (item.data[index] !== null && typeof item.data[index] !== 'undefined') {
             let seriesItem = {};
             seriesItem.color = item.color;
             seriesItem.name = item.name;
@@ -58,7 +58,7 @@ export function getToolTipData(seriesData, calPoints, index, categories, option 
         y: 0
     };
     calPoints.forEach(points => {
-        if (typeof points[index] !== 'undefinded' && points[index] !== null) {
+        if (typeof points[index] !== 'undefined' && points[index] !== null) {
             validCalPoints.push(points[index]);
         }
     });
@@ -187,7 +187,7 @@ export function calLegendData(series, opts, config) {
     let widthCount = 0;
     let currentRow = [];
     series.forEach((item) => {
-        let itemWidth = 3 * padding + shapeWidth + measureText(item.name || 'undefinded');
+        let itemWidth = 3 * padding + shapeWidth + measureText(item.name || 'undefined');
         if (widthCount + itemWidth > opts.width) {
             legendList.push(currentRow);
             widthCount = itemWidth;

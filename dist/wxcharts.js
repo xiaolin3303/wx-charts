@@ -324,7 +324,7 @@ function dataCombine(series) {
 function getSeriesDataItem(series, index) {
     var data = [];
     series.forEach(function (item) {
-        if (item.data[index] !== null && typeof item.data[index] !== 'undefinded') {
+        if (item.data[index] !== null && typeof item.data[index] !== 'undefined') {
             var seriesItem = {};
             seriesItem.color = item.color;
             seriesItem.name = item.name;
@@ -372,7 +372,7 @@ function getToolTipData(seriesData, calPoints, index, categories) {
         y: 0
     };
     calPoints.forEach(function (points) {
-        if (typeof points[index] !== 'undefinded' && points[index] !== null) {
+        if (typeof points[index] !== 'undefined' && points[index] !== null) {
             validCalPoints.push(points[index]);
         }
     });
@@ -500,7 +500,7 @@ function calLegendData(series, opts, config) {
     var widthCount = 0;
     var currentRow = [];
     series.forEach(function (item) {
-        var itemWidth = 3 * padding + shapeWidth + measureText(item.name || 'undefinded');
+        var itemWidth = 3 * padding + shapeWidth + measureText(item.name || 'undefined');
         if (widthCount + itemWidth > opts.width) {
             legendList.push(currentRow);
             widthCount = itemWidth;
