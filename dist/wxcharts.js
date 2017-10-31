@@ -1364,6 +1364,9 @@ function drawXAxis(categories, opts, config, context) {
 }
 
 function drawYAxisGrid(opts, config, context) {
+    if (opts.yAxis.disableGrid === true) {
+        return;
+    }
     var spacingValid = opts.height - 2 * config.padding - config.xAxisHeight - config.legendHeight;
     var eachSpacing = Math.floor(spacingValid / config.yAxisSplit);
     var yAxisTotalWidth = config.yAxisWidth + config.yAxisTitleWidth;
