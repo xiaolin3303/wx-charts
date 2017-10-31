@@ -242,6 +242,9 @@ export function drawToolTipBridge (opts, config, context, process) {
 }
 
 export function drawXAxis (categories, opts, config, context) {
+    if (opts.xAxis.disabled === true) {
+        return;
+    }
     let { xAxisPoints, startX, endX, eachSpacing } = getXAxisPoints(categories, opts, config);
     let startY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
     let endY = startY + config.xAxisLineHeight;
