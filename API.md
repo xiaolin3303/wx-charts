@@ -46,6 +46,8 @@
 
 - opts.xAxis Object X轴配置
 
+    - opts.xAxis.disabled Boolean 不绘制x坐标轴，包括文字，当两个图表共用同一x坐标轴时可用
+
     - opts.xAxis.gridColor String 例如#7cb5ec default #cccccc X轴网格颜色
 
     - opts.xAxis.fontColor String 例如#7cb5ec default #666666 X轴数据点颜色
