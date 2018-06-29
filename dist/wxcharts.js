@@ -1122,7 +1122,7 @@ function drawAreaDataPoints(series, opts, config, context) {
     }
 
     // 画连线
-    if (opts.extra.area.line) {
+    if (opts.extra.area && opts.extra.area.line) {
         drawLineDataPoints(series, opts, config, context, process);
     }
     series.forEach(function (eachSeries, seriesIndex) {
@@ -1222,7 +1222,7 @@ function drawLineDataPoints(series, opts, config, context) {
         drawToolTipSplitLine(opts.tooltip.offset.x, opts, config, context);
     }
 
-    if (opts.extra.line.areaStyle) {
+    if (opts.extra.line && opts.extra.line.areaStyle) {
         drawAreaDataPoints(series, opts, config, context, process);
     }
     series.forEach(function (eachSeries, seriesIndex) {
