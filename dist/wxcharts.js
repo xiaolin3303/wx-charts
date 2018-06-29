@@ -336,8 +336,6 @@ function getSeriesDataItem(series, index) {
     return data;
 }
 
-
-
 function getMaxTextListLength(list) {
     var lengthList = list.map(function (item) {
         return measureText(item);
@@ -849,6 +847,7 @@ function drawRadarLabel(angleList, radius, centerPosition, opts, config, context
 
 function drawPieText(series, opts, config, context, radius, center) {
     var lineRadius = radius + config.pieChartLinePadding;
+    var textRadius = lineRadius + config.pieChartTextPadding;
     var textObjectCollection = [];
     var lastTextObject = null;
 
@@ -1057,6 +1056,8 @@ function drawColumnDataPoints(series, opts, config, context) {
 
     var minRange = ranges.pop();
     var maxRange = ranges.shift();
+    var endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
+
     context.save();
     if (opts._scrollDistance_ && opts._scrollDistance_ !== 0 && opts.enableScroll === true) {
         context.translate(opts._scrollDistance_, 0);
@@ -1120,6 +1121,10 @@ function drawAreaDataPoints(series, opts, config, context) {
         drawToolTipSplitLine(opts.tooltip.offset.x, opts, config, context);
     }
 
+    // 画连线
+    if (opts.extra.area.line) {
+        drawLineDataPoints(series, opts, config, context, process);
+    }
     series.forEach(function (eachSeries, seriesIndex) {
         var data = eachSeries.data;
         var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
@@ -1171,8 +1176,10 @@ function drawAreaDataPoints(series, opts, config, context) {
         });
 
         if (opts.dataPointShape !== false) {
-            var shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
-            drawPointShape(points, eachSeries.color, shape, context);
+            var shape = eachSeries.symbol ? eachSeries.symbol : config.dataPointShape[seriesIndex % config.dataPointShape.length];
+            if (shape !== 'none') {
+                drawPointShape(points, eachSeries.color, shape, context);
+            }
         }
     });
     if (opts.dataLabel !== false && process === 1) {
@@ -1215,6 +1222,9 @@ function drawLineDataPoints(series, opts, config, context) {
         drawToolTipSplitLine(opts.tooltip.offset.x, opts, config, context);
     }
 
+    if (opts.extra.line.areaStyle) {
+        drawAreaDataPoints(series, opts, config, context, process);
+    }
     series.forEach(function (eachSeries, seriesIndex) {
         var data = eachSeries.data;
         var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
@@ -1250,9 +1260,15 @@ function drawLineDataPoints(series, opts, config, context) {
             context.stroke();
         });
 
+        if (eachSeries.areaStyle) {
+            var color = eachSeries.areaStyle.color ? eachSeries.areaStyle.color : eachSeries.color;
+            drawLineArea(points, color, opts, config, context);
+        }
         if (opts.dataPointShape !== false) {
-            var shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
-            drawPointShape(points, eachSeries.color, shape, context);
+            var shape = eachSeries.symbol ? eachSeries.symbol : config.dataPointShape[seriesIndex % config.dataPointShape.length];
+            if (shape !== 'none') {
+                drawPointShape(points, eachSeries.color, shape, context);
+            }
         }
     });
     if (opts.dataLabel !== false && process === 1) {
@@ -1272,6 +1288,57 @@ function drawLineDataPoints(series, opts, config, context) {
     };
 }
 
+function drawLineArea(points, color, opts, config, context) {
+    var _getXAxisPoints4 = getXAxisPoints(opts.categories, opts, config),
+        eachSpacing = _getXAxisPoints4.eachSpacing;
+
+    var endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
+    var splitPointList = splitPoints(points);
+
+    splitPointList.forEach(function (points) {
+        // 绘制区域数据
+        context.beginPath();
+        context.setStrokeStyle(color);
+        context.setFillStyle(color);
+        context.setGlobalAlpha(0.6);
+        context.setLineWidth(2);
+        if (points.length > 1) {
+            var firstPoint = points[0];
+            var lastPoint = points[points.length - 1];
+
+            context.moveTo(firstPoint.x, firstPoint.y);
+            if (opts.extra.lineStyle === 'curve') {
+                points.forEach(function (item, index) {
+                    if (index > 0) {
+                        var ctrlPoint = createCurveControlPoints(points, index - 1);
+                        context.bezierCurveTo(ctrlPoint.ctrA.x, ctrlPoint.ctrA.y, ctrlPoint.ctrB.x, ctrlPoint.ctrB.y, item.x, item.y);
+                    }
+                });
+            } else {
+                points.forEach(function (item, index) {
+                    if (index > 0) {
+                        context.lineTo(item.x, item.y);
+                    }
+                });
+            }
+
+            context.lineTo(lastPoint.x, endY);
+            context.lineTo(firstPoint.x, endY);
+            context.lineTo(firstPoint.x, firstPoint.y);
+        } else {
+            var item = points[0];
+            context.moveTo(item.x - eachSpacing / 2, item.y);
+            context.lineTo(item.x + eachSpacing / 2, item.y);
+            context.lineTo(item.x + eachSpacing / 2, endY);
+            context.lineTo(item.x - eachSpacing / 2, endY);
+            context.moveTo(item.x - eachSpacing / 2, item.y);
+        }
+        context.closePath();
+        context.fill();
+        context.setGlobalAlpha(1);
+    });
+}
+
 function drawToolTipBridge(opts, config, context, process) {
     context.save();
     if (opts._scrollDistance_ && opts._scrollDistance_ !== 0 && opts.enableScroll === true) {
@@ -1284,11 +1351,13 @@ function drawToolTipBridge(opts, config, context, process) {
 }
 
 function drawXAxis(categories, opts, config, context) {
-    var _getXAxisPoints4 = getXAxisPoints(categories, opts, config),
-        xAxisPoints = _getXAxisPoints4.xAxisPoints,
-        startX = _getXAxisPoints4.startX,
-        endX = _getXAxisPoints4.endX,
-        eachSpacing = _getXAxisPoints4.eachSpacing;
+    if (opts.xAxis.disabled === true) {
+        return;
+    }
+
+    var _getXAxisPoints5 = getXAxisPoints(categories, opts, config),
+        xAxisPoints = _getXAxisPoints5.xAxisPoints,
+        eachSpacing = _getXAxisPoints5.eachSpacing;
 
     var startY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
     var endY = startY + config.xAxisLineHeight;
@@ -1320,15 +1389,16 @@ function drawXAxis(categories, opts, config, context) {
     context.stroke();
 
     // 对X轴列表做抽稀处理
+    var labelFontNumber = opts.xAxis.labelFontNumber || 1.5;
     var validWidth = opts.width - 2 * config.padding - config.yAxisWidth - config.yAxisTitleWidth;
-    var maxXAxisListLength = Math.min(categories.length, Math.ceil(validWidth / config.fontSize / 1.5));
+    var maxXAxisListLength = Math.min(categories.length, Math.ceil(validWidth / config.fontSize / labelFontNumber));
     var ratio = Math.ceil(categories.length / maxXAxisListLength);
 
     categories = categories.map(function (item, index) {
         return index % ratio !== 0 ? '' : item;
     });
 
-    if (config._xAxisTextAngle_ === 0) {
+    if (config._xAxisTextAngle_ === 0 || opts.xAxis.disabledLabelRotate) {
         context.beginPath();
         context.setFontSize(config.fontSize);
         context.setFillStyle(opts.xAxis.fontColor || '#666666');
@@ -1401,6 +1471,7 @@ function drawYAxis(series, opts, config, context) {
     var eachSpacing = Math.floor(spacingValid / config.yAxisSplit);
     var startX = config.padding + yAxisTotalWidth;
     var endX = opts.width - config.padding;
+    var startY = config.padding;
     var endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
 
     // set YAxis background
@@ -1441,7 +1512,8 @@ function drawLegend(series, opts, config, context) {
     // legend margin top `config.padding`
 
     var _calLegendData = calLegendData(series, opts, config),
-        legendList = _calLegendData.legendList;
+        legendList = _calLegendData.legendList,
+        legendHeight = _calLegendData.legendHeight;
 
     var padding = 5;
     var marginTop = 8;
