@@ -33,7 +33,9 @@ var config = {
     toolTipOpacity: 0.7,
     toolTipLineHeight: 14,
     radarGridCount: 3,
-    radarLabelTextMargin: 15
+    radarLabelTextMargin: 15,
+    shape: 'circle', //添加可配置的 point 形状
+    isGradient: true //默认渐变色
 };
 
 // Object.assign polyfill
@@ -315,6 +317,29 @@ function measureText(text) {
     return width * fontSize / 10;
 }
 
+// area 类型的 区域渐变
+function gradientSeries(series, opts, context) {
+    // 用于防止二次进入
+    if (!series.gradient) {
+        var gradient = context.createLinearGradient(0, 0, 0, opts.height || 200);
+        gradient.addColorStop(0, hexToRgb(series.color, 0.6));
+        gradient.addColorStop(1, hexToRgb(series.color, 0));
+        series.gradient = gradient;
+    }
+}
+// hex 转 rgba
+function hexToRgb(hexValue, opc) {
+    var rgx = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    var hex = hexValue.replace(rgx, function (m, r, g, b) {
+        return r + r + g + g + b + b;
+    });
+    var rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    var r = parseInt(rgb[1], 16);
+    var g = parseInt(rgb[2], 16);
+    var b = parseInt(rgb[3], 16);
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + opc + ')';
+}
+
 function dataCombine(series) {
     return series.reduce(function (a, b) {
         return (a.data ? a.data : a).concat(b.data);
@@ -335,8 +360,6 @@ function getSeriesDataItem(series, index) {
 
     return data;
 }
-
-
 
 function getMaxTextListLength(list) {
     var lengthList = list.map(function (item) {
@@ -849,6 +872,7 @@ function drawRadarLabel(angleList, radius, centerPosition, opts, config, context
 
 function drawPieText(series, opts, config, context, radius, center) {
     var lineRadius = radius + config.pieChartLinePadding;
+    var textRadius = lineRadius + config.pieChartTextPadding;
     var textObjectCollection = [];
     var lastTextObject = null;
 
@@ -1057,6 +1081,8 @@ function drawColumnDataPoints(series, opts, config, context) {
 
     var minRange = ranges.pop();
     var maxRange = ranges.shift();
+    var endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
+
     context.save();
     if (opts._scrollDistance_ && opts._scrollDistance_ !== 0 && opts.enableScroll === true) {
         context.translate(opts._scrollDistance_, 0);
@@ -1121,6 +1147,9 @@ function drawAreaDataPoints(series, opts, config, context) {
     }
 
     series.forEach(function (eachSeries, seriesIndex) {
+        // 添加 渐变色特效
+        config.isGradient && gradientSeries(eachSeries, opts, context);
+
         var data = eachSeries.data;
         var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
         calPoints.push(points);
@@ -1131,7 +1160,8 @@ function drawAreaDataPoints(series, opts, config, context) {
             // 绘制区域数据
             context.beginPath();
             context.setStrokeStyle(eachSeries.color);
-            context.setFillStyle(eachSeries.color);
+            // 渐变色处理
+            context.setFillStyle(config.isGradient ? eachSeries.gradient : eachSeries.color);
             context.setGlobalAlpha(0.6);
             context.setLineWidth(2);
             if (points.length > 1) {
@@ -1171,7 +1201,8 @@ function drawAreaDataPoints(series, opts, config, context) {
         });
 
         if (opts.dataPointShape !== false) {
-            var shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
+            // 形状可配置        
+            var shape = config.shape || config.dataPointShape[seriesIndex % config.dataPointShape.length];
             drawPointShape(points, eachSeries.color, shape, context);
         }
     });
@@ -1286,8 +1317,6 @@ function drawToolTipBridge(opts, config, context, process) {
 function drawXAxis(categories, opts, config, context) {
     var _getXAxisPoints4 = getXAxisPoints(categories, opts, config),
         xAxisPoints = _getXAxisPoints4.xAxisPoints,
-        startX = _getXAxisPoints4.startX,
-        endX = _getXAxisPoints4.endX,
         eachSpacing = _getXAxisPoints4.eachSpacing;
 
     var startY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
@@ -1401,6 +1430,7 @@ function drawYAxis(series, opts, config, context) {
     var eachSpacing = Math.floor(spacingValid / config.yAxisSplit);
     var startX = config.padding + yAxisTotalWidth;
     var endX = opts.width - config.padding;
+    var startY = config.padding;
     var endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
 
     // set YAxis background
@@ -1441,7 +1471,8 @@ function drawLegend(series, opts, config, context) {
     // legend margin top `config.padding`
 
     var _calLegendData = calLegendData(series, opts, config),
-        legendList = _calLegendData.legendList;
+        legendList = _calLegendData.legendList,
+        legendHeight = _calLegendData.legendHeight;
 
     var padding = 5;
     var marginTop = 8;

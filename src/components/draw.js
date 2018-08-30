@@ -1,5 +1,5 @@
 import { getRadarDataPoints, getRadarCoordinateSeries, getMaxTextListLength, splitPoints, getPieDataPoints, calYAxisData, getXAxisPoints, getDataPoints, fixColumeData, calLegendData } from './charts-data'
-import { convertCoordinateOrigin, measureText, calRotateTranslate, createCurveControlPoints } from './charts-util'
+import { convertCoordinateOrigin, measureText, calRotateTranslate, createCurveControlPoints,gradientSeries } from './charts-util'
 import Util from '../util/util'
 import drawPointShape from './draw-data-shape'
 import { drawPointText, drawPieText, drawRingTitle, drawRadarLabel } from './draw-data-text'
@@ -85,6 +85,9 @@ export function drawAreaDataPoints (series, opts, config, context, process = 1) 
     }
 
     series.forEach(function(eachSeries, seriesIndex) {
+        // 添加 渐变色特效
+        config.isGradient && gradientSeries(eachSeries, opts, context);
+        
         let data = eachSeries.data;
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
         calPoints.push(points);
@@ -95,7 +98,8 @@ export function drawAreaDataPoints (series, opts, config, context, process = 1) 
             // 绘制区域数据
             context.beginPath();
             context.setStrokeStyle(eachSeries.color);
-            context.setFillStyle(eachSeries.color);
+            // 渐变色处理
+            context.setFillStyle(config.isGradient ? eachSeries.gradient : eachSeries.color);
             context.setGlobalAlpha(0.6);
             context.setLineWidth(2);
             if (points.length > 1) {
@@ -134,8 +138,9 @@ export function drawAreaDataPoints (series, opts, config, context, process = 1) 
             context.setGlobalAlpha(1);
         });
 
-        if (opts.dataPointShape !== false) {          
-            let shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
+        if (opts.dataPointShape !== false) {
+            // 形状可配置        
+            let shape = config.shape || config.dataPointShape[seriesIndex % config.dataPointShape.length];
             drawPointShape(points, eachSeries.color, shape, context);
         }
     });

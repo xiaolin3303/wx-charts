@@ -22,7 +22,9 @@ const config = {
     toolTipOpacity: 0.7,
     toolTipLineHeight: 14,
     radarGridCount: 3,
-    radarLabelTextMargin: 15
+    radarLabelTextMargin: 15,
+    shape: 'circle',//添加可配置的 point 形状
+    isGradient:true //默认渐变色
 }
 
 export default config;
