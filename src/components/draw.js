@@ -138,9 +138,8 @@ export function drawAreaDataPoints (series, opts, config, context, process = 1) 
             context.setGlobalAlpha(1);
         });
 
-        if (opts.dataPointShape !== false) {
-            // 形状可配置        
-            let shape = config.shape || config.dataPointShape[seriesIndex % config.dataPointShape.length];
+        if (opts.dataPointShape !== false) {          
+            let shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
             drawPointShape(points, eachSeries.color, shape, context);
         }
     });

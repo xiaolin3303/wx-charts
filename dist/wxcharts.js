@@ -34,7 +34,6 @@ var config = {
     toolTipLineHeight: 14,
     radarGridCount: 3,
     radarLabelTextMargin: 15,
-    shape: 'circle', //添加可配置的 point 形状
     isGradient: true //默认渐变色
 };
 
@@ -1201,8 +1200,7 @@ function drawAreaDataPoints(series, opts, config, context) {
         });
 
         if (opts.dataPointShape !== false) {
-            // 形状可配置        
-            var shape = config.shape || config.dataPointShape[seriesIndex % config.dataPointShape.length];
+            var shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
             drawPointShape(points, eachSeries.color, shape, context);
         }
     });
