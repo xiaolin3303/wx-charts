@@ -1,3 +1,6 @@
+# uni-wx-charts
+基于wx-charts的uni-app使用跨端图表，可在vue项目中使用
+
 # wx-charts
 微信小程序图表工具，charts for WeChat small app
 
