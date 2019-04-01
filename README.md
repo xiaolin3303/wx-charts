@@ -1,4 +1,4 @@
-##wx-charts跨端图表
+## wx-charts跨端图表
 - 基于`wx-charts`微信小程序图表改造成，适用于uni-app平台的跨端图表插件，感谢原作者`xiaolin3303`，原插件gitHub地址：<https://github.com/xiaolin3303/wx-charts>
 - 本插件gitHub地址：<https://github.com/16cheng/uni-wx-charts>
 
@@ -211,6 +211,6 @@ chart.addEventListener('renderComplete', () => {
 });
 ```
 
-##更新记录
+## 更新记录
 
 - [x]2019.04.01改造成uni-app跨端组件
