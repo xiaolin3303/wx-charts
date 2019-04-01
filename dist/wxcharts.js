@@ -17,12 +17,14 @@ var config = {
     legendHeight: 15,
     yAxisTitleWidth: 15,
     padding: 12,
+	pixelRatio:1,//适配H5高分屏
     columePadding: 3,
-    fontSize: 10,
-    dataPointShape: ['diamond', 'circle', 'triangle', 'rect'],
-    colors: ['#7cb5ec', '#f7a35c', '#434348', '#90ed7d', '#f15c80', '#8085e9'],
-    pieChartLinePadding: 25,
-    pieChartTextPadding: 15,
+    fontSize: 13,
+    //dataPointShape: ['diamond', 'circle', 'triangle', 'rect'],
+	dataPointShape: ['circle', 'circle', 'circle', 'circle'],//仿F2图例样式改为圆点
+    colors: ['#1890ff', '#2fc25b', '#facc14', '#f04864', '#8543e0', '#90ed7d'],
+    pieChartLinePadding: 15,
+    pieChartTextPadding: 5,
     xAxisTextPadding: 3,
     titleColor: '#333333',
     titleFontSize: 20,
@@ -31,7 +33,7 @@ var config = {
     toolTipPadding: 3,
     toolTipBackground: '#000000',
     toolTipOpacity: 0.7,
-    toolTipLineHeight: 14,
+    toolTipLineHeight: 20,
     radarGridCount: 3,
     radarLabelTextMargin: 15
 };
@@ -285,9 +287,10 @@ function getDataRange(minData, maxData) {
 }
 
 function measureText(text) {
-    var fontSize = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
+    var fontSize = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : config.fontSize;
 
     // wx canvas 未实现measureText方法, 此处自行实现
+	// 适配修改初始字体10px为其他大小的方法
     text = String(text);
     var text = text.split('');
     var width = 0;
@@ -312,7 +315,7 @@ function measureText(text) {
             width += 10;
         }
     });
-    return width * fontSize / 10;
+    return width * fontSize / 10 ;
 }
 
 function dataCombine(series) {
@@ -335,8 +338,6 @@ function getSeriesDataItem(series, index) {
 
     return data;
 }
-
-
 
 function getMaxTextListLength(list) {
     var lengthList = list.map(function (item) {
@@ -387,7 +388,6 @@ function getToolTipData(seriesData, calPoints, index, categories) {
 
 function findCurrentIndex(currentPoints, xAxisPoints, opts, config) {
     var offset = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
-
     var currentIndex = -1;
     if (isInExactChartArea(currentPoints, opts, config)) {
         xAxisPoints.forEach(function (item, index) {
@@ -493,9 +493,10 @@ function calLegendData(series, opts, config) {
             legendHeight: 0
         };
     }
-    var padding = 5;
-    var marginTop = 8;
-    var shapeWidth = 15;
+	//适配H5高分屏
+    var padding = 5*opts.pixelRatio;
+    var marginTop = 8*opts.pixelRatio;
+    var shapeWidth = 15*opts.pixelRatio;
     var legendList = [];
     var widthCount = 0;
     var currentRow = [];
@@ -720,12 +721,11 @@ function calYAxisData(series, opts, config) {
     return { rangesFormat: rangesFormat, ranges: ranges, yAxisWidth: yAxisWidth };
 }
 
-function drawPointShape(points, color, shape, context) {
+function drawPointShape(points, color, shape, context,opts) {
     context.beginPath();
     context.setStrokeStyle("#ffffff");
-    context.setLineWidth(1);
+    context.setLineWidth(1*opts.pixelRatio);
     context.setFillStyle(color);
-
     if (shape === 'diamond') {
         points.forEach(function (item, index) {
             if (item !== null) {
@@ -739,8 +739,8 @@ function drawPointShape(points, color, shape, context) {
     } else if (shape === 'circle') {
         points.forEach(function (item, index) {
             if (item !== null) {
-                context.moveTo(item.x + 3.5, item.y);
-                context.arc(item.x, item.y, 4, 0, 2 * Math.PI, false);
+                context.moveTo(item.x + 3.5*opts.pixelRatio, item.y);
+                context.arc(item.x, item.y, 4*opts.pixelRatio, 0, 2 * Math.PI, false);
             }
         });
     } else if (shape === 'rect') {
@@ -760,6 +760,8 @@ function drawPointShape(points, color, shape, context) {
             }
         });
     }
+	
+   
     context.closePath();
     context.fill();
     context.stroke();
@@ -919,7 +921,7 @@ function drawPieText(series, opts, config, context, radius, center) {
         var lineStartPoistion = convertCoordinateOrigin(item.lineStart.x, item.lineStart.y, center);
         var lineEndPoistion = convertCoordinateOrigin(item.lineEnd.x, item.lineEnd.y, center);
         var textPosition = convertCoordinateOrigin(item.start.x, item.start.y, center);
-        context.setLineWidth(1);
+        context.setLineWidth(1*opts.pixelRatio);
         context.setFontSize(config.fontSize);
         context.beginPath();
         context.setStrokeStyle(item.color);
@@ -951,7 +953,7 @@ function drawToolTipSplitLine(offsetX, opts, config, context) {
     var endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
     context.beginPath();
     context.setStrokeStyle('#cccccc');
-    context.setLineWidth(1);
+    context.setLineWidth(1*opts.pixelRatio);
     context.moveTo(offsetX, startY);
     context.lineTo(offsetX, endY);
     context.stroke();
@@ -959,15 +961,15 @@ function drawToolTipSplitLine(offsetX, opts, config, context) {
 }
 
 function drawToolTip(textList, offset, opts, config, context) {
-    var legendWidth = 4;
-    var legendMarginRight = 5;
-    var arrowWidth = 8;
+    var legendWidth = 4*opts.pixelRatio;
+    var legendMarginRight = 5*opts.pixelRatio;
+    var arrowWidth = 8*opts.pixelRatio;
     var isOverRightBorder = false;
     offset = assign({
         x: 0,
         y: 0
     }, offset);
-    offset.y -= 8;
+    offset.y -= 8*opts.pixelRatio;
     var textWidth = textList.map(function (item) {
         return measureText(item.text);
     });
@@ -985,16 +987,16 @@ function drawToolTip(textList, offset, opts, config, context) {
     context.setFillStyle(opts.tooltip.option.background || config.toolTipBackground);
     context.setGlobalAlpha(config.toolTipOpacity);
     if (isOverRightBorder) {
-        context.moveTo(offset.x, offset.y + 10);
-        context.lineTo(offset.x - arrowWidth, offset.y + 10 - 5);
-        context.lineTo(offset.x - arrowWidth, offset.y + 10 + 5);
-        context.moveTo(offset.x, offset.y + 10);
+        context.moveTo(offset.x, offset.y + 10*opts.pixelRatio);
+        context.lineTo(offset.x - arrowWidth, offset.y + 10*opts.pixelRatio - 5*opts.pixelRatio);
+        context.lineTo(offset.x - arrowWidth, offset.y + 10*opts.pixelRatio + 5*opts.pixelRatio);
+        context.moveTo(offset.x, offset.y + 10*opts.pixelRatio);
         context.fillRect(offset.x - toolTipWidth - arrowWidth, offset.y, toolTipWidth, toolTipHeight);
     } else {
-        context.moveTo(offset.x, offset.y + 10);
-        context.lineTo(offset.x + arrowWidth, offset.y + 10 - 5);
-        context.lineTo(offset.x + arrowWidth, offset.y + 10 + 5);
-        context.moveTo(offset.x, offset.y + 10);
+        context.moveTo(offset.x, offset.y + 10*opts.pixelRatio);
+        context.lineTo(offset.x + arrowWidth, offset.y + 10*opts.pixelRatio - 5*opts.pixelRatio);
+        context.lineTo(offset.x + arrowWidth, offset.y + 10*opts.pixelRatio + 5*opts.pixelRatio);
+        context.moveTo(offset.x, offset.y + 10*opts.pixelRatio);
         context.fillRect(offset.x + arrowWidth, offset.y, toolTipWidth, toolTipHeight);
     }
 
@@ -1119,7 +1121,10 @@ function drawAreaDataPoints(series, opts, config, context) {
     if (opts.tooltip && opts.tooltip.textList && opts.tooltip.textList.length && process === 1) {
         drawToolTipSplitLine(opts.tooltip.offset.x, opts, config, context);
     }
-
+	
+	//画连线
+	drawLineDataPoints(series, opts, config, context, process);
+	
     series.forEach(function (eachSeries, seriesIndex) {
         var data = eachSeries.data;
         var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
@@ -1132,8 +1137,8 @@ function drawAreaDataPoints(series, opts, config, context) {
             context.beginPath();
             context.setStrokeStyle(eachSeries.color);
             context.setFillStyle(eachSeries.color);
-            context.setGlobalAlpha(0.6);
-            context.setLineWidth(2);
+            context.setGlobalAlpha(0.2);
+            context.setLineWidth(2*opts.pixelRatio);
             if (points.length > 1) {
                 var firstPoint = points[0];
                 var lastPoint = points[points.length - 1];
@@ -1172,7 +1177,7 @@ function drawAreaDataPoints(series, opts, config, context) {
 
         if (opts.dataPointShape !== false) {
             var shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
-            drawPointShape(points, eachSeries.color, shape, context);
+            drawPointShape(points, eachSeries.color, shape, context,opts);
         }
     });
     if (opts.dataLabel !== false && process === 1) {
@@ -1224,7 +1229,7 @@ function drawLineDataPoints(series, opts, config, context) {
         splitPointList.forEach(function (points, index) {
             context.beginPath();
             context.setStrokeStyle(eachSeries.color);
-            context.setLineWidth(2);
+            context.setLineWidth(2*opts.pixelRatio);
             if (points.length === 1) {
                 context.moveTo(points[0].x, points[0].y);
                 context.arc(points[0].x, points[0].y, 1, 0, 2 * Math.PI);
@@ -1252,7 +1257,7 @@ function drawLineDataPoints(series, opts, config, context) {
 
         if (opts.dataPointShape !== false) {
             var shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
-            drawPointShape(points, eachSeries.color, shape, context);
+            drawPointShape(points, eachSeries.color, shape, context,opts);
         }
     });
     if (opts.dataLabel !== false && process === 1) {
@@ -1378,7 +1383,7 @@ function drawYAxisGrid(opts, config, context) {
 
     context.beginPath();
     context.setStrokeStyle(opts.yAxis.gridColor || "#cccccc");
-    context.setLineWidth(1);
+    context.setLineWidth(1*opts.pixelRatio);
     points.forEach(function (item, index) {
         context.moveTo(startX, item);
         context.lineTo(endX, item);
@@ -1443,9 +1448,9 @@ function drawLegend(series, opts, config, context) {
     var _calLegendData = calLegendData(series, opts, config),
         legendList = _calLegendData.legendList;
 
-    var padding = 5;
-    var marginTop = 8;
-    var shapeWidth = 15;
+    var padding = 5*opts.pixelRatio;
+    var marginTop = 10*opts.pixelRatio;
+    var shapeWidth = 15*opts.pixelRatio;
     legendList.forEach(function (itemList, listIndex) {
         var width = 0;
         itemList.forEach(function (item) {
@@ -1460,49 +1465,65 @@ function drawLegend(series, opts, config, context) {
             switch (opts.type) {
                 case 'line':
                     context.beginPath();
-                    context.setLineWidth(1);
+					/*
+                    context.setLineWidth(1*opts.pixelRatio);
                     context.setStrokeStyle(item.color);
                     context.moveTo(startX - 2, startY + 5);
                     context.lineTo(startX + 17, startY + 5);
                     context.stroke();
                     context.closePath();
                     context.beginPath();
-                    context.setLineWidth(1);
-                    context.setStrokeStyle('#ffffff');
+					*/
+                    context.setLineWidth(1*opts.pixelRatio);
+                    context.setStrokeStyle(item.color);
                     context.setFillStyle(item.color);
                     context.moveTo(startX + 7.5, startY + 5);
-                    context.arc(startX + 7.5, startY + 5, 4, 0, 2 * Math.PI);
+                    context.arc(startX + 7.5, startY + 5, 6*opts.pixelRatio, 0, 2 * Math.PI);
                     context.fill();
                     context.stroke();
                     context.closePath();
                     break;
                 case 'pie':
+					context.beginPath();
+					context.setLineWidth(1*opts.pixelRatio);
+					context.setStrokeStyle(item.color);
+					context.setFillStyle(item.color);
+					context.moveTo(startX + 7.5, startY + 5);
+					context.arc(startX + 7.5, startY + 5, 6*opts.pixelRatio, 0, 2 * Math.PI);
+					context.fill();
+					context.stroke();
+					context.closePath();
+					break;
                 case 'ring':
                     context.beginPath();
+                    context.setLineWidth(1*opts.pixelRatio);
+                    context.setStrokeStyle(item.color);
                     context.setFillStyle(item.color);
                     context.moveTo(startX + 7.5, startY + 5);
-                    context.arc(startX + 7.5, startY + 5, 7, 0, 2 * Math.PI);
-                    context.closePath();
+                    context.arc(startX + 7.5, startY + 5, 6*opts.pixelRatio, 0, 2 * Math.PI);
                     context.fill();
+                    context.stroke();
+                    context.closePath();
                     break;
                 default:
                     context.beginPath();
                     context.setFillStyle(item.color);
                     context.moveTo(startX, startY);
-                    context.rect(startX, startY, 15, 10);
+                    context.rect(startX, startY-(opts.pixelRatio-1)*6, 15*opts.pixelRatio, 10*opts.pixelRatio);
                     context.closePath();
                     context.fill();
             }
             startX += padding + shapeWidth;
             context.beginPath();
             context.setFillStyle(opts.extra.legendTextColor || '#333333');
-            context.fillText(item.name, startX, startY + 9);
+            context.fillText(item.name, startX, startY + 6+3*opts.pixelRatio);
             context.closePath();
             context.stroke();
             startX += measureText(item.name) + 2 * padding;
         });
     });
 }
+
 function drawPieDataPoints(series, opts, config, context) {
     var process = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
 
@@ -1524,7 +1545,7 @@ function drawPieDataPoints(series, opts, config, context) {
     });
     series.forEach(function (eachSeries) {
         context.beginPath();
-        context.setLineWidth(2);
+        context.setLineWidth(2*opts.pixelRatio);
         context.setStrokeStyle('#ffffff');
         context.setFillStyle(eachSeries.color);
         context.moveTo(centerPosition.x, centerPosition.y);
@@ -1591,7 +1612,7 @@ function drawRadarDataPoints(series, opts, config, context) {
 
     // draw grid
     context.beginPath();
-    context.setLineWidth(1);
+    context.setLineWidth(1*opts.pixelRatio);
     context.setStrokeStyle(radarOption.gridColor || "#cccccc");
     coordinateAngle.forEach(function (angle) {
         var pos = convertCoordinateOrigin(radius * Math.cos(angle), radius * Math.sin(angle), centerPosition);
@@ -1606,7 +1627,7 @@ function drawRadarDataPoints(series, opts, config, context) {
     var _loop = function _loop(i) {
         var startPos = {};
         context.beginPath();
-        context.setLineWidth(1);
+        context.setLineWidth(1*opts.pixelRatio);
         context.setStrokeStyle(radarOption.gridColor || "#cccccc");
         coordinateAngle.forEach(function (angle, index) {
             var pos = convertCoordinateOrigin(radius / config.radarGridCount * i * Math.cos(angle), radius / config.radarGridCount * i * Math.sin(angle), centerPosition);
@@ -1627,11 +1648,12 @@ function drawRadarDataPoints(series, opts, config, context) {
     }
 
     var radarDataPoints = getRadarDataPoints(coordinateAngle, centerPosition, radius, series, opts, process);
+	
     radarDataPoints.forEach(function (eachSeries, seriesIndex) {
         // 绘制区域数据
         context.beginPath();
         context.setFillStyle(eachSeries.color);
-        context.setGlobalAlpha(0.6);
+        context.setGlobalAlpha(0.3);
         eachSeries.data.forEach(function (item, index) {
             if (index === 0) {
                 context.moveTo(item.position.x, item.position.y);
@@ -1648,7 +1670,7 @@ function drawRadarDataPoints(series, opts, config, context) {
             var points = eachSeries.data.map(function (item) {
                 return item.position;
             });
-            drawPointShape(points, eachSeries.color, shape, context);
+            drawPointShape(points, eachSeries.color, shape, context,opts);
         }
     });
     // draw label text
@@ -1911,6 +1933,7 @@ Event.prototype.trigger = function () {
 };
 
 var Charts = function Charts(opts) {
+	opts.fontSize=opts.fontSize ? opts.fontSize*opts.pixelRatio : 10*opts.pixelRatio;
     opts.title = opts.title || {};
     opts.subtitle = opts.subtitle || {};
     opts.yAxis = opts.yAxis || {};
@@ -1920,9 +1943,29 @@ var Charts = function Charts(opts) {
     opts.animation = opts.animation === false ? false : true;
     var config$$1 = assign({}, config);
     config$$1.yAxisTitleWidth = opts.yAxis.disabled !== true && opts.yAxis.title ? config$$1.yAxisTitleWidth : 0;
-    config$$1.pieChartLinePadding = opts.dataLabel === false ? 0 : config$$1.pieChartLinePadding;
-    config$$1.pieChartTextPadding = opts.dataLabel === false ? 0 : config$$1.pieChartTextPadding;
-
+    config$$1.pieChartLinePadding = opts.dataLabel === false ? 0 : config$$1.pieChartLinePadding*opts.pixelRatio;
+    config$$1.pieChartTextPadding = opts.dataLabel === false ? 0 : config$$1.pieChartTextPadding*opts.pixelRatio;
+	
+	//适配H5高分屏
+	
+	config$$1.yAxisWidth=config.yAxisWidth*opts.pixelRatio;
+	config$$1.xAxisHeight=config.xAxisHeight*opts.pixelRatio;
+	config$$1.xAxisLineHeight=config.xAxisLineHeight*opts.pixelRatio;
+	config$$1.legendHeight=config.legendHeight*opts.pixelRatio;
+	//config$$1.yAxisTitleWidth=config.yAxisTitleWidth*opts.pixelRatio;
+	config$$1.padding=config.padding*opts.pixelRatio;
+	config$$1.fontSize=opts.fontSize;
+	config$$1.titleFontSize=config.titleFontSize*opts.pixelRatio;
+	config$$1.subtitleFontSize=config.subtitleFontSize*opts.pixelRatio;
+	//config$$1.toolTipPadding=config.toolTipPadding*opts.pixelRatio;
+	config$$1.toolTipLineHeight=config.toolTipLineHeight*opts.pixelRatio;
+	config$$1.columePadding=config.columePadding*opts.pixelRatio;
+	//config$$1.xAxisTextPadding=config.xAxisTextPadding*opts.pixelRatio;
+	
+	//向配置中传入当前pixelRatio及字体大小
+	config.pixelRatio=opts.pixelRatio;
+	config.fontSize=opts.fontSize;
+	
     this.opts = opts;
     this.config = config$$1;
     this.context = wx.createCanvasContext(opts.canvasId);
@@ -1941,7 +1984,6 @@ var Charts = function Charts(opts) {
 
 Charts.prototype.updateData = function () {
     var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
     this.opts.series = data.series || this.opts.series;
     this.opts.categories = data.categories || this.opts.categories;
 
@@ -1960,12 +2002,18 @@ Charts.prototype.addEventListener = function (type, listener) {
 };
 
 Charts.prototype.getCurrentDataIndex = function (e) {
-    var touches = e.touches && e.touches.length ? e.touches : e.changedTouches;
-    if (touches && touches.length) {
-        var _touches$ = touches[0],
-            x = _touches$.x,
-            y = _touches$.y;
-
+    var touches = e.mp.touches[e.mp.touches.length-1];
+    if (touches) {
+		
+        var _touches$= touches,x,y;
+			//适配H5高分屏
+			if(_touches$.clientX){
+				x = _touches$.clientX*this.opts.pixelRatio;
+				y = (_touches$.pageY-e.mp.currentTarget.offsetTop-(this.opts.height/this.opts.pixelRatio/2)*(this.opts.pixelRatio-1))*this.opts.pixelRatio;
+			}else{
+				x = _touches$.x;
+				y = _touches$.y;
+			}
         if (this.opts.type === 'pie' || this.opts.type === 'ring') {
             return findPieChartCurrentIndex({ x: x, y: y }, this.chartData.pieData);
         } else if (this.opts.type === 'radar') {
