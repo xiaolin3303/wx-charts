@@ -4,6 +4,8 @@
  * https://github.com/xiaolin3303/wx-charts
  * 2016-11-28
  *
+ * 修改为uni-app版本
+ * 2019-04-01
  * Designed and built with all the love of Web
  */
 
