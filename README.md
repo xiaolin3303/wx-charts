@@ -182,9 +182,10 @@
 |opts.extra.pie.offsetAngle| Number| 默认为0| 起始角度偏移度数，顺时针方向，起点为3点钟位置（比如要设置起点为12点钟位置，即逆时针偏移90度，传入-90即可）|
 |opts.series |Array |required |数据列表|
 
-####数据列表每项结构定义
-| 属性        | 类型  |  默认  |说明|
-| --------   | :-----:  |  --------     | --------     |
+###数据列表每项结构定义
+
+| 属性 | 类型 | 默认 |说明|
+| ------ | :-----: | ------ | ------------ |
 | dataItem|  Object| | |
 |dataItem.data| Array |required |(饼图、圆环图为Number) 数据，如果传入null图表该处出现断点|
 |dataItem.color |String | |例如#7cb5ec 不传入则使用系统默认配色方案|
