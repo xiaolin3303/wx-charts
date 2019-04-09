@@ -238,4 +238,4 @@ e.mp.currentTarget.offsetTop+=uni.upx2px(510);
 ```
 
 ## 更新记录
-- [x] 2019.04.01改造成uni-app跨端组件
+[x] 2019.04.01改造成uni-app跨端组件
