@@ -1,10 +1,20 @@
-## wx-charts跨端图表
+## wx-charts轻量级跨端图表
 - 基于`wx-charts`微信小程序图表改造成，适用于uni-app平台的跨端图表插件，感谢原作者`xiaolin3303`，原插件gitHub地址：<https://github.com/xiaolin3303/wx-charts>
 - 本插件gitHub地址：<https://github.com/16cheng/uni-wx-charts>
 
 ## 插件特点
 - 改造后的插件可以跨端使用，支持H5、小程序、APP，调用简单方便、性能及体验极佳。
 - 虽然没有Echarts及F2图表功能强大，但可以实现一套业务逻辑各端通用，并解决了H5端图表显示模糊等问题。
+- 支持单页面多图表，demo中单页7个图表，响应速度超快。
+- 支持入场动画及ToolTip动画效果。
+
+## 为何不用Echarts？
+- 相比Echarts复杂的设置，本插件几乎等于傻瓜式的配置。
+- Echarts在跨端使用更复杂，本插件只需要简单的两个`<canvas>`标签轻松区别搞定，代码整洁易维护。
+- 本插件打包后的体积相比Echarts小很多很多，所以性能更好。
+- 如果您是uni-app初学者，那么强烈建议您使用wx-charts。
+- 图表样式均可自定义，懂js的都可以读懂插件源码，直接修改wxcharts.js源码即可。
+- 本插件原为我公司产品所用，经过大量测试，反复论证并加以改造而成，请各位放心使用。
 
 ## 支持图表类型
 - 饼图   `pie`
@@ -113,9 +123,9 @@
 	}
 </script>
 ```
->`var canvaColumn=null;`不是必须定义的变量，如果需要动态更新数据或者需要交互显示ToolTip则需要定义。
->如果在H5端使用，`cWidth`和`cHeight`是必须定义的（当然你也可以用别的变量名），需要注意的是要和当前canvas中的样式定义的数值相等，即uni-app中的upx数值相等。
->`pixelRatio`参数是解决了H5端高分屏canvas模糊而设置的，非H5端给1即可，H5端正常给2就可以，当然如果项目需求较高，设置为当前设备的像素比也没问题。
+> - `var canvaColumn=null;`不是必须定义的变量，如果需要动态更新数据或者需要交互显示ToolTip则需要定义。
+> - 如果在H5端使用，`cWidth`和`cHeight`是必须定义的（当然你也可以用别的变量名），需要注意的是要和当前canvas中的样式定义的数值相等，即uni-app中的upx数值相等。
+> - `pixelRatio`参数是解决了H5端高分屏canvas模糊而设置的，非H5端给1即可，H5端正常给2就可以，当然如果项目需求较高，设置为当前设备的像素比也没问题。
 
 ## &lt; style &gt;模板
 ```css
@@ -215,4 +225,4 @@ chart.addEventListener('renderComplete', () => {
 
 ## 更新记录
 
-- [x]2019.04.01改造成uni-app跨端组件
+- [x] 2019.04.01改造成uni-app跨端组件
