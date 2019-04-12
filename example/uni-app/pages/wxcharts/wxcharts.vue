@@ -10,77 +10,77 @@
         	<view class="qiun-title-dot-light">柱状图</view>
         </view>
         <view class="qiun-charts">
-        	<!--#ifdef H5-->
-        	<canvas canvasId="canvasColumn" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
+        	<!--#ifdef H5 || MP-ALIPAY -->
+        	<canvas canvasId="canvasColumn" id="canvasColumn" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
         	<!--#endif-->
-        	<!--#ifndef H5-->
-        	<canvas canvasId="canvasColumn" class="charts"></canvas>
+        	<!--#ifdef MP-WEIXIN || APP-PLUS -->
+        	<canvas canvasId="canvasColumn" id="canvasColumn" class="charts"></canvas>
         	<!--#endif-->
         </view>
 		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
 			<view class="qiun-title-dot-light">折线图一</view>
 		</view>
 		<view class="qiun-charts">
-			<!--#ifdef H5-->
-			<canvas canvasId="canvasLineA" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}" @touchstart="touchLineA"></canvas>
+			<!--#ifdef H5 || MP-ALIPAY -->
+			<canvas canvasId="canvasLineA" id="canvasLineA" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}" @touchstart="touchLineA"></canvas>
 			<!--#endif-->
-			<!--#ifndef H5-->
-			<canvas canvasId="canvasLineA" class="charts" @touchstart="touchLineA"></canvas>
+			<!--#ifdef MP-WEIXIN || APP-PLUS -->
+			<canvas canvasId="canvasLineA" id="canvasLineA" class="charts" @touchstart="touchLineA"></canvas>
 			<!--#endif-->
 		</view>
 		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
 			<view class="qiun-title-dot-light">折线图二</view>
 		</view>
 		<view class="qiun-charts">
-			<!--#ifdef H5-->
-			<canvas canvasId="canvasLineB" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}" @touchstart="touchLineB"></canvas>
+			<!--#ifdef H5 || MP-ALIPAY -->
+			<canvas canvasId="canvasLineB" id="canvasLineB" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}" @touchstart="touchLineB"></canvas>
 			<!--#endif-->
-			<!--#ifndef H5-->
-			<canvas canvasId="canvasLineB" class="charts" @touchstart="touchLineB"></canvas>
+			<!--#ifdef MP-WEIXIN || APP-PLUS -->
+			<canvas canvasId="canvasLineB" id="canvasLineB" class="charts" @touchstart="touchLineB"></canvas>
 			<!--#endif-->
 		</view>
 		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
 			<view class="qiun-title-dot-light">区域图</view>
 		</view>
 		<view class="qiun-charts">
-			<!--#ifdef H5-->
-			<canvas canvasId="canvasArea" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}" @touchstart="touchArea"></canvas>
+			<!--#ifdef H5 || MP-ALIPAY -->
+			<canvas canvasId="canvasArea" id="canvasArea" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}" @touchstart="touchArea"></canvas>
 			<!--#endif-->
-			<!--#ifndef H5-->
-			<canvas canvasId="canvasArea" class="charts" @touchstart="touchArea"></canvas>
+			<!--#ifdef MP-WEIXIN || APP-PLUS -->
+			<canvas canvasId="canvasArea" id="canvasArea" class="charts" @touchstart="touchArea"></canvas>
 			<!--#endif-->
 		</view>
 		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
 			<view class="qiun-title-dot-light">饼状图</view>
 		</view>
 		<view class="qiun-charts">
-			<!--#ifdef H5-->
-			<canvas canvasId="canvasPie" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
+			<!--#ifdef H5 || MP-ALIPAY -->
+			<canvas canvasId="canvasPie" id="canvasPie" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
 			<!--#endif-->
-			<!--#ifndef H5-->
-			<canvas canvasId="canvasPie" class="charts"></canvas>
+			<!--#ifdef MP-WEIXIN || APP-PLUS -->
+			<canvas canvasId="canvasPie" id="canvasPie" class="charts"></canvas>
 			<!--#endif-->
 		</view>
 		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
 			<view class="qiun-title-dot-light">环形图</view>
 		</view>
 		<view class="qiun-charts">
-			<!--#ifdef H5-->
-			<canvas canvasId="canvasRing" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
+			<!--#ifdef H5 || MP-ALIPAY -->
+			<canvas canvasId="canvasRing" id="canvasRing" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
 			<!--#endif-->
-			<!--#ifndef H5-->
-			<canvas canvasId="canvasRing" class="charts"></canvas>
+			<!--#ifdef MP-WEIXIN || APP-PLUS -->
+			<canvas canvasId="canvasRing" id="canvasRing" class="charts"></canvas>
 			<!--#endif-->
 		</view>
 		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
 			<view class="qiun-title-dot-light">雷达图</view>
 		</view>
 		<view class="qiun-charts">
-			<!--#ifdef H5-->
-			<canvas canvasId="canvasRadar" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
+			<!--#ifdef H5 || MP-ALIPAY -->
+			<canvas canvasId="canvasRadar" id="canvasRadar" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
 			<!--#endif-->
-			<!--#ifndef H5-->
-			<canvas canvasId="canvasRadar" class="charts"></canvas>
+			<!--#ifdef MP-WEIXIN || APP-PLUS -->
+			<canvas canvasId="canvasRadar" id="canvasRadar" class="charts"></canvas>
 			<!--#endif-->
 		</view>
 	</view>
@@ -114,7 +114,7 @@
 		},
 		onLoad() {
 			_self = this;
-			//#ifdef H5
+			//#ifdef H5 || MP-ALIPAY
 			uni.getSystemInfo({
 				success: function (res) {
 					if(res.pixelRatio>1){
@@ -165,6 +165,7 @@
 						}
 					  }
 				});
+				
 			},
 			showLineA(canvasId,chartData){
 				canvaLineA=new wxCharts({
@@ -175,7 +176,7 @@
 					background:'#FFFFFF',
 					pixelRatio:_self.pixelRatio,
 					categories: chartData.categories,
-					animation: true,
+					animation: false,
 					series: chartData.series,
 					xAxis: {
 						disableGrid:true,

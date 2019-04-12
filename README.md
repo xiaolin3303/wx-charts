@@ -2,8 +2,20 @@
 - 基于`wx-charts`微信小程序图表改造成，适用于uni-app平台的跨端图表插件，感谢原作者`xiaolin3303`，原插件gitHub地址：<https://github.com/xiaolin3303/wx-charts>
 - 本插件gitHub地址：<https://github.com/16cheng/uni-wx-charts>
 
-## 作者想说
 ## `如果真心觉得好用，麻烦各位小伙伴们给5星评价哦，您的支持是我的动力，多谢各位！！`
+
+## 更新记录
+[x] 2019.04.12支持支付宝小程序（小程序开发者工具会不显示图表，上传代码真机可以显示）
+[x] 2019.04.01改造成uni-app跨端组件
+
+
+## 支持图表类型
+- 饼图   `pie`
+- 圆环图 `ring`
+- 线图   `line`
+- 柱状图 `column`
+- 区域图 `area`
+- 雷达图 `radar`
 
 ## 插件特点
 - 改造后的插件可以跨端使用，支持H5、小程序、APP，调用简单方便、性能及体验极佳。
@@ -18,16 +30,6 @@
 - 如果您是uni-app初学者，那么强烈建议您使用wx-charts。
 - 图表样式均可自定义，懂js的都可以读懂插件源码，直接修改wxcharts.js源码即可。
 - 本插件原为我公司产品所用，经过大量测试，反复论证并加以改造而成，请各位放心使用。
-- 总之一句话，中国电信官方小程序都在用wx-charts图表（原作者插件，未经改造），只要您需要的图表在图表类型里，请不要犹豫！
-![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/dianxin.jpg?raw=true)
-
-## 支持图表类型
-- 饼图   `pie`
-- 圆环图 `ring`
-- 线图   `line`
-- 柱状图 `column`
-- 区域图 `area`
-- 雷达图 `radar`
 
 ## 图表示例
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/demo.png?raw=true)
@@ -237,5 +239,3 @@ e.mp.currentTarget.offsetTop+=uni.upx2px(510);
 //#endif
 ```
 
-## 更新记录
-[x] 2019.04.01改造成uni-app跨端组件

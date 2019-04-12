@@ -4,9 +4,14 @@
  * https://github.com/xiaolin3303/wx-charts
  * 2016-11-28
  *
- * 修改为uni-app版本
- * 2019-04-01
  * Designed and built with all the love of Web
+ * 
+ * 2019-04-01
+ * 修改为兼容uni-wx-charts
+ * 
+ * 2019-04-12
+ * 支持支付宝小程序（小程序开发者工具会不显示图表，上传代码真机可以显示）
+ * 
  */
 
 'use strict';
@@ -1719,9 +1724,11 @@ function Animation(opts) {
     var delay = 17;
 
     var createAnimationFrame = function createAnimationFrame() {
+		
         if (typeof requestAnimationFrame !== 'undefined') {
-            return requestAnimationFrame;
+			return requestAnimationFrame;
         } else if (typeof setTimeout !== 'undefined') {
+			
             return function (step, delay) {
                 setTimeout(function () {
                     var timeStamp = +new Date();
@@ -1729,6 +1736,7 @@ function Animation(opts) {
                 }, delay);
             };
         } else {
+			
             return function (step) {
                 step(null);
             };
@@ -1736,7 +1744,9 @@ function Animation(opts) {
     };
     var animationFrame = createAnimationFrame();
     var startTimeStamp = null;
+	
     var _step = function step(timestamp) {
+		
         if (timestamp === null || this.isStop === true) {
             opts.onProcess && opts.onProcess(1);
             opts.onAnimationFinish && opts.onAnimationFinish();
@@ -1749,6 +1759,7 @@ function Animation(opts) {
             var process = (timestamp - startTimeStamp) / opts.duration;
             var timingFunction = Timing[opts.timing];
             process = timingFunction(process);
+			
             opts.onProcess && opts.onProcess(process);
             animationFrame(_step, delay);
         } else {
@@ -1757,7 +1768,6 @@ function Animation(opts) {
         }
     };
     _step = _step.bind(this);
-
     animationFrame(_step, delay);
 }
 
@@ -1825,12 +1835,11 @@ function drawCharts(type, opts, config, context) {
             });
             break;
         case 'column':
-            this.animationInstance = new Animation({
+		    this.animationInstance = new Animation({
                 timing: 'easeIn',
                 duration: duration,
                 onProcess: function onProcess(process) {
                     drawYAxisGrid(opts, config, context);
-
                     var _drawColumnDataPoints = drawColumnDataPoints(series, opts, config, context, process),
                         xAxisPoints = _drawColumnDataPoints.xAxisPoints,
                         eachSpacing = _drawColumnDataPoints.eachSpacing;
@@ -1970,7 +1979,7 @@ var Charts = function Charts(opts) {
 	
     this.opts = opts;
     this.config = config$$1;
-    this.context = wx.createCanvasContext(opts.canvasId);
+    this.context = uni.createCanvasContext(opts.canvasId);
     // store calcuated chart data
     // such as chart point coordinate
     this.chartData = {};
@@ -2013,7 +2022,7 @@ Charts.prototype.getCurrentDataIndex = function (e) {
 				x = _touches$.clientX*this.opts.pixelRatio;
 				y = (_touches$.pageY-e.mp.currentTarget.offsetTop-(this.opts.height/this.opts.pixelRatio/2)*(this.opts.pixelRatio-1))*this.opts.pixelRatio;
 			}else{
-				x = _touches$.x;
+				x = _touches$.x*this.opts.pixelRatio;
 				y = _touches$.y;
 			}
         if (this.opts.type === 'pie' || this.opts.type === 'ring') {
