@@ -1,12 +1,14 @@
-## wx-charts轻量级跨端图表
+## wx-charts轻量级跨全端图表
 - 基于`wx-charts`微信小程序图表改造成，适用于uni-app平台的跨端图表插件，感谢原作者`xiaolin3303`，原插件gitHub地址：<https://github.com/xiaolin3303/wx-charts>
 - 本插件gitHub地址：<https://github.com/16cheng/uni-wx-charts>
 
-## `如果真心觉得好用，麻烦各位小伙伴们给5星评价哦，您的支持是我的动力，多谢各位！！`
+# `现在彻底跨全端啦！如果觉得本插件对您有帮助，麻烦各位小伙伴们浪费点时间动动您的手指，给5星评价哦，您的支持是我的动力，多谢各位！！`
 
 ## 更新记录
-- [x] 2019.04.12支持支付宝小程序（小程序开发者工具会不显示图表，上传代码真机可以显示）
-- [x] 2019.04.01改造成uni-app跨端组件
+- [ ] 2019.04.xx 下一步计划加入堆叠图、圆弧进度图表。
+- [x] 2019.04.14 支持百度、头条小程序，实现彻底跨全端
+- [x] 2019.04.12 支持支付宝小程序（开发者工具不显示，上传代码真机预览可以显示）
+- [x] 2019.04.01 改造成uni-app跨端组件
 
 
 ## 支持图表类型
@@ -18,16 +20,16 @@
 - 雷达图 `radar`
 
 ## 插件特点
-- 改造后的插件可以跨端使用，支持H5、小程序、APP，调用简单方便、性能及体验极佳。
+- 改造后的插件可以跨端使用，支持H5、小程序（微信/支付宝/百度/头条）、APP，调用简单方便、性能及体验极佳。
 - 虽然没有Echarts及F2图表功能强大，但可以实现一套业务逻辑各端通用，并解决了H5端图表显示模糊等问题。
 - 支持单页面多图表，demo中单页7个图表，响应速度超快。
 - 支持入场动画及ToolTip动画效果。
 
 ## 为何不用Echarts？
-- 相比Echarts复杂的设置，本插件几乎等于傻瓜式的配置。
+- 相比Echarts及F2的复杂的设置，本插件几乎等于傻瓜式的配置。
 - Echarts在跨端使用更复杂，本插件只需要简单的两个`<canvas>`标签轻松区别搞定，代码整洁易维护。
 - 本插件打包后的体积相比Echarts小很多很多，所以性能更好。
-- 如果您是uni-app初学者，那么强烈建议您使用wx-charts。
+- 如果您是uni-app初学者，那么强烈建议您使用wx-charts，并且目前可以跨全端通用，减少工作量，增强一致性体验。
 - 图表样式均可自定义，懂js的都可以读懂插件源码，直接修改wxcharts.js源码即可。
 - 本插件原为我公司产品所用，经过大量测试，反复论证并加以改造而成，请各位放心使用。
 
@@ -42,11 +44,11 @@
 <template>
 	<view>
 		<view class="qiun-charts">
-			<!--#ifdef H5-->
-			<canvas canvasId="canvasColumn" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
+			<!--#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
+			<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
 			<!--#endif-->
-			<!--#ifndef H5-->
-			<canvas canvasId="canvasColumn" class="charts"></canvas>
+			<!--#ifdef MP-WEIXIN || APP-PLUS -->
+			<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts"></canvas>
 			<!--#endif-->
 		</view>
 	</view>
@@ -74,7 +76,7 @@
 		},
 		onLoad() {
 			_self = this;
-			//#ifdef H5
+			//#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO
 			uni.getSystemInfo({
 				success: function (res) {
 					if(res.pixelRatio>1){
@@ -238,4 +240,4 @@ chart.addEventListener('renderComplete', () => {
 e.mp.currentTarget.offsetTop+=uni.upx2px(510);
 //#endif
 ```
-
+- 很多小伙伴们自行把本插件做成组件来调用，做成组件需要注意，如果涉及到v-if切换显示图表组件，第二次可能会变空白，这里有两建议：1、建议用v-show替代v-if切换显示图表组件。2、建议参考demo，不要将canvas做到组件里使用，即直接写在主页面中。
