@@ -2,10 +2,14 @@
 - 基于`wx-charts`微信小程序图表改造成，适用于uni-app平台的跨端图表插件，感谢原作者`xiaolin3303`，原插件gitHub地址：<https://github.com/xiaolin3303/wx-charts>
 - 本插件gitHub地址：<https://github.com/16cheng/uni-wx-charts>
 
+
 # `现在彻底跨全端啦！如果觉得本插件对您有帮助，麻烦各位小伙伴们浪费点时间动动您的手指，给5星评价哦，您的支持是我的动力，多谢各位！！`
+# `如遇到问题，请参见最后章节【常见问题】或在下面【留言】解决。`
+# `新增加横屏模式，详见demo折线图二`
 
 ## 更新记录
-- [ ] 2019.04.xx 下一步计划加入堆叠图、圆弧进度图表。
+- [ ] 2019.04.xx 下一步计划加入`堆叠图`、`圆弧进度图`
+- [x] 2019.04.15 支持横屏模式，新增`rotate`参数，默认flase，示例见`折线图二`
 - [x] 2019.04.14 支持百度、头条小程序，实现彻底跨全端
 - [x] 2019.04.12 支持支付宝小程序（开发者工具不显示，上传代码真机预览可以显示）
 - [x] 2019.04.01 改造成uni-app跨端组件
@@ -24,6 +28,7 @@
 - 虽然没有Echarts及F2图表功能强大，但可以实现一套业务逻辑各端通用，并解决了H5端图表显示模糊等问题。
 - 支持单页面多图表，demo中单页7个图表，响应速度超快。
 - 支持入场动画及ToolTip动画效果。
+- 独特支持`横屏模式`感谢`masterLi`提供需求。
 
 ## 为何不用Echarts？
 - 相比Echarts及F2的复杂的设置，本插件几乎等于傻瓜式的配置。
@@ -102,6 +107,7 @@
 					fontSize:11,
 					background:'#FFFFFF',
 					pixelRatio:_self.pixelRatio,
+					rotate:false,//新增横屏模式（非必填参数，默认false）
 					animation: true,
 					categories: chartData.categories,
 					series: chartData.series,
@@ -154,6 +160,7 @@
 |opts.width |Number |required| canvas宽度，单位为px`H5端高分屏需要乘像素比`|
 |opts.height| Number| required |canvas高度，单位为px`H5端高分屏需要乘像素比`|
 |`opts.pixelRatio`| Number| required |`新增参数，像素比，默认为1，非H5端引用无需设置`|
+|`opts.rotate`| Boolean| 默认false |`新增参数，横屏模式，默认为false`|
 |opts.background| String | |canvas背景颜色（如果页面背景颜色不是白色请设置为页面的背景颜色，默认#ffffff）|
 |opts.enableScroll |Boolean | |是否开启图表可拖拽滚动 默认false 支持line, area图表类型(需配合绑定scrollStart, scroll, scrollEnd方法)|
 |opts.title| Object| | (only for ring chart)|
@@ -241,3 +248,4 @@ e.mp.currentTarget.offsetTop+=uni.upx2px(510);
 //#endif
 ```
 - 很多小伙伴们自行把本插件做成组件来调用，做成组件需要注意，如果涉及到v-if切换显示图表组件，第二次可能会变空白，这里有两建议：1、建议用v-show替代v-if切换显示图表组件。2、建议参考demo，不要将canvas做到组件里使用，即直接写在主页面中。
+- 如发现实例化图表后，客户端卡死的状况，请在实例化图表前（即调用`showColumn(canvasId,chartData)`前）检查传入图表数组（`chartData.categories`和`chartData.series`）是否为空，如果为空则不要实例化图表。后续将在源码中解决此问题。

@@ -9,7 +9,9 @@
  * 2019-04-01
  * 修改为兼容uni-wx-charts
  * 2019-04-14
- * 支持支付宝/百度、头条小程序实现跨全端
+ * 支持支付宝/百度/头条小程序实现跨全端
+ * 2019-04-15
+ * 支持横屏模式，新增rotate参数，默认flase
  * 
  */
 
@@ -24,6 +26,7 @@ var config = {
     yAxisTitleWidth: 15,
     padding: 12,
 	pixelRatio:1,//适配H5高分屏
+	rotate:false,//横屏模式
     columePadding: 3,
     fontSize: 13,
     //dataPointShape: ['diamond', 'circle', 'triangle', 'rect'],
@@ -1812,8 +1815,11 @@ function drawCharts(type, opts, config, context) {
                 timing: 'easeIn',
                 duration: duration,
                 onProcess: function onProcess(process) {
+					if(opts.rotate){
+						context.translate(opts.height, 0);
+						context.rotate(90 * Math.PI / 180);
+					}
                     drawYAxisGrid(opts, config, context);
-
                     var _drawLineDataPoints = drawLineDataPoints(series, opts, config, context, process),
                         xAxisPoints = _drawLineDataPoints.xAxisPoints,
                         calPoints = _drawLineDataPoints.calPoints,
@@ -1832,13 +1838,18 @@ function drawCharts(type, opts, config, context) {
                     _this.event.trigger('renderComplete');
                 }
             });
+			
             break;
         case 'column':
 		    this.animationInstance = new Animation({
                 timing: 'easeIn',
                 duration: duration,
                 onProcess: function onProcess(process) {
-                    drawYAxisGrid(opts, config, context);
+                    if(opts.rotate){
+                    	context.translate(opts.height, 0);
+                    	context.rotate(90 * Math.PI / 180);
+                    }
+					drawYAxisGrid(opts, config, context);
                     var _drawColumnDataPoints = drawColumnDataPoints(series, opts, config, context, process),
                         xAxisPoints = _drawColumnDataPoints.xAxisPoints,
                         eachSpacing = _drawColumnDataPoints.eachSpacing;
@@ -1860,8 +1871,11 @@ function drawCharts(type, opts, config, context) {
                 timing: 'easeIn',
                 duration: duration,
                 onProcess: function onProcess(process) {
-                    drawYAxisGrid(opts, config, context);
-
+                    if(opts.rotate){
+                    	context.translate(opts.height, 0);
+                    	context.rotate(90 * Math.PI / 180);
+                    }
+					drawYAxisGrid(opts, config, context);
                     var _drawAreaDataPoints = drawAreaDataPoints(series, opts, config, context, process),
                         xAxisPoints = _drawAreaDataPoints.xAxisPoints,
                         calPoints = _drawAreaDataPoints.calPoints,
@@ -1887,7 +1901,11 @@ function drawCharts(type, opts, config, context) {
                 timing: 'easeInOut',
                 duration: duration,
                 onProcess: function onProcess(process) {
-                    _this.chartData.pieData = drawPieDataPoints(series, opts, config, context, process);
+                    if(opts.rotate){
+                    	context.translate(opts.height, 0);
+                    	context.rotate(90 * Math.PI / 180);
+                    }
+					_this.chartData.pieData = drawPieDataPoints(series, opts, config, context, process);
                     drawLegend(opts.series, opts, config, context);
                     drawCanvas(opts, context);
                 },
@@ -1901,7 +1919,11 @@ function drawCharts(type, opts, config, context) {
                 timing: 'easeInOut',
                 duration: duration,
                 onProcess: function onProcess(process) {
-                    _this.chartData.radarData = drawRadarDataPoints(series, opts, config, context, process);
+                    if(opts.rotate){
+                    	context.translate(opts.height, 0);
+                    	context.rotate(90 * Math.PI / 180);
+                    }
+					_this.chartData.radarData = drawRadarDataPoints(series, opts, config, context, process);
                     drawLegend(opts.series, opts, config, context);
                     drawCanvas(opts, context);
                 },
@@ -1943,21 +1965,30 @@ Event.prototype.trigger = function () {
 };
 
 var Charts = function Charts(opts) {
-	opts.fontSize=opts.fontSize ? opts.fontSize*opts.pixelRatio : 10*opts.pixelRatio;
+	opts.fontSize=opts.fontSize ? opts.fontSize*opts.pixelRatio : 13*opts.pixelRatio;
     opts.title = opts.title || {};
     opts.subtitle = opts.subtitle || {};
     opts.yAxis = opts.yAxis || {};
     opts.xAxis = opts.xAxis || {};
     opts.extra = opts.extra || {};
     opts.legend = opts.legend === false ? false : true;
+	opts.rotate = opts.rotate ? true : false;
     opts.animation = opts.animation === false ? false : true;
     var config$$1 = assign({}, config);
     config$$1.yAxisTitleWidth = opts.yAxis.disabled !== true && opts.yAxis.title ? config$$1.yAxisTitleWidth : 0;
     config$$1.pieChartLinePadding = opts.dataLabel === false ? 0 : config$$1.pieChartLinePadding*opts.pixelRatio;
     config$$1.pieChartTextPadding = opts.dataLabel === false ? 0 : config$$1.pieChartTextPadding*opts.pixelRatio;
 	
-	//适配H5高分屏
+	//屏幕旋转
+	config$$1.rotate=opts.rotate;
+	if(opts.rotate){
+		let tempWidth=opts.width;
+		let tempHeight=opts.height;
+		opts.width=tempHeight;
+		opts.height=tempWidth;
+	}
 	
+	//适配H5高分屏
 	config$$1.yAxisWidth=config.yAxisWidth*opts.pixelRatio;
 	config$$1.xAxisHeight=config.xAxisHeight*opts.pixelRatio;
 	config$$1.xAxisLineHeight=config.xAxisLineHeight*opts.pixelRatio;
@@ -1975,6 +2006,7 @@ var Charts = function Charts(opts) {
 	//向配置中传入当前pixelRatio及字体大小
 	config.pixelRatio=opts.pixelRatio;
 	config.fontSize=opts.fontSize;
+	config.rotate=opts.rotate;
 	
     this.opts = opts;
     this.config = config$$1;
@@ -2018,11 +2050,21 @@ Charts.prototype.getCurrentDataIndex = function (e) {
         var _touches$= touches,x,y;
 			//适配H5高分屏
 			if(_touches$.clientX){
-				x = _touches$.clientX*this.opts.pixelRatio;
-				y = (_touches$.pageY-e.mp.currentTarget.offsetTop-(this.opts.height/this.opts.pixelRatio/2)*(this.opts.pixelRatio-1))*this.opts.pixelRatio;
+				if(this.opts.rotate){//适配横屏
+					y = _touches$.clientX*this.opts.pixelRatio;
+					x = (_touches$.pageY-e.mp.currentTarget.offsetTop-(this.opts.height/this.opts.pixelRatio/2)*(this.opts.pixelRatio-1))*this.opts.pixelRatio;
+				}else{
+					x = _touches$.clientX*this.opts.pixelRatio;
+					y = (_touches$.pageY-e.mp.currentTarget.offsetTop-(this.opts.height/this.opts.pixelRatio/2)*(this.opts.pixelRatio-1))*this.opts.pixelRatio;
+				}
 			}else{
-				x = _touches$.x*this.opts.pixelRatio;
-				y = _touches$.y;
+				if(this.opts.rotate){//适配横屏
+					y = _touches$.x*this.opts.pixelRatio;
+					x = _touches$.y*this.opts.pixelRatio;
+				}else{
+					x = _touches$.x*this.opts.pixelRatio;
+					y = _touches$.y*this.opts.pixelRatio;
+				}
 			}
         if (this.opts.type === 'pie' || this.opts.type === 'ring') {
             return findPieChartCurrentIndex({ x: x, y: y }, this.chartData.pieData);
