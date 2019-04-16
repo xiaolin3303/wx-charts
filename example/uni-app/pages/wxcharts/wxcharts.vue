@@ -1,7 +1,7 @@
 <template>
 	<view class="qiun-columns">
 		<view class="qiun-padding" style="font-size: 32upx;">
-			<text>本插件使用wx-charts微信小程序图表工具【https://github.com/xiaolin3303/wx-charts】修改而来，感谢作者xiaolin3303。修改后的插件可以跨端使用，虽然没有Echarts及F2图表功能强大，但解决了H5端图表显示模糊等问题，并且调用简单方便、性能及体验极佳。</text>
+			<text>【开源不易、改造不易、拿来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请参见官方插件下载页面最后章节【常见问题】或【留言】解决。</text>
 		</view>
 		<view class="qiun-padding">
 			<view class="qiun-tip" @tap="changeData()">修改柱状图数据</view>
@@ -17,6 +17,21 @@
         	<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts"></canvas>
         	<!--#endif-->
         </view>
+		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
+			<view class="qiun-title-dot-light">圆弧进度图</view>
+		</view>
+		<view class="qiun-charts3">
+			<!--#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
+			<canvas canvas-id="canvasGauge1" id="canvasGauge1" class="charts3" :style="{'width':cWidth3*pixelRatio+'px','height':cHeight3*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth3*(pixelRatio-1)/2+'px','margin-top':-cHeight3*(pixelRatio-1)/2+'px'}"></canvas>
+			<canvas canvas-id="canvasGauge2" id="canvasGauge2" class="charts3" :style="{'width':cWidth3*pixelRatio+'px','height':cHeight3*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':cWidth3-cWidth3*(pixelRatio-1)/2+'px','margin-top':-cHeight3*(pixelRatio-1)/2+'px'}"></canvas>
+			<canvas canvas-id="canvasGauge3" id="canvasGauge3" class="charts3" :style="{'width':cWidth3*pixelRatio+'px','height':cHeight3*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':cWidth3*2-cWidth3*(pixelRatio-1)/2+'px','margin-top':-cHeight3*(pixelRatio-1)/2+'px'}"></canvas>
+			<!--#endif-->
+			<!--#ifdef MP-WEIXIN || APP-PLUS -->
+			<canvas canvas-id="canvasGauge1" id="canvasGauge1" class="charts3"></canvas>
+			<canvas canvas-id="canvasGauge2" id="canvasGauge2" class="charts3" style="margin-left: 250upx;"></canvas>
+			<canvas canvas-id="canvasGauge3" id="canvasGauge3" class="charts3" style="margin-left: 500upx;"></canvas>
+			<!--#endif-->
+		</view>
 		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
 			<view class="qiun-title-dot-light">折线图一</view>
 		</view>
@@ -101,7 +116,10 @@
 		Area:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量A',data:[35, 20, 25, 37, 4, 20]},{name: '成交量B',data:[70, 40, 65, 100, 44, 68]},{name: '成交量C',data:[100, 80, 95, 150, 112, 132]}]},
 		Pie:{series:[{ name: '一班', data: 50 }, { name: '二班', data: 30 }, { name: '三班', data: 20 }, { name: '四班', data: 18 }, { name: '五班', data: 8 }]},
 		Ring:{series:[{ name: '一班', data: 50 }, { name: '二班', data: 30 }, { name: '三班', data: 20 }, { name: '四班', data: 18 }, { name: '五班', data: 8 }]},
-		Radar:{categories: ['维度1', '维度2', '维度3', '维度4', '维度5', '维度6'],series:[{name: '成交量1',data: [90, 110, 165, 195, 187, 172]}, {name: '成交量2',data: [190, 210, 105, 35, 27, 102]}]}
+		Radar:{categories: ['维度1', '维度2', '维度3', '维度4', '维度5', '维度6'],series:[{name: '成交量1',data: [90, 110, 165, 195, 187, 172]}, {name: '成交量2',data: [190, 210, 105, 35, 27, 102]}]},
+		Gauge1:{series:[{ name: '正确率', data: 0.45 , color:'#2fc25b'}]},
+		Gauge2:{series:[{ name: '错误率', data: 0.65 , color:'#f04864'}]},
+		Gauge3:{series:[{ name: '完成率', data: 0.85 , color:'#1890ff'}]},
 		}
 	
 	export default {
@@ -111,6 +129,8 @@
 				cHeight:'',
 				cWidth2:'',//横屏图表
 				cHeight2:'',//横屏图表
+				cWidth3:'',//圆弧进度图
+				cHeight3:'',//圆弧进度图
 				pixelRatio:1
 			}
 		},
@@ -131,6 +151,8 @@
 			this.cHeight=uni.upx2px(500);
 			this.cWidth2=uni.upx2px(700);
 			this.cHeight2=uni.upx2px(1100);
+			this.cWidth3=uni.upx2px(250);
+			this.cHeight3=uni.upx2px(250);
 		},
 		onReady() {
 			this.showColumn("canvasColumn",Data.Column);
@@ -140,6 +162,10 @@
 			this.showPie("canvasPie",Data.Pie);
 			this.showRing("canvasRing",Data.Ring);
 			this.showRadar("canvasRadar",Data.Radar);
+			this.showRadar("canvasRadar",Data.Radar);
+			this.showGauge("canvasGauge1",Data.Gauge1);
+			this.showGauge("canvasGauge2",Data.Gauge2);
+			this.showGauge("canvasGauge3",Data.Gauge3);
 		},
 		methods: {
 			showColumn(canvasId,chartData){
@@ -315,6 +341,35 @@
 					}
 				});
 			},
+			showGauge(canvasId,chartData){
+				new wxCharts({
+					canvasId: canvasId,
+					type: 'gauge',
+					fontSize:11,
+					legend:false,
+					title: {
+						name: chartData.series[0].data*100+'%',
+						color: chartData.series[0].color,
+						fontSize: 25*_self.pixelRatio
+					},
+					subtitle: {
+						name: chartData.series[0].name,
+						color: '#666666',
+						fontSize: 15*_self.pixelRatio
+					},
+					extra: {
+						gaugeWidth: 12*_self.pixelRatio,//圆弧的宽度
+					},
+					background:'#FFFFFF',
+					pixelRatio:_self.pixelRatio,
+					series: chartData.series,
+					animation: true,
+					width: _self.cWidth3*_self.pixelRatio,
+					height: _self.cHeight3*_self.pixelRatio,
+					dataLabel: true,
+				});
+				
+			},
 			changeData(){
 				//这里只做了柱状图数据动态更新，其他图表同理。
 				canvaColumn.updateData({
@@ -351,15 +406,21 @@
 page{background:#F2F2F2;}
 .qiun-padding{padding:2%; width:96%;}
 .qiun-wrap{display:flex; flex-wrap:wrap;}
+.qiun-rows{display:flex; flex-direction:row !important;}
 .qiun-columns{display:flex; flex-direction:column !important;}
 .qiun-common-mt{margin-top:10upx;}
 .qiun-bg-white{background:#FFFFFF;}
 .qiun-title-bar{width:96%; padding:10upx 2%; flex-wrap:nowrap;}
 .qiun-title-dot-light{border-left: 10upx solid #0ea391; padding-left: 10upx; font-size: 32upx;color: #000000}
+/* 通用样式 */
 .qiun-charts{width: 750upx; height:500upx;background-color: #FFFFFF;}
 .charts{width: 750upx; height:500upx;background-color: #FFFFFF;}
-/* 横屏设置 */
+/* 横屏样式 */
 .qiun-charts-rotate{width: 700upx; height:1100upx;background-color: #FFFFFF;padding: 25upx;}
 .charts-rotate{width: 700upx; height:1100upx;background-color: #FFFFFF;}
+/* 圆弧进度样式 */
+.qiun-charts3{width: 750upx; height:250upx;background-color: #FFFFFF;position:relative;}
+.charts3{position: absolute;width: 250upx; height:250upx;background-color: #FFFFFF;}
+
 .qiun-tip {display:block; width:auto; overflow:hidden; padding:15upx; height:30upx; line-height:30upx; margin:10upx; background:#ff9933; font-size:30upx; border-radius:8upx;justify-content:center; text-align:center;border: 1px solid #dc7004;color: #FFFFFF;}
 </style>

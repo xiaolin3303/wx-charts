@@ -6,12 +6,20 @@
  *
  * Designed and built with all the love of Web
  * 
+ * 【秋云科技】修改为uni-app跨全端图表
+ * https://github.com/16cheng/uni-wx-charts
+ * 插件市场地址：
+ * http://ext.dcloud.net.cn/plugin?id=271
+ * 
  * 2019-04-01
  * 修改为兼容uni-wx-charts
  * 2019-04-14
  * 支持支付宝/百度/头条小程序实现跨全端
  * 2019-04-15
  * 支持横屏模式，新增rotate参数，默认flase
+ * 2019-04-16
+ * 新增圆弧进度图，图表类型gauge
+ * 
  * 
  */
 
@@ -601,6 +609,18 @@ function getPieDataPoints(series) {
         _start_ += 2 * item._proportion_ * Math.PI;
     });
 
+    return series;
+}
+
+function getGaugeDataPoints(series) {
+    var process = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+    series.forEach(function (item) {
+        item.data = item.data === null ? 0 : item.data;
+		item._proportion_ = 1.5 * item.data* process + 0.75;
+		if (item._proportion_ >= 2) {
+			item._proportion_ = item._proportion_ % 2;
+		}
+    });
     return series;
 }
 
@@ -1514,6 +1534,9 @@ function drawLegend(series, opts, config, context) {
                     context.stroke();
                     context.closePath();
                     break;
+				//圆弧进度图不显示图例
+				case 'gauge':
+					break;
                 default:
                     context.beginPath();
                     context.setFillStyle(item.color);
@@ -1598,6 +1621,54 @@ function drawPieDataPoints(series, opts, config, context) {
         drawRingTitle(opts, config, context);
     }
 
+    return {
+        center: centerPosition,
+        radius: radius,
+        series: series
+    };
+}
+
+function drawGaugeDataPoints(series, opts, config, context) {
+    var process = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
+
+    var pieOption = opts.extra.pie || {};
+    series = getGaugeDataPoints(series, process);
+    var centerPosition = {
+        x: opts.width / 2,
+        y: (opts.height) / 2
+    };
+    var radius = Math.min(centerPosition.x , centerPosition.y);
+   
+	if (typeof opts.extra.gaugeWidth === 'number' && opts.extra.gaugeWidth > 0) {
+	    opts.extra.gaugeWidth=opts.extra.gaugeWidth;
+	}else{
+		opts.extra.gaugeWidth=12*opts.pixelRatio;
+	}
+	
+	radius -= config.padding+opts.extra.gaugeWidth/2;
+	
+	var innerPieWidth = radius-opts.extra.gaugeWidth;
+	
+	
+	//背景颜色
+	context.setLineWidth(opts.extra.gaugeWidth); // 设置圆环的宽度
+	context.setStrokeStyle('#E9E9E9'); // 设置圆环的颜色
+	context.setLineCap('round'); // 设置圆环端点的形状
+	context.beginPath(); //开始一个新的路径
+	context.arc(centerPosition.x, centerPosition.y, radius, 0.75 * Math.PI, 0.25 * Math.PI, false);
+	context.stroke(); //对当前路径进行描边
+		
+			
+    series.forEach(function (eachSeries) {
+		context.setLineWidth(opts.extra.gaugeWidth);
+		context.setStrokeStyle(eachSeries.color);
+		context.setLineCap('round');
+		context.beginPath();
+		context.arc(centerPosition.x, centerPosition.y, radius, 0.75 * Math.PI, eachSeries._proportion_ * Math.PI, false);
+		context.stroke();
+		
+    });
+    drawRingTitle(opts, config, context);
     return {
         center: centerPosition,
         radius: radius,
@@ -1932,6 +2003,23 @@ function drawCharts(type, opts, config, context) {
                 }
             });
             break;
+		case 'gauge':
+			this.animationInstance = new Animation({
+			    timing: 'easeInOut',
+			    duration: duration,
+			    onProcess: function onProcess(process) {
+			        if(opts.rotate){
+			        	context.translate(opts.height, 0);
+			        	context.rotate(90 * Math.PI / 180);
+			        }
+					_this.chartData.pieData = drawGaugeDataPoints(series, opts, config, context, process);
+			        drawCanvas(opts, context);
+			    },
+			    onAnimationFinish: function onAnimationFinish() {
+			        _this.event.trigger('renderComplete');
+			    }
+			});
+			break;
     }
 }
 
@@ -2066,7 +2154,7 @@ Charts.prototype.getCurrentDataIndex = function (e) {
 					y = _touches$.y*this.opts.pixelRatio;
 				}
 			}
-        if (this.opts.type === 'pie' || this.opts.type === 'ring') {
+        if (this.opts.type === 'pie' || this.opts.type === 'ring' || this.opts.type === 'gauge') {
             return findPieChartCurrentIndex({ x: x, y: y }, this.chartData.pieData);
         } else if (this.opts.type === 'radar') {
             return findRadarChartCurrentIndex({ x: x, y: y }, this.chartData.radarData, this.opts.categories.length);
