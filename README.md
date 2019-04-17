@@ -40,8 +40,14 @@
 - 本插件原为我公司产品所用，经过大量测试，反复论证并加以改造而成，请各位放心使用。
 
 ## 图表示例
-![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/demo.png?raw=true)
-
+![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/gauge.gif?raw=true)
+![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/column.gif?raw=true)
+![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/lineA.gif?raw=true)
+![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/area.gif?raw=true)
+![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/pie.gif?raw=true)
+![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/ring.gif?raw=true)
+![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/radar.gif?raw=true)
+![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/lineB.gif?raw=true)
 ## 引用方法
 `import wxCharts from '../../components/wx-charts/wxcharts.js';`
 
