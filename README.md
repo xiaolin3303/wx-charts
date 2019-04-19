@@ -48,6 +48,7 @@
 ## 图表示例
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/gauge.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/column.gif?raw=true)
+![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/tuozhuai.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/lineA.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/area.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/pie.gif?raw=true)
