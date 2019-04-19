@@ -1,20 +1,20 @@
 <template>
 	<view class="qiun-columns">
 		<view class="qiun-padding" style="font-size: 32upx;">
-			<text>【开源不易、改造不易、拿来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请参见官方插件下载页面最后章节【常见问题】或【留言】解决。</text>
+			<text>【开源不易、改造不易、哪(拿)来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请参见官方插件下载页面最后章节【常见问题】或【留言】解决。</text>
 		</view>
 		<view class="qiun-padding">
 			<view class="qiun-tip" @tap="changeData()">修改柱状图数据</view>
 		</view>
         <view class="qiun-bg-white qiun-title-bar" >
-        	<view class="qiun-title-dot-light">柱状图</view>
+        	<view class="qiun-title-dot-light">柱状图（可横向拖拽）</view>
         </view>
         <view class="qiun-charts">
         	<!--#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO -->
-        	<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
+        	<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"  @touchstart="touchColumn" @touchmove="moveColumn" @touchend="touchEndColumn"></canvas>
         	<!--#endif-->
         	<!--#ifdef MP-WEIXIN || APP-PLUS -->
-        	<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts"></canvas>
+        	<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts" @touchstart="touchColumn" @touchmove="moveColumn" @touchend="touchEndColumn"></canvas>
         	<!--#endif-->
         </view>
 		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
@@ -59,7 +59,7 @@
 		</view>
 		<view class="qiun-charts">
 			<!--#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
-			<canvas canvas-id="canvasArea" id="canvasArea" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}" @touchstart="touchArea"></canvas>
+			<canvas canvas-id="canvasArea" id="canvasArea" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}" @touchstart="touchArea" ></canvas>
 			<!--#endif-->
 			<!--#ifdef MP-WEIXIN || APP-PLUS -->
 			<canvas canvas-id="canvasArea" id="canvasArea" class="charts" @touchstart="touchArea"></canvas>
@@ -113,11 +113,11 @@
 		ColumnB:{categories:['2013', '2014', '2015', '2016', '2017', '2018'],series:[{name: '新成交量3',data:[35, 36, 31, 33, 13, 34]},{name: '新成交量4',data:[18, 27, 21, 34, 14, 38]}]},
 		LineA:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量A',data:[35, 20, 25, 37, 4, 20]},{name: '成交量B',data:[70, 40, 65, 100, 44, 68]},{name: '成交量C',data:[100, 80, 95, 150, 112, 132]}]},
 		LineB:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量A',data:[35, 20, 25, 37, 4, 20]},{name: '成交量B',data:[70, 40, 65, 100, 44, 68]},{name: '成交量C',data:[100, 80, 95, 150, 112, 132]}]},
-		Area:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量A',data:[35, 20, 25, 37, 4, 20]},{name: '成交量B',data:[70, 40, 65, 100, 44, 68]},{name: '成交量C',data:[100, 80, 95, 150, 112, 132]}]},
+		Area:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量A',data:[100, 80, 95, 150, 112, 132],color:'#facc14'},{name: '成交量B',data:[70, 40, 65, 100, 44, 68],color:'#2fc25b'},{name: '成交量C',data:[35, 20, 25, 37, 4, 20],color:'#1890ff'}]},
 		Pie:{series:[{ name: '一班', data: 50 }, { name: '二班', data: 30 }, { name: '三班', data: 20 }, { name: '四班', data: 18 }, { name: '五班', data: 8 }]},
-		Ring:{series:[{ name: '一班', data: 50 }, { name: '二班', data: 30 }, { name: '三班', data: 20 }, { name: '四班', data: 18 }, { name: '五班', data: 8 }]},
+		Ring:{series:[{ name: '一班', data: 50 ,format:()=> {return '一班:50人'}}, { name: '二班', data: 30 ,format:()=> {return '二班:30人'}}, { name: '三班', data: 20 ,format:()=> {return '三班:20人'}}, { name: '四班', data: 18 ,format:()=> {return '四班:18人'}}, { name: '五班', data: 8 ,format:()=> {return '五班:8人'}}]},
 		Radar:{categories: ['维度1', '维度2', '维度3', '维度4', '维度5', '维度6'],series:[{name: '成交量1',data: [90, 110, 165, 195, 187, 172]}, {name: '成交量2',data: [190, 210, 105, 35, 27, 102]}]},
-		Gauge1:{series:[{ name: '正确率', data: 0.45 , color:'#2fc25b'}]},
+		Gauge1:{series:[{ name: '正确率', data: 0.29 , color:'#2fc25b'}]},
 		Gauge2:{series:[{ name: '错误率', data: 0.65 , color:'#f04864'}]},
 		Gauge3:{series:[{ name: '完成率', data: 0.85 , color:'#1890ff'}]},
 		}
@@ -180,12 +180,14 @@
 					categories: chartData.categories,
 					series: chartData.series,
 					xAxis: {
-						disableGrid:true
+						disableGrid:true,
+						itemCount:3.5//配合enableScroll图表拖拽功能使用，x轴单屏显示数据的数量，默认为5个
 					},
 					yAxis: {
 						//disabled:true
 					},
 					dataLabel: true,
+					enableScroll: true,//开启图表拖拽功能
 					width: _self.cWidth*_self.pixelRatio,
 					height: _self.cHeight*_self.pixelRatio,
 					extra: {
@@ -205,7 +207,7 @@
 					background:'#FFFFFF',
 					pixelRatio:_self.pixelRatio,
 					categories: chartData.categories,
-					animation: false,
+					animation: true,
 					series: chartData.series,
 					xAxis: {
 						disableGrid:true,
@@ -348,7 +350,7 @@
 					fontSize:11,
 					legend:false,
 					title: {
-						name: chartData.series[0].data*100+'%',
+						name: Math.round(chartData.series[0].data*100)+'%',
 						color: chartData.series[0].color,
 						fontSize: 25*_self.pixelRatio
 					},
@@ -376,6 +378,15 @@
 					series: Data.ColumnB.series,
 					categories: Data.ColumnB.categories
 				});
+			},
+			touchColumn(e){
+				canvaColumn.scrollStart(e);
+			},
+			moveColumn(e) {
+				canvaColumn.scroll(e);
+			},
+			touchEndColumn(e) {
+				canvaColumn.scrollEnd(e);
 			},
 			touchLineA(e){
 				canvaLineA.showToolTip(e, {

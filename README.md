@@ -2,13 +2,18 @@
 - 基于`wx-charts`微信小程序图表改造成，适用于uni-app平台的跨端图表插件，感谢原作者`xiaolin3303`，原插件gitHub地址：<https://github.com/xiaolin3303/wx-charts>
 
 # `【开源不易、改造不易、哪(拿)来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请参见页面最后章节【常见问题】或【留言】解决。`
-# `新增加横屏模式，详见demo折线图二`
-# `新增加比较常用的圆弧进度图，详见demo`
+
+# `那谁，你需要的【图表拖拽】来啦，老板再也不怕图表很长很长很长啦，支持柱状图、折线图、区域图，赶快下载1.4.3吧，详见demo柱状图`
+
+## `近期更新比较频繁，请各位朋友持续关注更新`
 
 ## 更新记录
-- [ ] 2019.04.xx 下一步计划加入`堆叠图`、`条状图`
-- [ ] 2019.04.21 本周末计划增加`图表拖拽`示例
-- [x] 2019.04.17 增加`自定义显示数据标签文案`示例，参见圆环图ring数据事例
+- [ ] 2019.05.xx 计划加入柱状图、饼图、环形图、雷达图等`ToolTip`事件
+- [ ] 2019.04.xx 计划加入`堆叠图`、`条状图`、`仪表盘`
+- [ ] 2019.04.22 周一上午计划增加`图表拖拽`图`滚动条`显示当前拖拽进度的功能，敬请关注
+- [x] 2019.04.19 增加`图表拖拽`示例，支持的图表有柱状图、折线图和区域图，除头条小程序外，其他各端现已全部支持拖拽功能（头条小程序canvas不支持点击事件），需配合绑定`@touchstart`, `@touchmove`, `@touchend`方法
+- [x] 2019.04.18 修复`圆弧进度图`示例中`进度数值`JS计算精度引起的小数位数问题，加`Math.round()`解决，感谢`开发者M_少`发现问题。更正`参数说明`中几个错误描述
+- [x] 2019.04.17 增加`自定义显示数据标签文案`示例，请下载1.4.1版本，参见圆环图ring数据事例
 - [x] 2019.04.16 新增`圆弧进度图`,图表类型`gauge`，详见demo，感谢作者`2388306191@qq.com`提供思路
 - [x] 2019.04.15 支持`横屏模式`，新增`rotate`参数，默认flase，示例见`折线图二`
 - [x] 2019.04.14 支持百度、头条小程序，实现彻底跨全端
@@ -28,7 +33,7 @@
 ## 插件特点
 - 改造后的插件可以跨端使用，支持H5、小程序（微信/支付宝/百度/头条）、APP，调用简单方便、性能及体验极佳。
 - 虽然没有Echarts及F2图表功能强大，但可以实现一套业务逻辑各端通用，并解决了H5端图表显示模糊等问题。
-- 支持单页面多图表，demo中单页7个图表，响应速度超快。
+- 支持单页面多图表，demo中单页10个图表，响应速度超快。
 - 支持入场动画及ToolTip动画效果。
 - 独特支持`横屏模式`感谢`masterLi`提供需求。
 
@@ -160,18 +165,19 @@
 ## 参数说明
 
 | 属性 | 类型 | 默认 |说明|
-| ------ | :-----: | ------ | ------------ |
+| :------ | :-----: | :-----: | :------------ |
 |opts |Object| | |
 |opts.canvasId | String|required|微信小程序canvas-id|
 |opts.width |Number |required| canvas宽度，单位为px`H5端高分屏需要乘像素比`|
 |opts.height| Number| required |canvas高度，单位为px`H5端高分屏需要乘像素比`|
 |`opts.pixelRatio`| Number| required |`新增参数，像素比，默认为1，非H5端引用无需设置`|
 |`opts.rotate`| Boolean| 默认false |`新增参数，横屏模式，默认为false`|
+|`opts.fontSize`| Number | 默认13px |`新增参数，全局默认字体大小（可选，单位为px，默认13px）高分屏不必乘像素比，自动根据pixelRatio计算`|
 |opts.background| String | |canvas背景颜色（如果页面背景颜色不是白色请设置为页面的背景颜色，默认#ffffff）|
-|opts.enableScroll |Boolean | |是否开启图表可拖拽滚动 默认false 支持line, area图表类型(需配合绑定scrollStart, scroll, scrollEnd方法)|
+|opts.enableScroll |Boolean | |是否开启图表可拖拽滚动 默认false 支持line, area，`新增支持column`图表类型(需配合绑定@touchstart, @touchmove,  @touchend方法)|
 |opts.title| Object| | (only for ring chart)|
 |opts.title.name| String | |标题内容|
-|opts.title.fontSize| Number | 默认13px |标题字体大小（可选，单位为px，默认13px）`H5端高分屏不必乘像素比，自动计算`|
+|opts.title.fontSize| Number |  |标题字体大小（可选，单位为px）|
 |opts.title.color| String| | 标题颜色（可选）|
 |opts.title.offsetX |Number| 默认0px | 标题横向位置偏移量，单位px，默认0|
 |opts.subtitle| Object| | (only for ring chart)|
@@ -181,12 +187,13 @@
 |opts.subtitle.color| String| | 副标题颜色（可选）|
 |opts.animation| Boolean |默认为 true |是否动画展示|
 |opts.legend| Boolen |默认为 true| 是否显示图表下方各类别的标识|
-|opts.type|String |required| 图表类型，可选值为pie, line, column, area, ring, radar|
+|opts.type|String |required| 图表类型，可选值为pie, line, column, area, ring, radar, 新增`gauge`|
 |opts.categories| Array| required |(饼图、圆环图不需要) 数据类别分类|
 |opts.dataLabel| Boolean |默认为 true |是否在图表中显示数据内容值|
 |opts.dataPointShape| Boolean |默认为 true| 是否在图表中显示数据点图形标识|
 |opts.disablePieStroke |Boolean |默认为 false| 不绘制饼图（圆环图）各区块的白色分割线|
 |opts.xAxis |Object | |X轴配置|
+|`opts.xAxis.itemCount`| Number| 默认为 5 | `新增参数，X轴可见区域刻度数量，配合拖拽滚动使用（即仅在启用enableScroll时有效）`|
 |opts.xAxis.gridColor| String| 默认为 #cccccc | X轴网格颜色 例如#7cb5ec|
 |opts.xAxis.fontColor| String| 默认为 #666666 | X轴数据点颜色 例如#7cb5ec|
 |opts.xAxis.disableGrid |Boolean| 默认为 false| 不绘制X轴网格|
@@ -200,6 +207,11 @@
 |opts.yAxis.fontColor| String | 默认为 #666666 | Y轴数据点颜色 例如#7cb5ec|
 |opts.yAxis.titleFontColor |String | 默认为 #333333 | Y轴title颜色 例如#7cb5ec|
 |opts.yAxis.disabled |Boolean |默认为 false| 不绘制Y轴|
+
+###其他非通用配置项
+
+| 属性 | 类型 | 默认 |说明|
+| :------ | :-----: | :-----: | :------------ |
 |opts.extra| Object| |其他非通用配置项|
 |opts.extra.ringWidth| Number | |ringChart圆环宽度，单位为px|
 |`opts.extra.gaugeWidth`| Number | |`新增参数，圆弧进度图弧线宽度，单位为px`|
@@ -218,14 +230,15 @@
 ###数据列表每项结构定义
 
 | 属性 | 类型 | 默认 |说明|
-| ------ | :-----: | ------ | ------------ |
-| dataItem|  Object| | |
+| :------ | :-----: | :-----: | :------------ |
+|dataItem|  Object| | |
 |dataItem.data| Array |required |(饼图、圆环图为Number) 数据，如果传入null图表该处出现断点|
 |dataItem.color |String | |例如#7cb5ec 不传入则使用系统默认配色方案|
 |dataItem.name |String | |数据名称|
 |dateItem.format| Function| | 自定义显示数据内容|
 
 ## 方法 & 事件
+
 ### 方法
 - `updateData(data)` 更新图表数据，data: object，data.categories(可选，具体见参数说明)，data.series(可选，具体见参数说明)，data.title(可选，具体见参数说明)，data.subtitle(可选，具体见参数说明)
 - `stopAnimation() `停止当前正在进行的动画效果，直接展示渲染的最终结果
@@ -233,8 +246,10 @@
 - `getCurrentDataIndex(e) `获取图表中点击时的数据序列编号(-1表示未找到对应的数据区域), e: Object微信小程序标准事件，需要手动的去绑定touch事件，具体可参考wx-charts-demo中column图示例
 - `showToolTip(e, options?)` 图表中展示数据详细内容(目前仅支持line和area图表类型)，e: Object微信小程序标准事件，options: Object可选，tooltip的自定义配置，支持option.background，默认为#000000; option.format, function类型，接受两个传入的参数，seriesItem(Object, 包括seriesItem.name以及seriesItem.data)和category，可自定义tooltip显示内容。具体可参考wx-charts-demo中line图示例
 - `scrollStart(e)`, `scroll(e)`, `scrollEnd(e)`设置支持图表拖拽系列事件(支持line, area, column)，具体参考wx-charts-demo中ScrollLine图示例
+
 ### 事件
 - `renderComplete` 图表渲染完成（如果有动画效果，则动画效果完成时触发）
+
 ### 如何使用事件
 ```javascript
 let chart = new wxCharts(...);
@@ -243,13 +258,25 @@ chart.addEventListener('renderComplete', () => {
 });
 ```
 
+
 ## 常见问题
-- 如果用在您的项目上图表不显示，请先运行demo页面，如果demo页面也无法显示，请查看全局样式是否定义了canvas的样式，如有请取消。
-- 前提是H5端，如果将canvas放在多级<view>组件下，遇到ToolTip不显示或点击区域不正确，请在`touch`事件中增加以下代码解决`uni.upx2px(510);`是canvas组件的上级<view>组件的高度。
+
+各位遇到问题请先参考以下问题，如果仍不能解决，请留言。
+
+### 通用问题
+- 如果用在您的项目上图表不显示，请先运行demo页面，如果demo页面也无法显示，请查看全局样式是否定义了`canvas的样式`，如有请取消。
+- 如发现实例化图表后，`客户端卡死`的状况，请在实例化图表前（即调用`showColumn(canvasId,chartData)`前）检查传入图表数组（`chartData.categories`和`chartData.series`）是否为空，如果为空则不要实例化图表。后续将在源码中解决此问题。
+
+### H5、支付宝、百度、头条问题
+- 在高分屏模式下，如果发现图表已显示，但位置不正确，请检查上级`view`容器的`样式`，为了解决高分屏canvas模糊问题，使用了css的`transform`，所以请修改上级样式使canvas容器缩放至相应位置。
+- 如果将canvas放在多级<view>组件下，遇到ToolTip不显示或点击区域不正确，请在`touch`事件中增加以下代码解决。
 ```javascript
 //#ifdef H5
 e.mp.currentTarget.offsetTop+=uni.upx2px(510);
 //#endif
 ```
+> `uni.upx2px(510);`是canvas组件的上级<view>组件的高度
+
+### 组件问题
 - 很多小伙伴们自行把本插件做成组件来调用，做成组件需要注意，如果涉及到v-if切换显示图表组件，第二次可能会变空白，这里有两个建议：1、建议用v-show替代v-if切换显示图表组件。2、建议参考demo，不要将canvas做到组件里使用，即直接写在主页面中。
-- 如发现实例化图表后，客户端卡死的状况，请在实例化图表前（即调用`showColumn(canvasId,chartData)`前）检查传入图表数组（`chartData.categories`和`chartData.series`）是否为空，如果为空则不要实例化图表。后续将在源码中解决此问题。
+## `如果跨端使用，最好不要做到组件里`

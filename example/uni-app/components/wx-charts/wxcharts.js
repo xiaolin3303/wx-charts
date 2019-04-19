@@ -659,7 +659,7 @@ function fixColumeData(points, eachSpacing, columnLen, index, config, opts) {
 function getXAxisPoints(categories, opts, config) {
     var yAxisTotalWidth = config.yAxisWidth + config.yAxisTitleWidth;
     var spacingValid = opts.width - 2 * config.padding - yAxisTotalWidth;
-    var dataCount = opts.enableScroll ? Math.min(5, categories.length) : categories.length;
+    var dataCount = opts.enableScroll ? Math.min(opts.xAxis.itemCount, categories.length) : categories.length;
     var eachSpacing = spacingValid / dataCount;
 
     var xAxisPoints = [];
@@ -2058,6 +2058,7 @@ var Charts = function Charts(opts) {
     opts.subtitle = opts.subtitle || {};
     opts.yAxis = opts.yAxis || {};
     opts.xAxis = opts.xAxis || {};
+	opts.xAxis.itemCount = opts.xAxis.itemCount ? opts.xAxis.itemCount : 5;
     opts.extra = opts.extra || {};
     opts.legend = opts.legend === false ? false : true;
 	opts.rotate = opts.rotate ? true : false;
@@ -2132,7 +2133,7 @@ Charts.prototype.addEventListener = function (type, listener) {
 };
 
 Charts.prototype.getCurrentDataIndex = function (e) {
-    var touches = e.mp.touches[e.mp.touches.length-1];
+    var touches= e.mp.changedTouches[0];
     if (touches) {
 		
         var _touches$= touches,x,y;
@@ -2195,15 +2196,26 @@ Charts.prototype.showToolTip = function (e) {
 };
 
 Charts.prototype.scrollStart = function (e) {
-    if (e.touches[0] && this.opts.enableScroll === true) {
-        this.scrollOption.startTouchX = e.touches[0].x;
+	var touches= e.mp.changedTouches[0];
+    if (touches && this.opts.enableScroll === true) {
+		if(touches.x){
+			this.scrollOption.startTouchX = touches.x;
+		}else{
+			this.scrollOption.startTouchX = touches.clientX;
+		}
     }
 };
 
 Charts.prototype.scroll = function (e) {
     // TODO throtting...
-    if (e.touches[0] && this.opts.enableScroll === true) {
-        var _distance = e.touches[0].x - this.scrollOption.startTouchX;
+	var touches= e.mp.changedTouches[0];
+    if (touches && this.opts.enableScroll === true) {
+		var _distance;
+		if(touches.x){
+			_distance = touches.x - this.scrollOption.startTouchX;
+		}else{
+			_distance = touches.clientX - this.scrollOption.startTouchX;
+		}
         var currentOffset = this.scrollOption.currentOffset;
 
         var validDistance = calValidDistance(currentOffset + _distance, this.chartData, this.config, this.opts);
