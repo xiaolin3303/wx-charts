@@ -7,14 +7,14 @@
 			<view class="qiun-tip" @tap="changeData()">修改柱状图数据</view>
 		</view>
         <view class="qiun-bg-white qiun-title-bar" >
-        	<view class="qiun-title-dot-light">柱状图（可横向拖拽）</view>
+        	<view class="qiun-title-dot-light">柱状图</view>
         </view>
         <view class="qiun-charts">
         	<!--#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO -->
-        	<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"  @touchstart="touchColumn" @touchmove="moveColumn" @touchend="touchEndColumn"></canvas>
+        	<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
         	<!--#endif-->
         	<!--#ifdef MP-WEIXIN || APP-PLUS -->
-        	<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts" @touchstart="touchColumn" @touchmove="moveColumn" @touchend="touchEndColumn"></canvas>
+        	<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts"></canvas>
         	<!--#endif-->
         </view>
 		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
@@ -33,14 +33,17 @@
 			<!--#endif-->
 		</view>
 		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
-			<view class="qiun-title-dot-light">折线图一</view>
+			<view class="qiun-title-dot-light">折线图一（可横向拖拽带滚动条）</view>
+			<!-- 使用图表拖拽功能时，建议给canvas增加disable-scroll=true属性，在拖拽时禁止屏幕滚动 -->
 		</view>
 		<view class="qiun-charts">
 			<!--#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
-			<canvas canvas-id="canvasLineA" id="canvasLineA" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}" @touchstart="touchLineA"></canvas>
+			<canvas canvas-id="canvasLineA" id="canvasLineA" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}" @touchstart="touchLineA" @touchmove="moveLineA" @touchend="touchEndLineA"></canvas>
+			<!-- 使用图表拖拽功能时，建议给canvas增加disable-scroll=true属性，在拖拽时禁止屏幕滚动 -->
 			<!--#endif-->
 			<!--#ifdef MP-WEIXIN || APP-PLUS -->
-			<canvas canvas-id="canvasLineA" id="canvasLineA" class="charts" @touchstart="touchLineA"></canvas>
+			<canvas canvas-id="canvasLineA" id="canvasLineA" class="charts" @touchstart="touchLineA" @touchmove="moveLineA" @touchend="touchEndLineA"></canvas>
+			<!-- 使用图表拖拽功能时，建议给canvas增加disable-scroll=true属性，在拖拽时禁止屏幕滚动 -->
 			<!--#endif-->
 		</view>
 		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
@@ -162,7 +165,6 @@
 			this.showPie("canvasPie",Data.Pie);
 			this.showRing("canvasRing",Data.Ring);
 			this.showRadar("canvasRadar",Data.Radar);
-			this.showRadar("canvasRadar",Data.Radar);
 			this.showGauge("canvasGauge1",Data.Gauge1);
 			this.showGauge("canvasGauge2",Data.Gauge2);
 			this.showGauge("canvasGauge3",Data.Gauge3);
@@ -181,13 +183,11 @@
 					series: chartData.series,
 					xAxis: {
 						disableGrid:true,
-						itemCount:3.5//配合enableScroll图表拖拽功能使用，x轴单屏显示数据的数量，默认为5个
 					},
 					yAxis: {
 						//disabled:true
 					},
 					dataLabel: true,
-					enableScroll: true,//开启图表拖拽功能
 					width: _self.cWidth*_self.pixelRatio,
 					height: _self.cHeight*_self.pixelRatio,
 					extra: {
@@ -207,10 +207,14 @@
 					background:'#FFFFFF',
 					pixelRatio:_self.pixelRatio,
 					categories: chartData.categories,
-					animation: true,
 					series: chartData.series,
+					animation: false,
+					enableScroll: true,//开启图表拖拽功能
 					xAxis: {
 						disableGrid:true,
+						itemCount:4,//可不填写，配合enableScroll图表拖拽功能使用，x轴单屏显示数据的数量，默认为5个
+						//scrollBackgroundColor:'#F7F7FF',//可不填写，配合enableScroll图表拖拽功能使用，X轴滚动条背景颜色,默认为 #EFEBEF
+						//scrollColor:'#DEE7F7',//可不填写，配合enableScroll图表拖拽功能使用，X轴滚动条颜色,默认为 #A6A6A6
 					},
 					yAxis: {
 						//disabled:true
@@ -235,7 +239,7 @@
 					pixelRatio:_self.pixelRatio,
 					rotate:true,//开启图表横屏
 					categories: chartData.categories,
-					animation: true,
+					animation: false,
 					series: chartData.series,
 					xAxis: {
 						disableGrid:true,
@@ -261,7 +265,7 @@
 					background:'#FFFFFF',
 					pixelRatio:_self.pixelRatio,
 					categories: chartData.categories,
-					animation: true,
+					animation: false,
 					series: chartData.series,
 					xAxis: {
 						disableGrid:true,
@@ -284,7 +288,7 @@
 					background:'#FFFFFF',
 					pixelRatio:_self.pixelRatio,
 					series: chartData.series,
-					animation: true,
+					animation: false,
 					width: _self.cWidth*_self.pixelRatio,
 					height: _self.cHeight*_self.pixelRatio,
 					dataLabel: true,
@@ -315,7 +319,7 @@
 					background:'#FFFFFF',
 					pixelRatio:_self.pixelRatio,
 					series: chartData.series,
-					animation: true,
+					animation: false,
 					width: _self.cWidth*_self.pixelRatio,
 					height: _self.cHeight*_self.pixelRatio,
 					disablePieStroke: true,
@@ -331,7 +335,8 @@
 					legend:true,
 					background:'#FFFFFF',
 					pixelRatio:_self.pixelRatio,
-					animation: true,
+					animation: false,
+					dataLabel: true,
 					categories: chartData.categories,
 					series: chartData.series,
 					width: _self.cWidth*_self.pixelRatio,
@@ -379,16 +384,15 @@
 					categories: Data.ColumnB.categories
 				});
 			},
-			touchColumn(e){
-				canvaColumn.scrollStart(e);
-			},
-			moveColumn(e) {
-				canvaColumn.scroll(e);
-			},
-			touchEndColumn(e) {
-				canvaColumn.scrollEnd(e);
-			},
 			touchLineA(e){
+				canvaLineA.scrollStart(e);
+			},
+			moveLineA(e) {
+				canvaLineA.scroll(e);
+			},
+			touchEndLineA(e) {
+				canvaLineA.scrollEnd(e);
+				//下面是toolTip事件，如果滚动后不需要显示，可不填写
 				canvaLineA.showToolTip(e, {
 					format: function (item, category) {
 						return category + ' ' + item.name + ':' + item.data 

@@ -19,6 +19,9 @@
  * 支持横屏模式，新增rotate参数，默认flase
  * 2019-04-16
  * 新增圆弧进度图，图表类型gauge
+ * 2019-04-22
+ * 修改图表拖拽功能夸端支持，增加拖拽时显示滚动条
+ * 
  * 
  * 
  */
@@ -1327,7 +1330,39 @@ function drawXAxis(categories, opts, config, context) {
     var startY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
     var endY = startY + config.xAxisLineHeight;
 
+
+	//绘制滚动条
+	if(opts.enableScroll){
+		var scrollStartX=startX+3*opts.pixelRatio;
+		var scrollendX=endX-3*opts.pixelRatio;
+		var scrollY=endY+8*opts.pixelRatio;
+		var scrollScreenWidth=scrollendX-scrollStartX;
+		var scrollTotalWidth=eachSpacing*(xAxisPoints.length-1);
+		var scrollWidth=scrollScreenWidth*scrollScreenWidth/scrollTotalWidth;
+		var scrollLeft=0;
+		if (opts._scrollDistance_){
+			scrollLeft=-opts._scrollDistance_*(scrollScreenWidth)/scrollTotalWidth;
+		}
+		context.beginPath();
+		context.setLineCap('round');
+		context.setLineWidth(6*opts.pixelRatio);
+		context.setStrokeStyle(opts.xAxis.scrollBackgroundColor || "#EFEBEF");
+		context.moveTo(scrollStartX, scrollY);
+		context.lineTo(scrollendX, scrollY);
+		context.stroke();
+		context.closePath();
+		context.beginPath();
+		context.setLineCap('round');
+		context.setLineWidth(6*opts.pixelRatio);
+		context.setStrokeStyle(opts.xAxis.scrollColor ||"#A6A6A6");
+		context.moveTo(scrollStartX+scrollLeft, scrollY);
+		context.lineTo(scrollStartX+scrollLeft+scrollWidth, scrollY);
+		context.stroke();
+		context.closePath();
+	}
+	
     context.save();
+	
     if (opts._scrollDistance_ && opts._scrollDistance_ !== 0) {
         context.translate(opts._scrollDistance_, 0);
     }
@@ -1395,6 +1430,7 @@ function drawXAxis(categories, opts, config, context) {
     }
 
     context.restore();
+
 }
 
 function drawYAxisGrid(opts, config, context) {
@@ -1506,8 +1542,8 @@ function drawLegend(series, opts, config, context) {
                     context.setLineWidth(1*opts.pixelRatio);
                     context.setStrokeStyle(item.color);
                     context.setFillStyle(item.color);
-                    context.moveTo(startX + 7.5, startY + 5);
-                    context.arc(startX + 7.5, startY + 5, 6*opts.pixelRatio, 0, 2 * Math.PI);
+                    context.moveTo(startX + 7.5*opts.pixelRatio, startY + 5*opts.pixelRatio);
+                    context.arc(startX + 7.5*opts.pixelRatio, startY + 5*opts.pixelRatio, 6*opts.pixelRatio, 0, 2 * Math.PI);
                     context.fill();
                     context.stroke();
                     context.closePath();
@@ -1517,8 +1553,8 @@ function drawLegend(series, opts, config, context) {
 					context.setLineWidth(1*opts.pixelRatio);
 					context.setStrokeStyle(item.color);
 					context.setFillStyle(item.color);
-					context.moveTo(startX + 7.5, startY + 5);
-					context.arc(startX + 7.5, startY + 5, 6*opts.pixelRatio, 0, 2 * Math.PI);
+					context.moveTo(startX + 7.5*opts.pixelRatio, startY + 5*opts.pixelRatio);
+					context.arc(startX + 7.5*opts.pixelRatio, startY + 5*opts.pixelRatio, 6*opts.pixelRatio, 0, 2 * Math.PI);
 					context.fill();
 					context.stroke();
 					context.closePath();
@@ -1528,8 +1564,8 @@ function drawLegend(series, opts, config, context) {
                     context.setLineWidth(1*opts.pixelRatio);
                     context.setStrokeStyle(item.color);
                     context.setFillStyle(item.color);
-                    context.moveTo(startX + 7.5, startY + 5);
-                    context.arc(startX + 7.5, startY + 5, 6*opts.pixelRatio, 0, 2 * Math.PI);
+                    context.moveTo(startX + 7.5*opts.pixelRatio, startY + 5*opts.pixelRatio);
+                    context.arc(startX + 7.5*opts.pixelRatio, startY + 5*opts.pixelRatio, 6*opts.pixelRatio, 0, 2 * Math.PI);
                     context.fill();
                     context.stroke();
                     context.closePath();
@@ -1541,14 +1577,14 @@ function drawLegend(series, opts, config, context) {
                     context.beginPath();
                     context.setFillStyle(item.color);
                     context.moveTo(startX, startY);
-                    context.rect(startX, startY-(opts.pixelRatio-1)*6, 15*opts.pixelRatio, 10*opts.pixelRatio);
+                    context.rect(startX, startY, 15*opts.pixelRatio, 10*opts.pixelRatio);
                     context.closePath();
                     context.fill();
             }
             startX += padding + shapeWidth;
             context.beginPath();
             context.setFillStyle(opts.extra.legendTextColor || '#333333');
-            context.fillText(item.name, startX, startY + 6+3*opts.pixelRatio);
+            context.fillText(item.name, startX, startY + 6*opts.pixelRatio+3*opts.pixelRatio);
             context.closePath();
             context.stroke();
             startX += measureText(item.name) + 2 * padding;
@@ -2080,6 +2116,9 @@ var Charts = function Charts(opts) {
 	//适配H5高分屏
 	config$$1.yAxisWidth=config.yAxisWidth*opts.pixelRatio;
 	config$$1.xAxisHeight=config.xAxisHeight*opts.pixelRatio;
+	if(opts.enableScroll){
+		config$$1.xAxisHeight+=4*opts.pixelRatio;
+	}
 	config$$1.xAxisLineHeight=config.xAxisLineHeight*opts.pixelRatio;
 	config$$1.legendHeight=config.legendHeight*opts.pixelRatio;
 	//config$$1.yAxisTitleWidth=config.yAxisTitleWidth*opts.pixelRatio;
