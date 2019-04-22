@@ -3,13 +3,14 @@
 
 # `【开源不易、改造不易、哪(拿)来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请参见页面最后章节【常见问题】或【留言】解决。`
 
-# `那谁，你需要的【图表拖拽】来啦，并新增【滚动条】显示拖拽进度，支持柱状图、折线图、区域图，赶快下载1.5.0吧，详见demo折线图一`
+# `那谁，你需要的【图表拖拽】来啦，并新增【滚动条】显示拖拽进度，支持柱状图、折线图、区域图，赶快下载1.5.0吧，详见demo【折线图一】`
 
 ## `近期更新比较频繁，请各位朋友持续关注更新`
 
 ## 更新记录
 - [ ] 2019.05.xx 计划加入柱状图、饼图、环形图、雷达图等`ToolTip`事件
 - [ ] 2019.04.xx 计划加入`堆叠图`、`条状图`、`仪表盘`
+- [x] 2019.04.22 修复区域图拖拽模式下线段连接错位问题
 - [x] 2019.04.21 增加图表拖拽图`滚动条`显示当前拖拽进度，`scrollBackgroundColor`为滚动条背景色，`scrollColor`为滚动条颜色，均可自定义，详见demo折线图一
 - [x] 2019.04.19 增加`图表拖拽`示例，支持的图表有柱状图、折线图和区域图，除头条小程序外，其他各端现已全部支持拖拽功能（头条小程序canvas不支持点击事件），需配合绑定`@touchstart`, `@touchmove`, `@touchend`方法
 - [x] 2019.04.18 修复`圆弧进度图`示例中`进度数值`JS计算精度引起的小数位数问题，加`Math.round()`解决，感谢`开发者M_少`发现问题。更正`参数说明`中几个错误描述
@@ -48,7 +49,6 @@
 ## 图表示例
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/gauge.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/column.gif?raw=true)
-![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/tuozhuai.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/lineA.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/lineA-scroll.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/area.gif?raw=true)

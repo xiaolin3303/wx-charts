@@ -1154,8 +1154,6 @@ function drawAreaDataPoints(series, opts, config, context) {
         drawToolTipSplitLine(opts.tooltip.offset.x, opts, config, context);
     }
 	
-	//画连线
-	drawLineDataPoints(series, opts, config, context, process);
 	
     series.forEach(function (eachSeries, seriesIndex) {
         var data = eachSeries.data;
@@ -1205,12 +1203,34 @@ function drawAreaDataPoints(series, opts, config, context) {
             context.closePath();
             context.fill();
             context.setGlobalAlpha(1);
+			
+			
+			//画连线
+			context.beginPath();
+			context.setStrokeStyle(eachSeries.color);
+			context.setLineWidth(2*opts.pixelRatio);
+			if (points.length === 1) {
+			    context.moveTo(points[0].x, points[0].y);
+			    context.arc(points[0].x, points[0].y, 1, 0, 2 * Math.PI);
+			} else {
+			    context.moveTo(points[0].x, points[0].y);
+				points.forEach(function (item, index) {
+					if (index > 0) {
+						context.lineTo(item.x, item.y);
+					}
+				});
+			    context.moveTo(points[0].x, points[0].y);
+			}
+			context.closePath();
+			context.stroke();
         });
-
+		
+		//画点
         if (opts.dataPointShape !== false) {
             var shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
             drawPointShape(points, eachSeries.color, shape, context,opts);
         }
+		
     });
     if (opts.dataLabel !== false && process === 1) {
         series.forEach(function (eachSeries, seriesIndex) {
