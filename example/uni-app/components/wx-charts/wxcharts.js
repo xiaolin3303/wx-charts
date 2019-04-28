@@ -18,7 +18,7 @@
  * 2019-04-15
  * 支持横屏模式，新增rotate参数，默认flase
  * 2019-04-16
- * 新增圆弧进度图，图表类型gauge
+ * 新增圆弧进度图，图表类型arcbar
  * 2019-04-22
  * 修改图表拖拽功能夸端支持，增加拖拽时显示滚动条
  * 
@@ -615,6 +615,22 @@ function getPieDataPoints(series) {
     return series;
 }
 
+function getArcbarDataPoints(series) {
+    var process = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+    series.forEach(function (item) {
+        item.data = item.data === null ? 0 : item.data;
+		item._proportion_ = 1.5 * item.data* process + 0.75;
+		if (item._proportion_ >= 2) {
+			item._proportion_ = item._proportion_ % 2;
+		}
+    });
+    return series;
+}
+
+function getGaugeAxisPoints(series) {
+	
+}
+
 function getGaugeDataPoints(series) {
     var process = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
     series.forEach(function (item) {
@@ -626,6 +642,7 @@ function getGaugeDataPoints(series) {
     });
     return series;
 }
+
 
 function getPieTextMaxLength(series) {
     series = getPieDataPoints(series);
@@ -690,8 +707,10 @@ function getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts,
             points.push(null);
         } else {
             var point = {};
+			point.color = item.color;
             point.x = xAxisPoints[index] + Math.round(eachSpacing / 2);
-            var height = validHeight * (item - minRange) / (maxRange - minRange);
+			var value = item.value || item;
+            var height = validHeight * (value - minRange) / (maxRange - minRange);
             height *= process;
             point.y = opts.height - config.xAxisHeight - config.legendHeight - Math.round(height) - config.padding;
             points.push(point);
@@ -703,12 +722,24 @@ function getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts,
 
 function getYAxisTextList(series, opts, config) {
     var data = dataCombine(series);
+	var sorted = [];
     // remove null from data
     data = data.filter(function (item) {
-        return item !== null;
+        //return item !== null;
+		if(typeof item === 'object') {
+            return item.value !== null;
+        } else {
+            return item !== null
+        }
     });
-    var minData = Math.min.apply(this, data);
-    var maxData = Math.max.apply(this, data);
+    //var minData = Math.min.apply(this, data);
+    //var maxData = Math.max.apply(this, data);
+	data.map((item)=>{
+        typeof item === 'object' ? sorted.push(item.value) : sorted.push(item)
+    })
+    var minData = Math.min.apply(this, sorted);
+    var maxData = Math.max.apply(this, sorted);
+	
     if (typeof opts.yAxis.min === 'number') {
         minData = Math.min(opts.yAxis.min, minData);
     }
@@ -848,7 +879,9 @@ function drawPointText(points, series, config, context) {
     context.setFillStyle('#666666');
     points.forEach(function (item, index) {
         if (item !== null) {
-            var formatVal = series.format ? series.format(data[index]) : data[index];
+            //var formatVal = series.format ? series.format(data[index]) : data[index];
+			var value = data[index].value || data[index]
+            var formatVal = series.format ? series.format(value) : value;
             context.fillText(formatVal, item.x - measureText(formatVal) / 2, item.y - 2);
         }
     });
@@ -1102,18 +1135,22 @@ function drawColumnDataPoints(series, opts, config, context) {
         points = fixColumeData(points, eachSpacing, series.length, seriesIndex, config, opts);
 
         // 绘制柱状数据图
-        context.beginPath();
-        context.setFillStyle(eachSeries.color);
+        //context.beginPath();
+        //context.setFillStyle(eachSeries.color);
         points.forEach(function (item, index) {
             if (item !== null) {
+				context.beginPath();
+				context.setFillStyle(item.color || eachSeries.color);
                 var startX = item.x - item.width / 2 + 1;
                 var height = opts.height - item.y - config.padding - config.xAxisHeight - config.legendHeight;
                 context.moveTo(startX, item.y);
                 context.rect(startX, item.y, item.width - 2, height);
+				context.closePath();
+				context.fill();
             }
         });
-        context.closePath();
-        context.fill();
+        //context.closePath();
+        //context.fill();
     });
     series.forEach(function (eachSeries, seriesIndex) {
         var data = eachSeries.data;
@@ -1352,7 +1389,7 @@ function drawXAxis(categories, opts, config, context) {
 
 
 	//绘制滚动条
-	if(opts.enableScroll){
+	if(opts.enableScroll && opts.xAxis.scrollShow){
 		var scrollStartX=startX+3*opts.pixelRatio;
 		var scrollendX=endX-3*opts.pixelRatio;
 		var scrollY=endY+8*opts.pixelRatio;
@@ -1593,6 +1630,8 @@ function drawLegend(series, opts, config, context) {
 				//圆弧进度图不显示图例
 				case 'gauge':
 					break;
+				case 'arcbar':
+					break;
                 default:
                     context.beginPath();
                     context.setFillStyle(item.color);
@@ -1684,30 +1723,26 @@ function drawPieDataPoints(series, opts, config, context) {
     };
 }
 
-function drawGaugeDataPoints(series, opts, config, context) {
+function drawArcbarDataPoints(series, opts, config, context) {
     var process = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
 
     var pieOption = opts.extra.pie || {};
-    series = getGaugeDataPoints(series, process);
+    series = getArcbarDataPoints(series, process);
     var centerPosition = {
         x: opts.width / 2,
         y: (opts.height) / 2
     };
     var radius = Math.min(centerPosition.x , centerPosition.y);
    
-	if (typeof opts.extra.gaugeWidth === 'number' && opts.extra.gaugeWidth > 0) {
-	    opts.extra.gaugeWidth=opts.extra.gaugeWidth;
+	if (typeof opts.extra.arcbarWidth === 'number' && opts.extra.arcbarWidth > 0) {
+	    opts.extra.arcbarWidth=opts.extra.arcbarWidth;
 	}else{
-		opts.extra.gaugeWidth=12*opts.pixelRatio;
+		opts.extra.arcbarWidth=12*opts.pixelRatio;
 	}
-	
-	radius -= config.padding+opts.extra.gaugeWidth/2;
-	
-	var innerPieWidth = radius-opts.extra.gaugeWidth;
-	
+	radius -= config.padding+opts.extra.arcbarWidth/2;
 	
 	//背景颜色
-	context.setLineWidth(opts.extra.gaugeWidth); // 设置圆环的宽度
+	context.setLineWidth(opts.extra.arcbarWidth); // 设置圆环的宽度
 	context.setStrokeStyle('#E9E9E9'); // 设置圆环的颜色
 	context.setLineCap('round'); // 设置圆环端点的形状
 	context.beginPath(); //开始一个新的路径
@@ -1715,6 +1750,77 @@ function drawGaugeDataPoints(series, opts, config, context) {
 	context.stroke(); //对当前路径进行描边
 		
 			
+    series.forEach(function (eachSeries) {
+		context.setLineWidth(opts.extra.arcbarWidth);
+		context.setStrokeStyle(eachSeries.color);
+		context.setLineCap('round');
+		context.beginPath();
+		context.arc(centerPosition.x, centerPosition.y, radius, 0.75 * Math.PI, eachSeries._proportion_ * Math.PI, false);
+		context.stroke();
+		
+    });
+    drawRingTitle(opts, config, context);
+    return {
+        center: centerPosition,
+        radius: radius,
+        series: series
+    };
+}
+
+function drawGaugeAxis(categories, opts, config, context) {
+	var gaugeOption = opts.extra.gauge || {};
+	categories = getGaugeAxisPoints(categories);
+	var centerPosition = {
+	    x: opts.width / 2,
+	    y: (opts.height) / 2
+	};
+	var radius = Math.min(centerPosition.x , centerPosition.y);
+	if (typeof gaugeOption.width === 'number' && gaugeOption.width > 0) {
+	    gaugeOption.width=gaugeOption.width;
+	}else{
+		gaugeOption.width=12*opts.pixelRatio;
+	}
+	radius -= config.padding+gaugeOption.width/2;
+	
+	var innerRadius = radius-gaugeOption.width;
+}
+
+function drawGaugeDataPoints(series, opts, config, context) {
+    var process = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
+
+    var gaugeOption = opts.extra.gauge || {};
+    series = getGaugeDataPoints(series, process);
+    var centerPosition = {
+        x: opts.width / 2,
+        y: (opts.height) / 2
+    };
+    var radius = Math.min(centerPosition.x , centerPosition.y);
+	if (typeof gaugeOption.width === 'number' && gaugeOption.width > 0) {
+	    gaugeOption.width=gaugeOption.width;
+	}else{
+		gaugeOption.width=12*opts.pixelRatio;
+	}
+	radius -= config.padding+gaugeOption.width/2;
+	
+	var innerRadius = radius-gaugeOption.width;
+	
+	//仪表盘背景
+	context.setLineWidth(gaugeOption.width);
+	context.setLineCap('butt'); 
+	context.beginPath(); 
+	context.setStrokeStyle('#2fc25b'); 
+	context.arc(centerPosition.x, centerPosition.y, radius, 0.75 * Math.PI, (0.75+0.2*1.5) * Math.PI, false);
+	context.stroke(); 
+	context.beginPath();
+	context.setStrokeStyle('#f04864'); 
+	context.arc(centerPosition.x, centerPosition.y, radius, (0.75+0.2*1.5) * Math.PI, (0.75+0.8*1.5) * Math.PI, false);
+	context.stroke(); 
+	context.beginPath();
+	context.setStrokeStyle('#1890ff'); 
+	context.arc(centerPosition.x, centerPosition.y, radius, (0.75+0.8*1.5) * Math.PI, 0.25 * Math.PI, false);
+	context.stroke(); 
+		
+	/*
     series.forEach(function (eachSeries) {
 		context.setLineWidth(opts.extra.gaugeWidth);
 		context.setStrokeStyle(eachSeries.color);
@@ -1724,7 +1830,8 @@ function drawGaugeDataPoints(series, opts, config, context) {
 		context.stroke();
 		
     });
-    drawRingTitle(opts, config, context);
+	*/
+    //drawRingTitle(opts, config, context);
     return {
         center: centerPosition,
         radius: radius,
@@ -2059,6 +2166,23 @@ function drawCharts(type, opts, config, context) {
                 }
             });
             break;
+		case 'arcbar':
+			this.animationInstance = new Animation({
+			    timing: 'easeInOut',
+			    duration: duration,
+			    onProcess: function onProcess(process) {
+			        if(opts.rotate){
+			        	context.translate(opts.height, 0);
+			        	context.rotate(90 * Math.PI / 180);
+			        }
+					_this.chartData.arcbarData = drawArcbarDataPoints(series, opts, config, context, process);
+			        drawCanvas(opts, context);
+			    },
+			    onAnimationFinish: function onAnimationFinish() {
+			        _this.event.trigger('renderComplete');
+			    }
+			});
+			break;
 		case 'gauge':
 			this.animationInstance = new Animation({
 			    timing: 'easeInOut',
@@ -2068,7 +2192,8 @@ function drawCharts(type, opts, config, context) {
 			        	context.translate(opts.height, 0);
 			        	context.rotate(90 * Math.PI / 180);
 			        }
-					_this.chartData.pieData = drawGaugeDataPoints(series, opts, config, context, process);
+					drawGaugeAxis(categories, opts, config, context);
+					drawGaugeDataPoints(series, opts, config, context, process);
 			        drawCanvas(opts, context);
 			    },
 			    onAnimationFinish: function onAnimationFinish() {
@@ -2136,7 +2261,7 @@ var Charts = function Charts(opts) {
 	//适配H5高分屏
 	config$$1.yAxisWidth=config.yAxisWidth*opts.pixelRatio;
 	config$$1.xAxisHeight=config.xAxisHeight*opts.pixelRatio;
-	if(opts.enableScroll){
+	if(opts.enableScroll && opts.xAxis.scrollShow){
 		config$$1.xAxisHeight+=4*opts.pixelRatio;
 	}
 	config$$1.xAxisLineHeight=config.xAxisLineHeight*opts.pixelRatio;
@@ -2214,7 +2339,7 @@ Charts.prototype.getCurrentDataIndex = function (e) {
 					y = _touches$.y*this.opts.pixelRatio;
 				}
 			}
-        if (this.opts.type === 'pie' || this.opts.type === 'ring' || this.opts.type === 'gauge') {
+        if (this.opts.type === 'pie' || this.opts.type === 'ring' || this.opts.type === 'arcbar') {
             return findPieChartCurrentIndex({ x: x, y: y }, this.chartData.pieData);
         } else if (this.opts.type === 'radar') {
             return findRadarChartCurrentIndex({ x: x, y: y }, this.chartData.radarData, this.opts.categories.length);

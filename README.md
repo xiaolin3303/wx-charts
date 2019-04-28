@@ -1,21 +1,25 @@
 ## wx-charts轻量级跨全端图表
 - 基于`wx-charts`微信小程序图表改造成，适用于uni-app平台的跨端图表插件，感谢原作者`xiaolin3303`，原插件gitHub地址：<https://github.com/xiaolin3303/wx-charts>
 
-# `【开源不易、改造不易、哪(拿)来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请参见页面最后章节【常见问题】或【留言】解决。`
+# `【开源不易、改造不易、哪(拿)来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请先参见页面最后章节【常见问题】解决，如没有您的问题，请在页面最下面【撰写评论】，尽量不要在【问答】中提问（因有可能会漏掉您的问题）。`
 
-# `那谁，你需要的【图表拖拽】来啦，并新增【滚动条】显示拖拽进度，支持柱状图、折线图、区域图，赶快下载1.5.0吧，详见demo【折线图一】`
+# `那谁，你需要的【图表拖拽】来啦，并新增【滚动条】显示拖拽进度，新增【scrollShow】参数，自定义滚动条是否显示，支持柱状图、折线图、区域图，赶快下载1.5.2吧，详见demo【折线图一】`
 
 ## `近期更新比较频繁，请各位朋友持续关注更新`
 
 ## 更新记录
 - [ ] 2019.05.xx 计划加入柱状图、饼图、环形图、雷达图等`ToolTip`事件
-- [ ] 2019.04.xx 计划加入`堆叠图`、`条状图`、`仪表盘`
+- [ ] 2019.05.xx 计划加入`堆叠图`、`条状图`、`K线图`、`分时图`
+- [ ] 2019.05.05 因近期感冒，推迟到节后加入`仪表盘`图，图表类型`gauge`，注意原`圆弧进度条`的图表类型变更为`arcbar`,给您带来不便请谅解
+- [x] 2019.04.28 修改demo为动态数据以帮助初学者使用，即后台获取数据后实例化图表；新增柱状图`自定义颜色`，传入数据标准如下(可混合使用)：
+``` series:[{name: '成交量1',data:[15, {value:20,color:'#f04864'},45, 37, 43, 34]},{name: '成交量2',data:[30, {value:40,color:'#facc14'}, 25, 14, 34, 18]}] ```
+- [x] 2019.04.23 增加`opts.xAxis.scrollShow`参数，默认为`false`，在`图表拖拽`时，是否显示滚动条，因为有些朋友可能不需要显示滚动条。增加`背景颜色`为其他颜色的示例，因为有些朋友设置的不太正确，请参考`柱状图`。详见v1.5.2demo页面。
 - [x] 2019.04.22 修复区域图拖拽模式下线段连接错位问题
 - [x] 2019.04.21 增加图表拖拽图`滚动条`显示当前拖拽进度，`scrollBackgroundColor`为滚动条背景色，`scrollColor`为滚动条颜色，均可自定义，详见demo折线图一
 - [x] 2019.04.19 增加`图表拖拽`示例，支持的图表有柱状图、折线图和区域图，除头条小程序外，其他各端现已全部支持拖拽功能（头条小程序canvas不支持点击事件），需配合绑定`@touchstart`, `@touchmove`, `@touchend`方法
 - [x] 2019.04.18 修复`圆弧进度图`示例中`进度数值`JS计算精度引起的小数位数问题，加`Math.round()`解决，感谢`开发者M_少`发现问题。更正`参数说明`中几个错误描述
 - [x] 2019.04.17 增加`自定义显示数据标签文案`示例，请下载1.4.1版本，参见圆环图ring数据事例
-- [x] 2019.04.16 新增`圆弧进度图`,图表类型`gauge`，详见demo，感谢作者`2388306191@qq.com`提供思路
+- [x] 2019.04.16 新增`圆弧进度图`,图表类型`arcbar`，详见demo，感谢作者`2388306191@qq.com`提供思路
 - [x] 2019.04.15 支持`横屏模式`，新增`rotate`参数，默认flase，示例见`折线图二`
 - [x] 2019.04.14 支持百度、头条小程序，实现彻底跨全端
 - [x] 2019.04.12 支持支付宝小程序（开发者工具不显示，上传代码真机预览可以显示）
@@ -29,7 +33,8 @@
 - 柱状图 `column`
 - 区域图 `area`
 - 雷达图 `radar`
-- 圆弧进度图 `gauge`
+- 圆弧进度图 `arcbar`
+- 仪表盘 `gauge`
 
 ## 插件特点
 - 改造后的插件可以跨端使用，支持H5、小程序（微信/支付宝/百度/头条）、APP，调用简单方便、性能及体验极佳。
@@ -45,6 +50,15 @@
 - 如果您是uni-app初学者，那么强烈建议您使用wx-charts，并且目前可以跨全端通用，减少工作量，增强一致性体验。
 - 图表样式均可自定义，懂js的都可以读懂插件源码，直接修改wxcharts.js源码即可。
 - 本插件原为我公司产品所用，经过大量测试，反复论证并加以改造而成，请各位放心使用。
+
+## 亲手教您如何改造wx-charts
+- 为何要改造wx-charts?
+并不是所有图表插件直接拿来就可以满足客户需求，如果您的UI设计师设计一个图表，如下图:
+
+您会发现这个图表即使在echarts里也不是很好实现，那么就需要我们自己动手去实现。下面就让我们一起来完成，本文旨在抛砖引玉，希望各位朋友能够更好的应用wx-charts来完成您的项目，如果您有更好的设计，请提交您的PR到github[uni-wx-charts跨端图表](https://github.com/16cheng/uni-wx-charts)，帮助更多朋友，感谢您的付出及贡献！
+
+[wx-charts跨端图表改造教程（详细注释）]()
+
 
 ## 图表示例
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/gauge.gif?raw=true)
@@ -189,13 +203,14 @@
 |opts.subtitle.color| String| | 副标题颜色（可选）|
 |opts.animation| Boolean |默认为 true |是否动画展示|
 |opts.legend| Boolen |默认为 true| 是否显示图表下方各类别的标识|
-|opts.type|String |required| 图表类型，可选值为pie, line, column, area, ring, radar, 新增`gauge`|
+|opts.type|String |required| 图表类型，可选值为pie, line, column, area, ring, radar, 新增`arcbar`、`gauge`|
 |opts.categories| Array| required |(饼图、圆环图不需要) 数据类别分类|
 |opts.dataLabel| Boolean |默认为 true |是否在图表中显示数据内容值|
 |opts.dataPointShape| Boolean |默认为 true| 是否在图表中显示数据点图形标识|
 |opts.disablePieStroke |Boolean |默认为 false| 不绘制饼图（圆环图）各区块的白色分割线|
 |opts.xAxis |Object | |X轴配置|
 |`opts.xAxis.itemCount`| Number| 默认为 5 | `新增参数，X轴可见区域刻度数量（即X轴数据密度），配合拖拽滚动使用（即仅在启用enableScroll时有效）`|
+|`opts.xAxis.scrollShow`| Boolean| 默认为 false | `新增参数，是否显示滚动条，配合拖拽滚动使用（即仅在启用enableScroll时有效）`|
 |`opts.xAxis.scrollBackgroundColor`| String| 默认为 #EFEBEF | `新增参数，X轴滚动条背景颜色，配合拖拽滚动使用（即仅在启用enableScroll时有效）`|
 |`opts.xAxis.scrollColor`| String| 默认为 #A6A6A6 | `新增参数，X轴滚动条颜色，配合拖拽滚动使用（即仅在启用enableScroll时有效）`|
 |opts.xAxis.gridColor| String| 默认为 #cccccc | X轴网格颜色 例如#7cb5ec|
@@ -218,7 +233,9 @@
 | :------ | :-----: | :-----: | :------------ |
 |opts.extra| Object| |其他非通用配置项|
 |opts.extra.ringWidth| Number | |ringChart圆环宽度，单位为px|
-|`opts.extra.gaugeWidth`| Number | |`新增参数，圆弧进度图弧线宽度，单位为px`|
+|`opts.extra.arcbarWidth`| Number | 默认12px |`新增参数，圆弧进度图弧线宽度，单位为px`|
+|`opts.extra.gauge`| Object | |`新增参数，仪表盘相关配置`|
+|`opts.extra.gauge.width`| Number | 默认12px |`新增参数，仪表盘坐标轴（指示盘）线宽度，单位为px`|
 |opts.extra.lineStyle| String| straight | (仅对line, area图表有效) 可选值：curve曲线，straight直线 (default)|
 |opts.extra.column| Object | |柱状图相关配置|
 |opts.extra.column.width |Number| | 柱状图每项的图形宽度，单位为px|
@@ -270,6 +287,7 @@ chart.addEventListener('renderComplete', () => {
 ### 通用问题
 - 如果用在您的项目上图表不显示，请先运行demo页面，如果demo页面也无法显示，请查看全局样式是否定义了`canvas的样式`，如有请取消。
 - 如发现实例化图表后，`客户端卡死`的状况，请在实例化图表前（即调用`showColumn(canvasId,chartData)`前）检查传入图表数组（`chartData.categories`和`chartData.series`）是否为空，如果为空则不要实例化图表。后续将在源码中解决此问题。
+- 图表`背景颜色`问题，很多朋友设置图表背景颜色时候，只修改了view和canvas的css,忘记了修改实例化参数中的`background:'#FFFFFF'`，导致图表画板右侧有一道白条（这个是图表配置中的右边距），所以特修改了demo中的`柱状图`的背景颜色供大家参考。
 
 ### H5、支付宝、百度、头条问题
 - 在高分屏模式下，如果发现图表已显示，但位置不正确，请检查上级`view`容器的`样式`，为了解决高分屏canvas模糊问题，使用了css的`transform`，所以请修改上级样式使canvas容器缩放至相应位置。

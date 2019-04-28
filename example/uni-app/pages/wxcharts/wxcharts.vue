@@ -1,35 +1,49 @@
 <template>
 	<view class="qiun-columns">
 		<view class="qiun-padding" style="font-size: 32upx;">
-			<text>【开源不易、改造不易、哪(拿)来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请参见官方插件下载页面最后章节【常见问题】或【留言】解决。</text>
+			<text>【开源不易、改造不易、哪(拿)来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请先参见页面最后章节【常见问题】解决，如没有您的问题，请在页面最下面【撰写评论】，尽量不要在【问答】中提问（因有可能会漏掉您的问题）。</text>
 		</view>
 		<view class="qiun-padding">
 			<view class="qiun-tip" @tap="changeData()">修改柱状图数据</view>
 		</view>
-        <view class="qiun-bg-white qiun-title-bar" >
+        <view class="qiun-title-bar" style="background-color: #E5FDC3;">
         	<view class="qiun-title-dot-light">柱状图</view>
         </view>
-        <view class="qiun-charts">
+        <view class="qiun-charts" style="background-color: #E5FDC3;">
         	<!--#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO -->
-        	<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
+        	<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts" style="background-color: #E5FDC3;" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
         	<!--#endif-->
         	<!--#ifdef MP-WEIXIN || APP-PLUS -->
-        	<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts"></canvas>
+        	<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts" style="background-color: #E5FDC3;"></canvas>
         	<!--#endif-->
         </view>
+		<view class="qiun-padding">
+			<view class="qiun-tip" @tap="changeGaugeData()">更新仪表盘数据</view>
+		</view>
+		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
+			<view class="qiun-title-dot-light">仪表盘（因病未完成，五一节后更新请谅解）</view>
+		</view>
+		<view class="qiun-charts">
+			<!--#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
+			<canvas canvas-id="canvasGauge" id="canvasGauge" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
+			<!--#endif-->
+			<!--#ifdef MP-WEIXIN || APP-PLUS -->
+			<canvas canvas-id="canvasGauge" id="canvasGauge" class="charts"></canvas>
+			<!--#endif-->
+		</view>
 		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
 			<view class="qiun-title-dot-light">圆弧进度图</view>
 		</view>
 		<view class="qiun-charts3">
 			<!--#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
-			<canvas canvas-id="canvasGauge1" id="canvasGauge1" class="charts3" :style="{'width':cWidth3*pixelRatio+'px','height':cHeight3*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth3*(pixelRatio-1)/2+'px','margin-top':-cHeight3*(pixelRatio-1)/2+'px'}"></canvas>
-			<canvas canvas-id="canvasGauge2" id="canvasGauge2" class="charts3" :style="{'width':cWidth3*pixelRatio+'px','height':cHeight3*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':cWidth3-cWidth3*(pixelRatio-1)/2+'px','margin-top':-cHeight3*(pixelRatio-1)/2+'px'}"></canvas>
-			<canvas canvas-id="canvasGauge3" id="canvasGauge3" class="charts3" :style="{'width':cWidth3*pixelRatio+'px','height':cHeight3*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':cWidth3*2-cWidth3*(pixelRatio-1)/2+'px','margin-top':-cHeight3*(pixelRatio-1)/2+'px'}"></canvas>
+			<canvas canvas-id="canvasArcbar1" id="canvasArcbar1" class="charts3" :style="{'width':cWidth3*pixelRatio+'px','height':cHeight3*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth3*(pixelRatio-1)/2+'px','margin-top':-cHeight3*(pixelRatio-1)/2+'px'}"></canvas>
+			<canvas canvas-id="canvasArcbar2" id="canvasArcbar2" class="charts3" :style="{'width':cWidth3*pixelRatio+'px','height':cHeight3*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':cWidth3-cWidth3*(pixelRatio-1)/2+'px','margin-top':-cHeight3*(pixelRatio-1)/2+'px'}"></canvas>
+			<canvas canvas-id="canvasArcbar3" id="canvasArcbar3" class="charts3" :style="{'width':cWidth3*pixelRatio+'px','height':cHeight3*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':cWidth3*2-cWidth3*(pixelRatio-1)/2+'px','margin-top':-cHeight3*(pixelRatio-1)/2+'px'}"></canvas>
 			<!--#endif-->
 			<!--#ifdef MP-WEIXIN || APP-PLUS -->
-			<canvas canvas-id="canvasGauge1" id="canvasGauge1" class="charts3"></canvas>
-			<canvas canvas-id="canvasGauge2" id="canvasGauge2" class="charts3" style="margin-left: 250upx;"></canvas>
-			<canvas canvas-id="canvasGauge3" id="canvasGauge3" class="charts3" style="margin-left: 500upx;"></canvas>
+			<canvas canvas-id="canvasArcbar1" id="canvasArcbar1" class="charts3"></canvas>
+			<canvas canvas-id="canvasArcbar2" id="canvasArcbar2" class="charts3" style="margin-left: 250upx;"></canvas>
+			<canvas canvas-id="canvasArcbar3" id="canvasArcbar3" class="charts3" style="margin-left: 500upx;"></canvas>
 			<!--#endif-->
 		</view>
 		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
@@ -111,8 +125,10 @@
 	var canvaLineA=null;
 	var canvaLineB=null;
 	var canvaArea=null;
+	var canvaGauge=null;
+	/*下面是服务器返回的数据格式，现已改成从服务器获取数据，以供有些朋友不知道怎么从后台获取数据后调用
 	var Data={
-		Column:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量1',data:[15, 20, 45, 37, 43, 34]},{name: '成交量2',data:[30, 40, 25, 14, 34, 18]}]},
+		Column:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量1',data:[15, {value:20,color:'#f04864'},45, 37, 43, 34]},{name: '成交量2',data:[30, {value:40,color:'#facc14'}, 25, 14, 34, 18]}]},
 		ColumnB:{categories:['2013', '2014', '2015', '2016', '2017', '2018'],series:[{name: '新成交量3',data:[35, 36, 31, 33, 13, 34]},{name: '新成交量4',data:[18, 27, 21, 34, 14, 38]}]},
 		LineA:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量A',data:[35, 20, 25, 37, 4, 20]},{name: '成交量B',data:[70, 40, 65, 100, 44, 68]},{name: '成交量C',data:[100, 80, 95, 150, 112, 132]}]},
 		LineB:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量A',data:[35, 20, 25, 37, 4, 20]},{name: '成交量B',data:[70, 40, 65, 100, 44, 68]},{name: '成交量C',data:[100, 80, 95, 150, 112, 132]}]},
@@ -120,11 +136,13 @@
 		Pie:{series:[{ name: '一班', data: 50 }, { name: '二班', data: 30 }, { name: '三班', data: 20 }, { name: '四班', data: 18 }, { name: '五班', data: 8 }]},
 		Ring:{series:[{ name: '一班', data: 50 ,format:()=> {return '一班:50人'}}, { name: '二班', data: 30 ,format:()=> {return '二班:30人'}}, { name: '三班', data: 20 ,format:()=> {return '三班:20人'}}, { name: '四班', data: 18 ,format:()=> {return '四班:18人'}}, { name: '五班', data: 8 ,format:()=> {return '五班:8人'}}]},
 		Radar:{categories: ['维度1', '维度2', '维度3', '维度4', '维度5', '维度6'],series:[{name: '成交量1',data: [90, 110, 165, 195, 187, 172]}, {name: '成交量2',data: [190, 210, 105, 35, 27, 102]}]},
-		Gauge1:{series:[{ name: '正确率', data: 0.29 , color:'#2fc25b'}]},
-		Gauge2:{series:[{ name: '错误率', data: 0.65 , color:'#f04864'}]},
-		Gauge3:{series:[{ name: '完成率', data: 0.85 , color:'#1890ff'}]},
+		Arcbar1:{series:[{ name: '正确率', data: 0.29 , color:'#2fc25b'}]},
+		Arcbar2:{series:[{ name: '错误率', data: 0.65 , color:'#f04864'}]},
+		Arcbar3:{series:[{ name: '完成率', data: 0.85 , color:'#1890ff'}]},
+		Gauge:{categories:[{value:0.2,color:'#2fc25b'},{value:0.8,color:'#f04864'}，{value:1,color:'#1890ff'}],series:[{ name: '完成率', data: 0.85 }]},
 		}
-	
+	*/
+   
 	export default {
 		data() {
 			return {
@@ -134,7 +152,10 @@
 				cHeight2:'',//横屏图表
 				cWidth3:'',//圆弧进度图
 				cHeight3:'',//圆弧进度图
-				pixelRatio:1
+				arcbarWidth:'',//圆弧进度图，进度条宽度,此设置可使各端宽度一致
+				gaugeWidth:'',//仪表盘宽度,此设置可使各端宽度一致
+				pixelRatio:1,
+				serverData:''
 			}
 		},
 		onLoad() {
@@ -156,27 +177,99 @@
 			this.cHeight2=uni.upx2px(1100);
 			this.cWidth3=uni.upx2px(250);
 			this.cHeight3=uni.upx2px(250);
+			this.arcbarWidth=uni.upx2px(24);
+			this.gaugeWidth=uni.upx2px(30);
+			this.getServerData();
 		},
 		onReady() {
-			this.showColumn("canvasColumn",Data.Column);
-			this.showLineA("canvasLineA",Data.LineA);
-			this.showLineB("canvasLineB",Data.LineB);
-			this.showArea("canvasArea",Data.Area);
-			this.showPie("canvasPie",Data.Pie);
-			this.showRing("canvasRing",Data.Ring);
-			this.showRadar("canvasRadar",Data.Radar);
-			this.showGauge("canvasGauge1",Data.Gauge1);
-			this.showGauge("canvasGauge2",Data.Gauge2);
-			this.showGauge("canvasGauge3",Data.Gauge3);
 		},
 		methods: {
+			getServerData(){
+				uni.request({
+					url: 'https://www.easy-mock.com/mock/5cc586b64fc5576cba3d647b/uni-wx-charts/chartsdata',
+					data:{
+					},
+					success: function(res) {
+						console.log(res.data.data)
+						//下面这个根据需要保存后台数据，我是为了模拟更新柱状图，所以存下来了
+						_self.serverData=res.data.data;
+						let Column={categories:[],series:[]};
+						let LineA={categories:[],series:[]};
+						let LineB={categories:[],series:[]};
+						let Area={categories:[],series:[]};
+						let Pie={series:[]};
+						let Ring={series:[]};
+						let Radar={categories:[],series:[]};
+						let Arcbar1={series:[]};
+						let Arcbar2={series:[]};
+						let Arcbar3={series:[]};
+						let Gauge={categories:[],series:[]};
+						//这里我后台返回的是数组，所以用等于，如果您后台返回的是单条数据，需要push进去
+						Column.categories=res.data.data.Column.categories;
+						//这里的series数据是后台做好的，如果您的数据没有和前面我注释掉的格式一样，请自行拼接数据
+						Column.series=res.data.data.Column.series;
+						LineA.categories=res.data.data.LineA.categories;
+						LineA.series=res.data.data.LineA.series;
+						LineB.categories=res.data.data.LineB.categories;
+						LineB.series=res.data.data.LineB.series;
+						Area.categories=res.data.data.Area.categories;
+						Area.series=res.data.data.Area.series;
+						Pie.series=res.data.data.Pie.series;
+						Ring.series=res.data.data.Ring.series;
+						Radar.categories=res.data.data.Radar.categories;
+						Radar.series=res.data.data.Radar.series;
+						Arcbar1.series=res.data.data.Arcbar1.series;
+						Arcbar2.series=res.data.data.Arcbar2.series;
+						Arcbar3.series=res.data.data.Arcbar3.series;
+						Gauge.categories=res.data.data.Gauge.categories;
+						Gauge.series=res.data.data.Gauge.series;
+						//实例化图表前，请先检查您的数据是否为空，空数据会造成客户端卡死
+						if(Column.categories.length>0 && Column.series.length>0){
+							_self.showColumn("canvasColumn",Column);
+						}
+						if(LineA.categories.length>0 && LineA.series.length>0){
+							_self.showLineA("canvasLineA",LineA);
+						}
+						if(LineB.categories.length>0 && LineB.series.length>0){
+							_self.showLineB("canvasLineB",LineB);
+						}
+						if(Area.categories.length>0 && Area.series.length>0){
+							_self.showArea("canvasArea",Area);
+						}
+						if(Pie.series.length>0){
+							_self.showPie("canvasPie",Pie);
+						}
+						if(Ring.series.length>0){
+							_self.showRing("canvasRing",Ring);
+						}
+						if(Radar.categories.length>0 && Radar.series.length>0){
+							_self.showRadar("canvasRadar",Radar);
+						}
+						if(Arcbar1.series.length>0){
+							_self.showArcbar("canvasArcbar1",Arcbar1);
+						}
+						if(Arcbar2.series.length>0){
+							_self.showArcbar("canvasArcbar2",Arcbar2);
+						}
+						if(Arcbar3.series.length>0){
+							_self.showArcbar("canvasArcbar3",Arcbar3);
+						}
+						if(Gauge.categories.length>0 && Gauge.series.length>0){
+							_self.showGauge("canvasGauge",Gauge);
+						}
+					},
+					fail: () => {
+						console.log("数据获取失败！")
+					},
+				});
+			},
 			showColumn(canvasId,chartData){
 				canvaColumn=new wxCharts({
 					canvasId: canvasId,
 					type: 'column',
 					legend:true,
 					fontSize:11,
-					background:'#FFFFFF',
+					background:'#E5FDC3',
 					pixelRatio:_self.pixelRatio,
 					animation: true,
 					categories: chartData.categories,
@@ -213,6 +306,7 @@
 					xAxis: {
 						disableGrid:true,
 						itemCount:4,//可不填写，配合enableScroll图表拖拽功能使用，x轴单屏显示数据的数量，默认为5个
+						scrollShow:true,//新增是否显示滚动条，默认false
 						//scrollBackgroundColor:'#F7F7FF',//可不填写，配合enableScroll图表拖拽功能使用，X轴滚动条背景颜色,默认为 #EFEBEF
 						//scrollColor:'#DEE7F7',//可不填写，配合enableScroll图表拖拽功能使用，X轴滚动条颜色,默认为 #A6A6A6
 					},
@@ -348,8 +442,37 @@
 					}
 				});
 			},
-			showGauge(canvasId,chartData){
+			showArcbar(canvasId,chartData){
 				new wxCharts({
+					canvasId: canvasId,
+					type: 'arcbar',
+					fontSize:11,
+					legend:false,
+					title: {
+						name: Math.round(chartData.series[0].data*100)+'%',
+						color: chartData.series[0].color,
+						fontSize: 25*_self.pixelRatio
+					},
+					subtitle: {
+						name: chartData.series[0].name,
+						color: '#666666',
+						fontSize: 15*_self.pixelRatio
+					},
+					extra: {
+						arcbarWidth: _self.arcbarWidth*_self.pixelRatio,//圆弧的宽度
+					},
+					background:'#FFFFFF',
+					pixelRatio:_self.pixelRatio,
+					series: chartData.series,
+					animation: true,
+					width: _self.cWidth3*_self.pixelRatio,
+					height: _self.cHeight3*_self.pixelRatio,
+					dataLabel: true,
+				});
+				
+			},
+			showGauge(canvasId,chartData){
+				canvaGauge = new wxCharts({
 					canvasId: canvasId,
 					type: 'gauge',
 					fontSize:11,
@@ -365,24 +488,32 @@
 						fontSize: 15*_self.pixelRatio
 					},
 					extra: {
-						gaugeWidth: 12*_self.pixelRatio,//圆弧的宽度
+						gaugeWidth: _self.gaugeWidth*_self.pixelRatio,//圆弧的宽度
 					},
 					background:'#FFFFFF',
 					pixelRatio:_self.pixelRatio,
+					categories: chartData.categories,
 					series: chartData.series,
 					animation: true,
-					width: _self.cWidth3*_self.pixelRatio,
-					height: _self.cHeight3*_self.pixelRatio,
+					width: _self.cWidth*_self.pixelRatio,
+					height: _self.cHeight*_self.pixelRatio,
 					dataLabel: true,
 				});
-				
+			},
+			changeGaugeData(){
+				canvaGauge.updateData({
+					series: _self.serverData.Gauge.series,
+					categories: _self.serverData.Gauge.categories
+				});
 			},
 			changeData(){
-				//这里只做了柱状图数据动态更新，其他图表同理。
-				canvaColumn.updateData({
-					series: Data.ColumnB.series,
-					categories: Data.ColumnB.categories
-				});
+				//这里只做了柱状图数据动态更新，其他图表同理，数据是我之前获取的数据，您可以重新获取数据，更新前，也需要检查下数据是否为空，否则不要更新。
+				if(_self.serverData.ColumnB.categories.length>0 && _self.serverData.ColumnB.series.length>0){
+					canvaColumn.updateData({
+						series: _self.serverData.ColumnB.series,
+						categories: _self.serverData.ColumnB.series
+					});
+				}
 			},
 			touchLineA(e){
 				canvaLineA.scrollStart(e);
