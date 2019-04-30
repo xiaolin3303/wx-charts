@@ -843,9 +843,9 @@ function drawRingTitle(opts, config, context) {
     if (subtitle) {
         var textWidth = measureText(subtitle, subtitlefontSize);
         var startX = (opts.width - textWidth) / 2 + (opts.subtitle.offsetX || 0);
-        var startY = (opts.height - config.legendHeight + subtitlefontSize) / 2;
+        var startY = ((opts.height - config.legendHeight + subtitlefontSize) / 2 )+ (opts.subtitle.offsetY || 0);
         if (title) {
-            startY -= (titleHeight + margin) / 2;
+            startY -= (titleHeight + margin) / 2 ;
         }
         context.beginPath();
         context.setFontSize(subtitlefontSize);
@@ -857,7 +857,7 @@ function drawRingTitle(opts, config, context) {
     if (title) {
         var _textWidth = measureText(title, titlefontSize);
         var _startX = (opts.width - _textWidth) / 2 + (opts.title.offsetX || 0);
-        var _startY = (opts.height - config.legendHeight + titlefontSize) / 2;
+        var _startY = ((opts.height - config.legendHeight + titlefontSize) / 2 ) + (opts.title.offsetY || 0);
         if (subtitle) {
             _startY += (subtitleHeight + margin) / 2;
         }

@@ -216,6 +216,10 @@
 						Area.series=res.data.data.Area.series;
 						Pie.series=res.data.data.Pie.series;
 						Ring.series=res.data.data.Ring.series;
+						//自定义文案示例，需设置format字段
+						for(let i = 0 ;i < Ring.series.length;i++){
+							Ring.series[i].format=()=>{return Ring.series[i].name+Ring.series[i].data};
+						}
 						Radar.categories=res.data.data.Radar.categories;
 						Radar.series=res.data.data.Radar.series;
 						Arcbar1.series=res.data.data.Arcbar1.series;
@@ -397,12 +401,14 @@
 					title: {
 						name: '70%',
 						color: '#7cb5ec',
-						fontSize: 25*_self.pixelRatio
+						fontSize: 25*_self.pixelRatio,
+						offsetY:-20*_self.pixelRatio,//新增参数，自定义调整Y轴文案距离
 					},
 					subtitle: {
 						name: '收益率',
 						color: '#666666',
-						fontSize: 15*_self.pixelRatio
+						fontSize: 15*_self.pixelRatio,
+						offsetY:30*_self.pixelRatio,//新增参数，自定义调整Y轴文案距离
 					},
 					extra: {
 						ringWidth: 40*_self.pixelRatio,//圆环的宽度
@@ -511,7 +517,7 @@
 				if(_self.serverData.ColumnB.categories.length>0 && _self.serverData.ColumnB.series.length>0){
 					canvaColumn.updateData({
 						series: _self.serverData.ColumnB.series,
-						categories: _self.serverData.ColumnB.series
+						categories: _self.serverData.ColumnB.categories
 					});
 				}
 			},

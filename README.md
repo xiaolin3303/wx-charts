@@ -3,14 +3,16 @@
 
 # `【开源不易、改造不易、哪(拿)来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请先参见页面最后章节【常见问题】解决，如没有您的问题，请在页面最下面【撰写评论】，尽量不要在【问答】中提问（因有可能会漏掉您的问题）。`
 
-# `那谁，你需要的【图表拖拽】来啦，并新增【滚动条】显示拖拽进度，新增【scrollShow】参数，自定义滚动条是否显示，支持柱状图、折线图、区域图，赶快下载1.5.2吧，详见demo【折线图一】`
+## `修改demo为动态数据以帮助初学者使用，新增柱状图自定义颜色，传入数据标准如下(可混合使用)：series:[{name: '成交量1',data:[15, {value:20,color:'#f04864'},45, 37, 43, 34]},{name: '成交量2',data:[30, {value:40,color:'#facc14'}, 25, 14, 34, 18]}] `
+## 新增`opts.title.offsetY`标题纵向偏移距离，`opts.subtitle.offsetY`副标题纵向偏移距离，适用于`ring`、`arcbar`及即将上线的`gauge`，详见demo`圆环图`示例。
 
-## `近期更新比较频繁，请各位朋友持续关注更新`
+## `近期因感冒推迟了仪表盘图，希望大家理解`
 
 ## 更新记录
 - [ ] 2019.05.xx 计划加入柱状图、饼图、环形图、雷达图等`ToolTip`事件
 - [ ] 2019.05.xx 计划加入`堆叠图`、`条状图`、`K线图`、`分时图`
 - [ ] 2019.05.05 因近期感冒，推迟到节后加入`仪表盘`图，图表类型`gauge`，注意原`圆弧进度条`的图表类型变更为`arcbar`,给您带来不便请谅解
+- [x] 2019.04.30 新增`opts.title.offsetY`标题纵向偏移距离，`opts.subtitle.offsetY`副标题纵向偏移距离，适用于`ring`、`arcbar`及即将上线的`gauge`，详见demo`圆环图`示例。
 - [x] 2019.04.28 修改demo为动态数据以帮助初学者使用，即后台获取数据后实例化图表；新增柱状图`自定义颜色`，传入数据标准如下(可混合使用)：
 ``` series:[{name: '成交量1',data:[15, {value:20,color:'#f04864'},45, 37, 43, 34]},{name: '成交量2',data:[30, {value:40,color:'#facc14'}, 25, 14, 34, 18]}] ```
 - [x] 2019.04.23 增加`opts.xAxis.scrollShow`参数，默认为`false`，在`图表拖拽`时，是否显示滚动条，因为有些朋友可能不需要显示滚动条。增加`背景颜色`为其他颜色的示例，因为有些朋友设置的不太正确，请参考`柱状图`。详见v1.5.2demo页面。
@@ -52,12 +54,12 @@
 - 本插件原为我公司产品所用，经过大量测试，反复论证并加以改造而成，请各位放心使用。
 
 ## 亲手教您如何改造wx-charts
-- 为何要改造wx-charts?
+为何要改造wx-charts?
 并不是所有图表插件直接拿来就可以满足客户需求，如果您的UI设计师设计一个图表，如下图:
 
 您会发现这个图表即使在echarts里也不是很好实现，那么就需要我们自己动手去实现。下面就让我们一起来完成，本文旨在抛砖引玉，希望各位朋友能够更好的应用wx-charts来完成您的项目，如果您有更好的设计，请提交您的PR到github[uni-wx-charts跨端图表](https://github.com/16cheng/uni-wx-charts)，帮助更多朋友，感谢您的付出及贡献！
 
-[wx-charts跨端图表改造教程（详细注释）]()
+[wx-charts跨端图表改造教程（暂未完成，请关注）]()
 
 
 ## 图表示例
@@ -96,10 +98,6 @@
 	import wxCharts from '../../components/wx-charts/wxcharts.js';
 	var _self;
 	var canvaColumn=null;
-	//这里的Data为测试使用，生产环境请从服务器获取
-	var Data={
-		Column:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量1',data:[15, 20, 45, 37, 43, 34]},{name: '成交量2',data:[30, 40, 25, 14, 34, 18]}]}
-		}
 	export default {
 		data() {
 			return {
@@ -123,11 +121,26 @@
 			//#endif
 			this.cWidth=uni.upx2px(750);
 			this.cHeight=uni.upx2px(500);
+			this.getServerData();
 		},
 		onReady() {
-			this.showColumn("canvasColumn",Data.Column);
 		},
 		methods: {
+			getServerData(){
+				uni.request({
+					url: 'https://www.easy-mock.com/mock/5cc586b64fc5576cba3d647b/uni-wx-charts/chartsdata',
+					data:{
+					},
+					success: function(res) {
+						let Column={categories:[],series:[]};
+						Column.categories=res.data.data.Column.categories;
+						Column.series=res.data.data.Column.series;
+						if(Column.categories.length>0 && Column.series.length>0){
+							_self.showColumn("canvasColumn",Column);
+						}
+					}
+				});
+			},
 			showColumn(canvasId,chartData){
 				canvaColumn=new wxCharts({
 					canvasId: canvasId,
@@ -196,9 +209,11 @@
 |opts.title.fontSize| Number |  |标题字体大小（可选，单位为px）|
 |opts.title.color| String| | 标题颜色（可选）|
 |opts.title.offsetX |Number| 默认0px | 标题横向位置偏移量，单位px，默认0|
+|`opts.title.offsetY` |Number| 默认0px | `新增参数，标题纵向位置偏移量，单位px，默认0`|
 |opts.subtitle| Object| | (only for ring chart)|
 |opts.subtitle.name| String| | 副标题内容|
 |opts.subtitle.offsetX| Number| 默认0px | 副标题横向位置偏移量，单位px，默认0|
+|`opts.subtitle.offsetY`| Number| 默认0px | `新增参数，副标题横向位置偏移量，单位px，默认0`|
 |opts.subtitle.fontSize| Number| | 副标题字体大小（可选，单位为px）|
 |opts.subtitle.color| String| | 副标题颜色（可选）|
 |opts.animation| Boolean |默认为 true |是否动画展示|
@@ -254,6 +269,8 @@
 | :------ | :-----: | :-----: | :------------ |
 |dataItem|  Object| | |
 |dataItem.data| Array |required |(饼图、圆环图为Number) 数据，如果传入null图表该处出现断点|
+| `dataItem.data.value` | Number | |`新增参数，仅针对柱状图有效，主要作用为柱状图自定义颜色`|
+| `dataItem.data.color` | String | |`新增参数，仅针对柱状图有效，主要作用为柱状图自定义颜色`|
 |dataItem.color |String | |例如#7cb5ec 不传入则使用系统默认配色方案|
 |dataItem.name |String | |数据名称|
 |dateItem.format| Function| | 自定义显示数据内容|
