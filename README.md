@@ -3,15 +3,13 @@
 
 # `【开源不易、改造不易、哪(拿)来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请先参见页面最后章节【常见问题】解决，如没有您的问题，请在页面最下面【撰写评论】，尽量不要在【问答】中提问（因有可能会漏掉您的问题）。`
 
-## `修改demo为动态数据以帮助初学者使用，新增柱状图自定义颜色，传入数据标准如下(可混合使用)：series:[{name: '成交量1',data:[15, {value:20,color:'#f04864'},45, 37, 43, 34]},{name: '成交量2',data:[30, {value:40,color:'#facc14'}, 25, 14, 34, 18]}] `
-## 新增`opts.title.offsetY`标题纵向偏移距离，`opts.subtitle.offsetY`副标题纵向偏移距离，适用于`ring`、`arcbar`及即将上线的`gauge`，详见demo`圆环图`示例。
-
-## `近期因感冒推迟了仪表盘图，希望大家理解`
+## 新增`仪表盘`图，图表类型`gauge`，可以高度自定义，参数请参考demo。注意原`圆弧进度条`的图表类型变更为`arcbar`,给您带来不便请谅解
 
 ## 更新记录
 - [ ] 2019.05.xx 计划加入柱状图、饼图、环形图、雷达图等`ToolTip`事件
 - [ ] 2019.05.xx 计划加入`堆叠图`、`条状图`、`K线图`、`分时图`
-- [ ] 2019.05.05 因近期感冒，推迟到节后加入`仪表盘`图，图表类型`gauge`，注意原`圆弧进度条`的图表类型变更为`arcbar`,给您带来不便请谅解
+- [x] 2019.05.05 计划完善`仪表盘`，加入`第二种样式`，完善更新数据时`指针切换动画`，增加`数据标签`。
+- [x] 2019.05.01 新增`仪表盘`图，图表类型`gauge`，可以高度自定义，参数请参考demo。注意原`圆弧进度条`的图表类型变更为`arcbar`,给您带来不便请谅解
 - [x] 2019.04.30 新增`opts.title.offsetY`标题纵向偏移距离，`opts.subtitle.offsetY`副标题纵向偏移距离，适用于`ring`、`arcbar`及即将上线的`gauge`，详见demo`圆环图`示例。
 - [x] 2019.04.28 修改demo为动态数据以帮助初学者使用，即后台获取数据后实例化图表；新增柱状图`自定义颜色`，传入数据标准如下(可混合使用)：
 ``` series:[{name: '成交量1',data:[15, {value:20,color:'#f04864'},45, 37, 43, 34]},{name: '成交量2',data:[30, {value:40,color:'#facc14'}, 25, 14, 34, 18]}] ```
@@ -63,6 +61,7 @@
 
 
 ## 图表示例
+![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/yibiaopan.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/gauge.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/column.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/lineA.gif?raw=true)
@@ -248,9 +247,28 @@
 | :------ | :-----: | :-----: | :------------ |
 |opts.extra| Object| |其他非通用配置项|
 |opts.extra.ringWidth| Number | |ringChart圆环宽度，单位为px|
-|`opts.extra.arcbarWidth`| Number | 默认12px |`新增参数，圆弧进度图弧线宽度，单位为px`|
+|`opts.extra.arcbar`| Number | 默认12px |`新增参数，圆弧进度图相关配置`|
+|`opts.extra.arcbar.type`| String | 默认default |`新增参数，圆弧进度图样式，default为半圆弧，circle为整圆`|
+|`opts.extra.arcbar.width`| Number | 默认12px |`新增参数，圆弧进度图弧线宽度，单位为px`|
+|`opts.extra.arcbar.startAngle`| Number | 默认0.75 |`新增参数，圆弧进度图起始角度，0-2之间，0为3点钟位置，0.5为6点钟，1为9点钟，1.5为12点钟`|
+|`opts.extra.arcbar.endAngle`| Number | 默认0.25 |`新增参数，圆弧进度图结束角度，0-2之间，0为3点钟位置，0.5为6点钟，1为9点钟，1.5为12点钟`|
 |`opts.extra.gauge`| Object | |`新增参数，仪表盘相关配置`|
-|`opts.extra.gauge.width`| Number | 默认12px |`新增参数，仪表盘坐标轴（指示盘）线宽度，单位为px`|
+|`opts.extra.gauge.type`| String | 默认default |`新增参数，仪表盘样式，default为百度样式，其他样式开发中`|
+|`opts.extra.gauge.width`| Number | 默认15px |`新增参数，仪表盘坐标轴（指示盘）线宽度，单位为px`|
+|`opts.extra.gauge.startAngle`| Number | 默认0.75 |`新增参数，仪表盘起始角度，0-2之间，0为3点钟位置，0.5为6点钟，1为9点钟，1.5为12点钟`|
+|`opts.extra.gauge.endAngle`| Number | 默认0.25 |`新增参数，仪表盘结束角度，0-2之间，0为3点钟位置，0.5为6点钟，1为9点钟，1.5为12点钟`|
+|`opts.extra.gauge.startNumber`| Number | 默认0 |`新增参数，仪表盘起始数值`|
+|`opts.extra.gauge.endNumber`| Number | 默认100 |`新增参数，仪表盘结束数值`|
+|`opts.extra.gauge.splitLine`| Object | |`新增参数，仪表盘刻度线配置`|
+|`opts.extra.gauge.splitLine.fixRadius`| Number | 默认0 |`新增参数，仪表盘刻度线径向偏移量`|
+|`opts.extra.gauge.splitLine.splitNumber`| Number | 默认10 |`新增参数，仪表盘刻度线分段总数量`|
+|`opts.extra.gauge.splitLine.width`| Number | 默认15px |`新增参数，仪表盘分割线长度`|
+|`opts.extra.gauge.splitLine.color`| String | 默认#FFFFFF |`新增参数，仪表盘分割线颜色`|
+|`opts.extra.gauge.splitLine.childNumber`| Number | 默认5 |`新增参数，仪表盘子刻度线数量`|
+|`opts.extra.gauge.splitLine.childWidth`| Number | 默认5px |`新增参数，仪表盘子刻度线长度`|
+|`opts.extra.gauge.pointer`| Object | |`新增参数，仪表盘指针配置`|
+|`opts.extra.gauge.pointer.width`| Number | 默认15px |`新增参数，仪表盘指针宽度`|
+|`opts.extra.gauge.pointer.color`| String | 默认auto |`新增参数，仪表盘指针颜色，定义为auto时，随仪表盘背景颜色改变`|
 |opts.extra.lineStyle| String| straight | (仅对line, area图表有效) 可选值：curve曲线，straight直线 (default)|
 |opts.extra.column| Object | |柱状图相关配置|
 |opts.extra.column.width |Number| | 柱状图每项的图形宽度，单位为px|
@@ -319,3 +337,4 @@ e.mp.currentTarget.offsetTop+=uni.upx2px(510);
 ### 组件问题
 - 很多小伙伴们自行把本插件做成组件来调用，做成组件需要注意，如果涉及到v-if切换显示图表组件，第二次可能会变空白，这里有两个建议：1、建议用v-show替代v-if切换显示图表组件。2、建议参考demo，不要将canvas做到组件里使用，即直接写在主页面中。
 ## `如果跨端使用，最好不要做到组件里`
+## `支付宝小程序IDE中不显示，但运行到真机是可以显示的，请真机测试。`

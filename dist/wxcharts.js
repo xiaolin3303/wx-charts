@@ -627,14 +627,35 @@ function getArcbarDataPoints(series) {
     return series;
 }
 
-function getGaugeAxisPoints(series) {
-	
+function getGaugeAxisPoints(categories,startAngle,endAngle) {
+	let totalAngle=startAngle-endAngle+1;
+	let tempStartAngle=startAngle;
+	for(let i=0 ; i<categories.length; i++){
+		categories[i].value = categories[i].value === null ? 0 : categories[i].value;
+		categories[i]._startAngle_=tempStartAngle;
+		categories[i]._endAngle_=totalAngle* categories[i].value + startAngle;
+		if (categories[i]._endAngle_ >= 2) {
+			categories[i]._endAngle_ = categories[i]._endAngle_ % 2;
+		}
+		tempStartAngle=categories[i]._endAngle_;
+	}
+	return categories;
 }
 
-function getGaugeDataPoints(series) {
-    var process = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+function getGaugeDataPoints(series,categories,optionColor) {
+    var process = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
     series.forEach(function (item) {
         item.data = item.data === null ? 0 : item.data;
+		if(optionColor=='auto'){
+			for(let i=0 ;i<categories.length;i++){
+				if(item.data<=categories[i].value){
+					item.color=categories[i].color;
+					break;
+				}
+			}
+		}else{
+			item.color=optionColor;
+		}
 		item._proportion_ = 1.5 * item.data* process + 0.75;
 		if (item._proportion_ >= 2) {
 			item._proportion_ = item._proportion_ % 2;
@@ -1726,7 +1747,7 @@ function drawPieDataPoints(series, opts, config, context) {
 function drawArcbarDataPoints(series, opts, config, context) {
     var process = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
 
-    var pieOption = opts.extra.pie || {};
+    var arcbarOption = opts.extra.arcbar || {};
     series = getArcbarDataPoints(series, process);
     var centerPosition = {
         x: opts.width / 2,
@@ -1734,15 +1755,15 @@ function drawArcbarDataPoints(series, opts, config, context) {
     };
     var radius = Math.min(centerPosition.x , centerPosition.y);
    
-	if (typeof opts.extra.arcbarWidth === 'number' && opts.extra.arcbarWidth > 0) {
-	    opts.extra.arcbarWidth=opts.extra.arcbarWidth;
+	if (typeof arcbarOption.width === 'number' && arcbarOption.width > 0) {
+	    arcbarOption.width=arcbarOption.width;
 	}else{
-		opts.extra.arcbarWidth=12*opts.pixelRatio;
+		arcbarOption.width=12*opts.pixelRatio;
 	}
-	radius -= config.padding+opts.extra.arcbarWidth/2;
+	radius -= config.padding+arcbarOption.width/2;
 	
 	//背景颜色
-	context.setLineWidth(opts.extra.arcbarWidth); // 设置圆环的宽度
+	context.setLineWidth(arcbarOption.width); // 设置圆环的宽度
 	context.setStrokeStyle('#E9E9E9'); // 设置圆环的颜色
 	context.setLineCap('round'); // 设置圆环端点的形状
 	context.beginPath(); //开始一个新的路径
@@ -1751,7 +1772,7 @@ function drawArcbarDataPoints(series, opts, config, context) {
 		
 			
     series.forEach(function (eachSeries) {
-		context.setLineWidth(opts.extra.arcbarWidth);
+		context.setLineWidth(arcbarOption.width);
 		context.setStrokeStyle(eachSeries.color);
 		context.setLineCap('round');
 		context.beginPath();
@@ -1767,9 +1788,12 @@ function drawArcbarDataPoints(series, opts, config, context) {
     };
 }
 
-function drawGaugeAxis(categories, opts, config, context) {
+function drawGaugeDataPoints(categories,series, opts, config, context) {
+	var process = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 1;
 	var gaugeOption = opts.extra.gauge || {};
-	categories = getGaugeAxisPoints(categories);
+	gaugeOption.startAngle=gaugeOption.startAngle==undefined? 0.75 : gaugeOption.startAngle;
+	gaugeOption.endAngle=gaugeOption.endAngle==undefined? 0.25 : gaugeOption.endAngle;
+	categories = getGaugeAxisPoints(categories,gaugeOption.startAngle,gaugeOption.endAngle);
 	var centerPosition = {
 	    x: opts.width / 2,
 	    y: (opts.height) / 2
@@ -1778,65 +1802,106 @@ function drawGaugeAxis(categories, opts, config, context) {
 	if (typeof gaugeOption.width === 'number' && gaugeOption.width > 0) {
 	    gaugeOption.width=gaugeOption.width;
 	}else{
-		gaugeOption.width=12*opts.pixelRatio;
+		gaugeOption.width=15*opts.pixelRatio;
 	}
 	radius -= config.padding+gaugeOption.width/2;
-	
-	var innerRadius = radius-gaugeOption.width;
-}
-
-function drawGaugeDataPoints(series, opts, config, context) {
-    var process = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
-
-    var gaugeOption = opts.extra.gauge || {};
-    series = getGaugeDataPoints(series, process);
-    var centerPosition = {
-        x: opts.width / 2,
-        y: (opts.height) / 2
-    };
-    var radius = Math.min(centerPosition.x , centerPosition.y);
-	if (typeof gaugeOption.width === 'number' && gaugeOption.width > 0) {
-	    gaugeOption.width=gaugeOption.width;
-	}else{
-		gaugeOption.width=12*opts.pixelRatio;
-	}
-	radius -= config.padding+gaugeOption.width/2;
-	
 	var innerRadius = radius-gaugeOption.width;
 	
-	//仪表盘背景
+	
+	
+	//画背景
 	context.setLineWidth(gaugeOption.width);
 	context.setLineCap('butt'); 
-	context.beginPath(); 
-	context.setStrokeStyle('#2fc25b'); 
-	context.arc(centerPosition.x, centerPosition.y, radius, 0.75 * Math.PI, (0.75+0.2*1.5) * Math.PI, false);
-	context.stroke(); 
-	context.beginPath();
-	context.setStrokeStyle('#f04864'); 
-	context.arc(centerPosition.x, centerPosition.y, radius, (0.75+0.2*1.5) * Math.PI, (0.75+0.8*1.5) * Math.PI, false);
-	context.stroke(); 
-	context.beginPath();
-	context.setStrokeStyle('#1890ff'); 
-	context.arc(centerPosition.x, centerPosition.y, radius, (0.75+0.8*1.5) * Math.PI, 0.25 * Math.PI, false);
-	context.stroke(); 
-		
-	/*
-    series.forEach(function (eachSeries) {
-		context.setLineWidth(opts.extra.gaugeWidth);
-		context.setStrokeStyle(eachSeries.color);
-		context.setLineCap('round');
+	categories.forEach(function (eachCategories) {
+		context.beginPath(); 
+		context.setStrokeStyle(eachCategories.color); 
+		context.arc(centerPosition.x, centerPosition.y, radius, eachCategories._startAngle_ * Math.PI, eachCategories._endAngle_ * Math.PI, false);
+		context.stroke(); 
+	});
+	context.save();
+	
+	//画刻度线
+	let totalAngle=gaugeOption.startAngle-gaugeOption.endAngle+1;
+	gaugeOption.splitLine.fixRadius=gaugeOption.splitLine.fixRadius==undefined? 0 : gaugeOption.splitLine.fixRadius;
+	gaugeOption.splitLine.splitNumber=gaugeOption.splitLine.splitNumber==undefined? 10 : gaugeOption.splitLine.splitNumber;
+	gaugeOption.splitLine.width=gaugeOption.splitLine.width==undefined? 15*opts.pixelRatio : gaugeOption.splitLine.width;
+	gaugeOption.splitLine.color=gaugeOption.splitLine.color==undefined? '#FFFFFF' : gaugeOption.splitLine.color;
+	gaugeOption.splitLine.childNumber=gaugeOption.splitLine.childNumber==undefined? 5 : gaugeOption.splitLine.childNumber;
+	gaugeOption.splitLine.childWidth=gaugeOption.splitLine.childWidth==undefined? 5*opts.pixelRatio : gaugeOption.splitLine.childWidth;
+	let splitAngle=totalAngle/gaugeOption.splitLine.splitNumber;
+	let childAngle=totalAngle/gaugeOption.splitLine.splitNumber/gaugeOption.splitLine.childNumber;
+	let startX=-radius-gaugeOption.width*0.5-gaugeOption.splitLine.fixRadius;
+	let endX=-radius-gaugeOption.width*0.5-gaugeOption.splitLine.fixRadius+gaugeOption.splitLine.width;
+	let childendX=-radius-gaugeOption.width*0.5-gaugeOption.splitLine.fixRadius+gaugeOption.splitLine.childWidth;
+	
+	context.translate(centerPosition.x, centerPosition.y);
+	context.rotate((gaugeOption.startAngle-1)* Math.PI);
+	
+	for(let i=0 ; i< gaugeOption.splitLine.splitNumber+1; i++){
 		context.beginPath();
-		context.arc(centerPosition.x, centerPosition.y, radius, 0.75 * Math.PI, eachSeries._proportion_ * Math.PI, false);
+		context.setStrokeStyle(gaugeOption.splitLine.color);
+		context.setLineWidth(2*opts.pixelRatio);
+		context.moveTo(startX, 0);
+		context.lineTo(endX, 0);
 		context.stroke();
-		
-    });
-	*/
-    //drawRingTitle(opts, config, context);
-    return {
-        center: centerPosition,
-        radius: radius,
-        series: series
-    };
+		context.rotate(splitAngle* Math.PI);
+	}
+	context.restore();
+	
+	context.save();
+	context.translate(centerPosition.x, centerPosition.y);
+	context.rotate((gaugeOption.startAngle-1)* Math.PI);
+	
+	for(let i=0 ; i< gaugeOption.splitLine.splitNumber*gaugeOption.splitLine.childNumber+1; i++){
+		context.beginPath();
+		context.setStrokeStyle(gaugeOption.splitLine.color);
+		context.setLineWidth(1*opts.pixelRatio);
+		context.moveTo(startX, 0);
+		context.lineTo(childendX, 0);
+		context.stroke();
+		context.rotate(childAngle* Math.PI);
+	}
+	context.restore();
+	
+	//画指针
+	gaugeOption.pointer.width=gaugeOption.pointer.width==undefined? 15*opts.pixelRatio : gaugeOption.pointer.width;
+	if (gaugeOption.pointer.color == undefined || gaugeOption.pointer.color == 'auto') {
+	    gaugeOption.pointer.color == 'auto';
+	}else{
+		gaugeOption.pointer.color == gaugeOption.pointer.color;
+	}
+	series = getGaugeDataPoints(series,categories,gaugeOption.pointer.color, process);
+	
+	series.forEach(function (eachSeries) {
+		context.save();
+		context.translate(centerPosition.x, centerPosition.y);
+		context.rotate((eachSeries._proportion_-1)* Math.PI);
+		context.beginPath();
+		context.setFillStyle(eachSeries.color);
+		context.moveTo(gaugeOption.pointer.width, 0);
+		context.lineTo(0,-gaugeOption.pointer.width/2);
+		context.lineTo(-innerRadius,0);
+		context.lineTo(0,gaugeOption.pointer.width/2);
+		context.lineTo(gaugeOption.pointer.width,0);
+		context.closePath();
+		context.fill();
+		context.beginPath(); 
+		context.setFillStyle('#FFFFFF');
+		context.arc(0, 0, gaugeOption.pointer.width/6, 0,2* Math.PI, false);
+		context.fill();
+		context.restore();
+	});
+	
+	
+	drawRingTitle(opts, config, context);
+	
+	return {
+	    center: centerPosition,
+	    radius: radius,
+		innerRadius:innerRadius,
+	    categories: categories,
+		totalAngle:totalAngle
+	};
 }
 
 function drawRadarDataPoints(series, opts, config, context) {
@@ -2192,8 +2257,7 @@ function drawCharts(type, opts, config, context) {
 			        	context.translate(opts.height, 0);
 			        	context.rotate(90 * Math.PI / 180);
 			        }
-					drawGaugeAxis(categories, opts, config, context);
-					drawGaugeDataPoints(series, opts, config, context, process);
+					_this.chartData.gaugeData = drawGaugeDataPoints(categories, series,opts, config, context, process);
 			        drawCanvas(opts, context);
 			    },
 			    onAnimationFinish: function onAnimationFinish() {
