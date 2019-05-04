@@ -20,9 +20,11 @@
  * 2019-04-16
  * 新增圆弧进度图，图表类型arcbar
  * 2019-04-22
- * 修改图表拖拽功能夸端支持，增加拖拽时显示滚动条
- * 
- * 
+ * 修改图表拖拽功能跨端支持，增加拖拽时显示滚动条
+ * 2019-04-28
+ * 新增柱状图自定义颜色
+ * 2019-05-01
+ * 新增仪表盘图
  * 
  */
 
@@ -55,7 +57,8 @@ var config = {
     toolTipOpacity: 0.7,
     toolTipLineHeight: 20,
     radarGridCount: 3,
-    radarLabelTextMargin: 15
+    radarLabelTextMargin: 15,
+	gaugeLabelTextMargin:15
 };
 
 // Object.assign polyfill
@@ -642,11 +645,11 @@ function getGaugeAxisPoints(categories,startAngle,endAngle) {
 	return categories;
 }
 
-function getGaugeDataPoints(series,categories,optionColor) {
+function getGaugeDataPoints(series,categories,gaugeOption) {
     var process = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
     series.forEach(function (item) {
         item.data = item.data === null ? 0 : item.data;
-		if(optionColor=='auto'){
+		if(gaugeOption.pointer.color=='auto'){
 			for(let i=0 ;i<categories.length;i++){
 				if(item.data<=categories[i].value){
 					item.color=categories[i].color;
@@ -654,9 +657,19 @@ function getGaugeDataPoints(series,categories,optionColor) {
 				}
 			}
 		}else{
-			item.color=optionColor;
+			item.color=gaugeOption.pointer.color;
 		}
-		item._proportion_ = 1.5 * item.data* process + 0.75;
+		let totalAngle=gaugeOption.startAngle-gaugeOption.endAngle+1;
+		item._endAngle_=totalAngle * item.data + gaugeOption.startAngle;
+		item._oldAngle_=gaugeOption.oldAngle;
+		if(gaugeOption.oldAngle<gaugeOption.endAngle){
+			item._oldAngle_+=2;
+		}
+		if(item.data>=gaugeOption.oldData){
+			item._proportion_ = (item._endAngle_-item._oldAngle_)* process+gaugeOption.oldAngle;
+		}else{
+			item._proportion_ =item._oldAngle_- (item._oldAngle_-item._endAngle_)* process;
+		}
 		if (item._proportion_ >= 2) {
 			item._proportion_ = item._proportion_ % 2;
 		}
@@ -908,6 +921,37 @@ function drawPointText(points, series, config, context) {
     });
     context.closePath();
     context.stroke();
+}
+
+function drawGaugeLabel(gaugeOption, radius, centerPosition, opts, config, context) {
+    radius -= gaugeOption.width/2+config.gaugeLabelTextMargin;
+    context.beginPath();
+    context.setFontSize(config.fontSize);
+    context.setFillStyle(gaugeOption.labelColor || '#666666');
+	let totalAngle=gaugeOption.startAngle-gaugeOption.endAngle+1;
+	let splitAngle=totalAngle/gaugeOption.splitLine.splitNumber;
+	let totalNumber=gaugeOption.endNumber-gaugeOption.startNumber;
+	let splitNumber=totalNumber/gaugeOption.splitLine.splitNumber;
+	let nowAngle=gaugeOption.startAngle;
+	let nowNumber=gaugeOption.startNumber;
+	for(let i=0;i<gaugeOption.splitLine.splitNumber+1;i++){
+		var pos = {
+		    x: radius * Math.cos(nowAngle*Math.PI),
+		    y: radius * Math.sin(nowAngle*Math.PI)
+		};
+		pos.x+=centerPosition.x-measureText(nowNumber)/2;
+		pos.y+=centerPosition.y;
+		var startX = pos.x;
+		var startY = pos.y;
+		context.fillText(nowNumber, startX, startY + config.fontSize / 2);
+		nowAngle+=splitAngle;
+		if(nowAngle>=2){
+			nowAngle=nowAngle % 2;
+		}
+		nowNumber+=splitNumber;
+	}
+	context.stroke();
+	context.closePath();
 }
 
 function drawRadarLabel(angleList, radius, centerPosition, opts, config, context) {
@@ -1526,6 +1570,7 @@ function drawYAxisGrid(opts, config, context) {
 
     context.beginPath();
     context.setStrokeStyle(opts.yAxis.gridColor || "#cccccc");
+	//context.setLineDash([20]);
     context.setLineWidth(1*opts.pixelRatio);
     points.forEach(function (item, index) {
         context.moveTo(startX, item);
@@ -1533,6 +1578,7 @@ function drawYAxisGrid(opts, config, context) {
     });
     context.closePath();
     context.stroke();
+	//context.setLineDash([]);
 }
 
 function drawYAxis(series, opts, config, context) {
@@ -1791,8 +1837,14 @@ function drawArcbarDataPoints(series, opts, config, context) {
 function drawGaugeDataPoints(categories,series, opts, config, context) {
 	var process = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 1;
 	var gaugeOption = opts.extra.gauge || {};
-	gaugeOption.startAngle=gaugeOption.startAngle==undefined? 0.75 : gaugeOption.startAngle;
-	gaugeOption.endAngle=gaugeOption.endAngle==undefined? 0.25 : gaugeOption.endAngle;
+	gaugeOption.startAngle=gaugeOption.startAngle? gaugeOption.startAngle: 0.75;
+	if(gaugeOption.oldAngle==undefined){
+		gaugeOption.oldAngle=gaugeOption.startAngle;
+	}
+	if(gaugeOption.oldData==undefined){
+		gaugeOption.oldData=0;
+	}
+	gaugeOption.endAngle=gaugeOption.endAngle? gaugeOption.endAngle : 0.25;
 	categories = getGaugeAxisPoints(categories,gaugeOption.startAngle,gaugeOption.endAngle);
 	var centerPosition = {
 	    x: opts.width / 2,
@@ -1822,12 +1874,12 @@ function drawGaugeDataPoints(categories,series, opts, config, context) {
 	
 	//画刻度线
 	let totalAngle=gaugeOption.startAngle-gaugeOption.endAngle+1;
-	gaugeOption.splitLine.fixRadius=gaugeOption.splitLine.fixRadius==undefined? 0 : gaugeOption.splitLine.fixRadius;
-	gaugeOption.splitLine.splitNumber=gaugeOption.splitLine.splitNumber==undefined? 10 : gaugeOption.splitLine.splitNumber;
-	gaugeOption.splitLine.width=gaugeOption.splitLine.width==undefined? 15*opts.pixelRatio : gaugeOption.splitLine.width;
-	gaugeOption.splitLine.color=gaugeOption.splitLine.color==undefined? '#FFFFFF' : gaugeOption.splitLine.color;
-	gaugeOption.splitLine.childNumber=gaugeOption.splitLine.childNumber==undefined? 5 : gaugeOption.splitLine.childNumber;
-	gaugeOption.splitLine.childWidth=gaugeOption.splitLine.childWidth==undefined? 5*opts.pixelRatio : gaugeOption.splitLine.childWidth;
+	gaugeOption.splitLine.fixRadius=gaugeOption.splitLine.fixRadius? gaugeOption.splitLine.fixRadius : 0;
+	gaugeOption.splitLine.splitNumber=gaugeOption.splitLine.splitNumber? gaugeOption.splitLine.splitNumber : 10;
+	gaugeOption.splitLine.width=gaugeOption.splitLine.width? gaugeOption.splitLine.width : 15*opts.pixelRatio ;
+	gaugeOption.splitLine.color=gaugeOption.splitLine.color? gaugeOption.splitLine.color : '#FFFFFF';
+	gaugeOption.splitLine.childNumber=gaugeOption.splitLine.childNumber? gaugeOption.splitLine.childNumber : 5;
+	gaugeOption.splitLine.childWidth=gaugeOption.splitLine.childWidth? gaugeOption.splitLine.childWidth : 5*opts.pixelRatio;
 	let splitAngle=totalAngle/gaugeOption.splitLine.splitNumber;
 	let childAngle=totalAngle/gaugeOption.splitLine.splitNumber/gaugeOption.splitLine.childNumber;
 	let startX=-radius-gaugeOption.width*0.5-gaugeOption.splitLine.fixRadius;
@@ -1864,13 +1916,13 @@ function drawGaugeDataPoints(categories,series, opts, config, context) {
 	context.restore();
 	
 	//画指针
-	gaugeOption.pointer.width=gaugeOption.pointer.width==undefined? 15*opts.pixelRatio : gaugeOption.pointer.width;
+	gaugeOption.pointer.width=gaugeOption.pointer.width? gaugeOption.pointer.width : 15*opts.pixelRatio;
 	if (gaugeOption.pointer.color == undefined || gaugeOption.pointer.color == 'auto') {
 	    gaugeOption.pointer.color == 'auto';
 	}else{
 		gaugeOption.pointer.color == gaugeOption.pointer.color;
 	}
-	series = getGaugeDataPoints(series,categories,gaugeOption.pointer.color, process);
+	series = getGaugeDataPoints(series,categories,gaugeOption, process);
 	
 	series.forEach(function (eachSeries) {
 		context.save();
@@ -1892,9 +1944,16 @@ function drawGaugeDataPoints(categories,series, opts, config, context) {
 		context.restore();
 	});
 	
+	if (opts.dataLabel !== false) {
+		drawGaugeLabel(gaugeOption, radius, centerPosition, opts, config, context);
+	}
 	
 	drawRingTitle(opts, config, context);
 	
+	if (process === 1 && opts.type === 'gauge') {
+		gaugeOption.oldAngle=series[0]._proportion_;
+		gaugeOption.oldData=series[0].data;
+	}
 	return {
 	    center: centerPosition,
 	    radius: radius,
