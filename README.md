@@ -58,7 +58,7 @@
 ## 亲手教您如何改造wx-charts
 为何要改造wx-charts?
 并不是所有图表插件直接拿来就可以满足客户需求，如果您的UI设计师设计一个图表，如下图:
-
+![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/example.gif?raw=true)
 您会发现这个图表即使在echarts里也不是很好实现，那么就需要我们自己动手去实现。下面就让我们一起来完成，本文旨在抛砖引玉，希望各位朋友能够更好的应用wx-charts来完成您的项目，如果您有更好的设计，请提交您的PR到github[uni-wx-charts跨端图表](https://github.com/16cheng/uni-wx-charts)，帮助更多朋友，感谢您的付出及贡献！
 
 ## [wx-charts跨端图表改造教程（暂未完成，请关注）](https://github.com/16cheng/uni-wx-charts/wiki/%E4%BA%B2%E6%89%8B%E6%95%99%E6%82%A8%E5%A6%82%E4%BD%95%E6%94%B9%E9%80%A0wx-charts)
