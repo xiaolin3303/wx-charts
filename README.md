@@ -53,17 +53,6 @@
 - 图表样式均可自定义，懂js的都可以读懂插件源码，直接修改wxcharts.js源码即可。
 - 本插件原为我公司产品所用，经过大量测试，反复论证并加以改造而成，请各位放心使用。
 
-## 图表选型指引
-
-```mermaid
-graph TD;
-  A-->B;
-  A-->C;
-  B-->D;
-  C-->D;
-```
-
-
 ## 亲手教您如何改造wx-charts
 为何要改造wx-charts?
 并不是所有图表插件直接拿来就可以满足客户需求，如果您的UI设计师设计一个图表，如下图:
@@ -84,6 +73,7 @@ graph TD;
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/ring.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/radar.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/lineB.gif?raw=true)
+
 ## 引用方法
 `import wxCharts from '../../components/wx-charts/wxcharts.js';`
 
