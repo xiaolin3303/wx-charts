@@ -3,13 +3,15 @@
 
 # `【开源不易、改造不易、哪(拿)来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请先参见页面最后章节【常见问题】解决，如没有您的问题，请在页面最下面【撰写评论】，尽量不要在【问答】中提问（因有可能会漏掉您的问题）。`
 
-## 新增`仪表盘`图，图表类型`gauge`，可以高度自定义，参数请参考demo。注意原`圆弧进度条`的图表类型变更为`arcbar`,给您带来不便请谅解
+## 新增`仪表盘`图，图表类型`gauge`，可以高度自定义，参数请参考demo。
+## 原`圆弧进度条`的图表类型变更为`arcbar`,新增起始、结束角度自定义，新增背景颜色自定义，新增`整圆进度图`，参数请参考demo。
 
 ## 更新记录
 - [ ] 2019.05.xx 计划加入柱状图、饼图、环形图、雷达图等`ToolTip`事件
 - [ ] 2019.05.xx 计划加入`堆叠图`、`条状图`、`K线图`、`分时图`
 - [ ] 2019.05.xx 计划完善X轴Y轴网格设置，增加X轴网格设置，增加XY轴`虚线网格`绘制。
-- [ ] 2019.05.08 计划加入`第二种仪表盘样式`，完善`圆弧进度图`增加起始结束角度自定义，增加`整圆进度图`。
+- [ ] 2019.05.08 计划加入`第二种仪表盘样式`，
+- [x] 2019.05.05 完善`圆弧进度图`增加起始结束角度自定义，新增背景颜色自定义，新增`整圆进度图`，参数请参考demo。
 - [x] 2019.05.04 完善`仪表盘`更新数据时`指针切换动画`，增加`仪表盘数据标签`。
 - [x] 2019.05.01 新增`仪表盘`图，图表类型`gauge`，可以高度自定义，参数请参考demo。注意原`圆弧进度条`的图表类型变更为`arcbar`,给您带来不便请谅解
 - [x] 2019.04.30 新增`opts.title.offsetY`标题纵向偏移距离，`opts.subtitle.offsetY`副标题纵向偏移距离，适用于`ring`、`arcbar`及即将上线的`gauge`，详见demo`圆环图`示例。
@@ -59,13 +61,14 @@
 
 您会发现这个图表即使在echarts里也不是很好实现，那么就需要我们自己动手去实现。下面就让我们一起来完成，本文旨在抛砖引玉，希望各位朋友能够更好的应用wx-charts来完成您的项目，如果您有更好的设计，请提交您的PR到github[uni-wx-charts跨端图表](https://github.com/16cheng/uni-wx-charts)，帮助更多朋友，感谢您的付出及贡献！
 
-[wx-charts跨端图表改造教程（暂未完成，请关注）]()
+## [wx-charts跨端图表改造教程（暂未完成，请关注）](https://github.com/16cheng/uni-wx-charts/wiki/%E4%BA%B2%E6%89%8B%E6%95%99%E6%82%A8%E5%A6%82%E4%BD%95%E6%94%B9%E9%80%A0wx-charts)
 
 
 ## 图表示例
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/yibiaopan.gif?raw=true)
-![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/gauge.gif?raw=true)
+![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/arcbar.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/column.gif?raw=true)
+![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/column2.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/lineA.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/lineA-scroll.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/area.gif?raw=true)
@@ -253,6 +256,7 @@
 |`opts.extra.arcbar`| Number | 默认12px |`新增参数，圆弧进度图相关配置`|
 |`opts.extra.arcbar.type`| String | 默认default |`新增参数，圆弧进度图样式，default为半圆弧，circle为整圆`|
 |`opts.extra.arcbar.width`| Number | 默认12px |`新增参数，圆弧进度图弧线宽度，单位为px`|
+|`opts.extra.arcbar.backgroundColor`| String | 默认#E9E9E9 |`新增参数，圆弧进度图背景颜色`|
 |`opts.extra.arcbar.startAngle`| Number | 默认0.75 |`新增参数，圆弧进度图起始角度，0-2之间，0为3点钟位置，0.5为6点钟，1为9点钟，1.5为12点钟`|
 |`opts.extra.arcbar.endAngle`| Number | 默认0.25 |`新增参数，圆弧进度图结束角度，0-2之间，0为3点钟位置，0.5为6点钟，1为9点钟，1.5为12点钟`|
 |`opts.extra.gauge`| Object | |`新增参数，仪表盘相关配置`|

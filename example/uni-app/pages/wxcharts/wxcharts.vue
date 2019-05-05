@@ -253,10 +253,10 @@
 							_self.showArcbar("canvasArcbar1",Arcbar1);
 						}
 						if(Arcbar2.series.length>0){
-							_self.showArcbar("canvasArcbar2",Arcbar2);
+							_self.showArcbar2("canvasArcbar2",Arcbar2);
 						}
 						if(Arcbar3.series.length>0){
-							_self.showArcbar("canvasArcbar3",Arcbar3);
+							_self.showArcbar3("canvasArcbar3",Arcbar3);
 						}
 						if(Gauge.categories.length>0 && Gauge.series.length>0){
 							_self.showGauge("canvasGauge",Gauge);
@@ -466,7 +466,76 @@
 					},
 					extra: {
 						arcbar:{
+							type:'default',
 							width: _self.arcbarWidth*_self.pixelRatio,//圆弧的宽度
+						}
+					},
+					background:'#FFFFFF',
+					pixelRatio:_self.pixelRatio,
+					series: chartData.series,
+					animation: true,
+					width: _self.cWidth3*_self.pixelRatio,
+					height: _self.cHeight3*_self.pixelRatio,
+					dataLabel: true,
+				});
+				
+			},
+			showArcbar2(canvasId,chartData){
+				new wxCharts({
+					canvasId: canvasId,
+					type: 'arcbar',
+					fontSize:11,
+					legend:false,
+					title: {
+						name: Math.round(chartData.series[0].data*100)+'%',
+						color: chartData.series[0].color,
+						fontSize: 25*_self.pixelRatio
+					},
+					subtitle: {
+						name: chartData.series[0].name,
+						color: '#666666',
+						fontSize: 15*_self.pixelRatio
+					},
+					extra: {
+						arcbar:{
+							type:'default',
+							width: _self.arcbarWidth*_self.pixelRatio,//圆弧的宽度
+							backgroundColor:'#ffe3e8',
+							startAngle:1.25,
+							endAngle:0.75
+						}
+					},
+					background:'#FFFFFF',
+					pixelRatio:_self.pixelRatio,
+					series: chartData.series,
+					animation: true,
+					width: _self.cWidth3*_self.pixelRatio,
+					height: _self.cHeight3*_self.pixelRatio,
+					dataLabel: true,
+				});
+				
+			},
+			showArcbar3(canvasId,chartData){
+				new wxCharts({
+					canvasId: canvasId,
+					type: 'arcbar',
+					fontSize:11,
+					legend:false,
+					title: {
+						name: Math.round(chartData.series[0].data*100)+'%',
+						color: chartData.series[0].color,
+						fontSize: 25*_self.pixelRatio
+					},
+					subtitle: {
+						name: chartData.series[0].name,
+						color: '#666666',
+						fontSize: 15*_self.pixelRatio
+					},
+					extra: {
+						arcbar:{
+							type:'circle',//整圆类型进度条图
+							width: _self.arcbarWidth*_self.pixelRatio,//圆弧的宽度
+							startAngle:0.5//整圆类型只需配置起始角度即可
 						}
 					},
 					background:'#FFFFFF',

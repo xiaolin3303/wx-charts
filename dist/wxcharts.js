@@ -618,11 +618,20 @@ function getPieDataPoints(series) {
     return series;
 }
 
-function getArcbarDataPoints(series) {
-    var process = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+function getArcbarDataPoints(series,arcbarOption) {
+    var process = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+	if(process==1){
+		process=0.999999;
+	}
     series.forEach(function (item) {
         item.data = item.data === null ? 0 : item.data;
-		item._proportion_ = 1.5 * item.data* process + 0.75;
+		let totalAngle;
+		if(arcbarOption.type=='default'){
+			totalAngle=arcbarOption.startAngle-arcbarOption.endAngle+1;
+		}else{
+			totalAngle=2;
+		}
+		item._proportion_ = totalAngle * item.data* process + arcbarOption.startAngle;
 		if (item._proportion_ >= 2) {
 			item._proportion_ = item._proportion_ % 2;
 		}
@@ -1794,7 +1803,11 @@ function drawArcbarDataPoints(series, opts, config, context) {
     var process = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
 
     var arcbarOption = opts.extra.arcbar || {};
-    series = getArcbarDataPoints(series, process);
+	arcbarOption.startAngle=arcbarOption.startAngle? arcbarOption.startAngle: 0.75;
+	arcbarOption.endAngle=arcbarOption.endAngle? arcbarOption.endAngle : 0.25;
+	arcbarOption.type=arcbarOption.type? arcbarOption.type : 'default';
+	
+    series = getArcbarDataPoints(series, arcbarOption, process);
     var centerPosition = {
         x: opts.width / 2,
         y: (opts.height) / 2
@@ -1810,10 +1823,15 @@ function drawArcbarDataPoints(series, opts, config, context) {
 	
 	//背景颜色
 	context.setLineWidth(arcbarOption.width); // 设置圆环的宽度
-	context.setStrokeStyle('#E9E9E9'); // 设置圆环的颜色
+	context.setStrokeStyle(arcbarOption.backgroundColor || '#E9E9E9'); // 设置圆环的颜色
 	context.setLineCap('round'); // 设置圆环端点的形状
 	context.beginPath(); //开始一个新的路径
-	context.arc(centerPosition.x, centerPosition.y, radius, 0.75 * Math.PI, 0.25 * Math.PI, false);
+	if(arcbarOption.type=='default'){
+		context.arc(centerPosition.x, centerPosition.y, radius, arcbarOption.startAngle * Math.PI, arcbarOption.endAngle * Math.PI, false);
+	}else{
+		context.arc(centerPosition.x, centerPosition.y, radius, 0, 2 * Math.PI, false);
+	}
+	
 	context.stroke(); //对当前路径进行描边
 		
 			
@@ -1822,7 +1840,7 @@ function drawArcbarDataPoints(series, opts, config, context) {
 		context.setStrokeStyle(eachSeries.color);
 		context.setLineCap('round');
 		context.beginPath();
-		context.arc(centerPosition.x, centerPosition.y, radius, 0.75 * Math.PI, eachSeries._proportion_ * Math.PI, false);
+		context.arc(centerPosition.x, centerPosition.y, radius, arcbarOption.startAngle * Math.PI, eachSeries._proportion_ * Math.PI, false);
 		context.stroke();
 		
     });
