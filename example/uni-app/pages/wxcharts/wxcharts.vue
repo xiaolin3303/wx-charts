@@ -308,7 +308,9 @@
 					animation: false,
 					enableScroll: true,//开启图表拖拽功能
 					xAxis: {
-						disableGrid:true,
+						disableGrid:false,
+						type:'grid',
+						gridType:'dash',
 						itemCount:4,//可不填写，配合enableScroll图表拖拽功能使用，x轴单屏显示数据的数量，默认为5个
 						scrollShow:true,//新增是否显示滚动条，默认false
 						//scrollBackgroundColor:'#F7F7FF',//可不填写，配合enableScroll图表拖拽功能使用，X轴滚动条背景颜色,默认为 #EFEBEF
@@ -316,6 +318,8 @@
 					},
 					yAxis: {
 						//disabled:true
+						gridType:'dash',
+						
 					},
 					width: _self.cWidth*_self.pixelRatio,
 					height: _self.cHeight*_self.pixelRatio,

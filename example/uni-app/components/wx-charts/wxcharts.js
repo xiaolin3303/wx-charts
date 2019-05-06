@@ -1459,14 +1459,14 @@ function drawXAxis(categories, opts, config, context) {
         eachSpacing = _getXAxisPoints4.eachSpacing;
 
     var startY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
-    var endY = startY + config.xAxisLineHeight;
+    var endY = config.padding;
 
 
 	//绘制滚动条
 	if(opts.enableScroll && opts.xAxis.scrollShow){
 		var scrollStartX=startX+3*opts.pixelRatio;
 		var scrollendX=endX-3*opts.pixelRatio;
-		var scrollY=endY+8*opts.pixelRatio;
+		var scrollY=startY + config.xAxisLineHeight+8*opts.pixelRatio;
 		var scrollScreenWidth=scrollendX-scrollStartX;
 		var scrollTotalWidth=eachSpacing*(xAxisPoints.length-1);
 		var scrollWidth=scrollScreenWidth*scrollScreenWidth/scrollTotalWidth;
@@ -1500,13 +1500,17 @@ function drawXAxis(categories, opts, config, context) {
 
     context.beginPath();
     context.setStrokeStyle(opts.xAxis.gridColor || "#cccccc");
-
+	context.setLineCap('butt');
+	context.setLineWidth(1*opts.pixelRatio);
+	if(opts.xAxis.gridType=='dash'){
+		context.setLineDash([opts.xAxis.dashLength]);
+	}
     if (opts.xAxis.disableGrid !== true) {
         if (opts.xAxis.type === 'calibration') {
             xAxisPoints.forEach(function (item, index) {
                 if (index > 0) {
                     context.moveTo(item - eachSpacing / 2, startY);
-                    context.lineTo(item - eachSpacing / 2, startY + 4);
+                    context.lineTo(item - eachSpacing / 2, startY + 4*opts.pixelRatio);
                 }
             });
         } else {
@@ -1518,7 +1522,8 @@ function drawXAxis(categories, opts, config, context) {
     }
     context.closePath();
     context.stroke();
-
+	context.setLineDash([]);
+	
     // 对X轴列表做抽稀处理
     var validWidth = opts.width - 2 * config.padding - config.yAxisWidth - config.yAxisTitleWidth;
     var maxXAxisListLength = Math.min(categories.length, Math.ceil(validWidth / config.fontSize / 1.5));
@@ -1564,22 +1569,34 @@ function drawXAxis(categories, opts, config, context) {
 
 }
 
-function drawYAxisGrid(opts, config, context) {
+function drawYAxisGrid(categories,opts, config, context) {
     var spacingValid = opts.height - 2 * config.padding - config.xAxisHeight - config.legendHeight;
     var eachSpacing = Math.floor(spacingValid / config.yAxisSplit);
     var yAxisTotalWidth = config.yAxisWidth + config.yAxisTitleWidth;
     var startX = config.padding + yAxisTotalWidth;
-    var endX = opts.width - config.padding;
-
+	var _getXAxisPoints4 = getXAxisPoints(categories, opts, config),
+	    xAxisPoints = _getXAxisPoints4.xAxisPoints,
+	    xAxiseachSpacing = _getXAxisPoints4.eachSpacing;
+	var TotalWidth=xAxiseachSpacing*(xAxisPoints.length-1);
+	var endX = startX+TotalWidth;
+	
     var points = [];
     for (var i = 0; i < config.yAxisSplit; i++) {
         points.push(config.padding + eachSpacing * i);
     }
     points.push(config.padding + eachSpacing * config.yAxisSplit + 2);
 
+	context.save();
+    if (opts._scrollDistance_ && opts._scrollDistance_ !== 0) {
+        context.translate(opts._scrollDistance_, 0);
+    }
+	
+	if(opts.yAxis.gridType=='dash'){
+		context.setLineDash([opts.yAxis.dashLength]);
+	}
     context.beginPath();
     context.setStrokeStyle(opts.yAxis.gridColor || "#cccccc");
-	//context.setLineDash([20]);
+	
     context.setLineWidth(1*opts.pixelRatio);
     points.forEach(function (item, index) {
         context.moveTo(startX, item);
@@ -1587,7 +1604,9 @@ function drawYAxisGrid(opts, config, context) {
     });
     context.closePath();
     context.stroke();
-	//context.setLineDash([]);
+	context.setLineDash([]);
+	
+	context.restore();
 }
 
 function drawYAxis(series, opts, config, context) {
@@ -2195,7 +2214,7 @@ function drawCharts(type, opts, config, context) {
 						context.translate(opts.height, 0);
 						context.rotate(90 * Math.PI / 180);
 					}
-                    drawYAxisGrid(opts, config, context);
+                    drawYAxisGrid(categories,opts, config, context);
                     var _drawLineDataPoints = drawLineDataPoints(series, opts, config, context, process),
                         xAxisPoints = _drawLineDataPoints.xAxisPoints,
                         calPoints = _drawLineDataPoints.calPoints,
@@ -2225,7 +2244,7 @@ function drawCharts(type, opts, config, context) {
                     	context.translate(opts.height, 0);
                     	context.rotate(90 * Math.PI / 180);
                     }
-					drawYAxisGrid(opts, config, context);
+					drawYAxisGrid(categories,opts, config, context);
                     var _drawColumnDataPoints = drawColumnDataPoints(series, opts, config, context, process),
                         xAxisPoints = _drawColumnDataPoints.xAxisPoints,
                         eachSpacing = _drawColumnDataPoints.eachSpacing;
@@ -2251,7 +2270,7 @@ function drawCharts(type, opts, config, context) {
                     	context.translate(opts.height, 0);
                     	context.rotate(90 * Math.PI / 180);
                     }
-					drawYAxisGrid(opts, config, context);
+					drawYAxisGrid(categories,opts, config, context);
                     var _drawAreaDataPoints = drawAreaDataPoints(series, opts, config, context, process),
                         xAxisPoints = _drawAreaDataPoints.xAxisPoints,
                         calPoints = _drawAreaDataPoints.calPoints,
@@ -2379,7 +2398,12 @@ var Charts = function Charts(opts) {
     opts.title = opts.title || {};
     opts.subtitle = opts.subtitle || {};
     opts.yAxis = opts.yAxis || {};
+	opts.yAxis.gridType=opts.yAxis.gridType? opts.yAxis.gridType : 'solid';
+	opts.yAxis.dashLength=opts.yAxis.dashLength? opts.yAxis.dashLength : 4*opts.pixelRatio;
     opts.xAxis = opts.xAxis || {};
+	opts.xAxis.type=opts.xAxis.type? opts.xAxis.type : 'calibration';
+	opts.xAxis.gridType=opts.xAxis.gridType? opts.xAxis.gridType : 'solid';
+	opts.xAxis.dashLength=opts.xAxis.dashLength? opts.xAxis.dashLength : 4*opts.pixelRatio;
 	opts.xAxis.itemCount = opts.xAxis.itemCount ? opts.xAxis.itemCount : 5;
     opts.extra = opts.extra || {};
     opts.legend = opts.legend === false ? false : true;
@@ -2389,7 +2413,7 @@ var Charts = function Charts(opts) {
     config$$1.yAxisTitleWidth = opts.yAxis.disabled !== true && opts.yAxis.title ? config$$1.yAxisTitleWidth : 0;
     config$$1.pieChartLinePadding = opts.dataLabel === false ? 0 : config$$1.pieChartLinePadding*opts.pixelRatio;
     config$$1.pieChartTextPadding = opts.dataLabel === false ? 0 : config$$1.pieChartTextPadding*opts.pixelRatio;
-	
+	config$$1.yAxisSplit = opts.yAxis.splitNumber? opts.yAxis.splitNumber : config.yAxisSplit;
 	//屏幕旋转
 	config$$1.rotate=opts.rotate;
 	if(opts.rotate){

@@ -5,12 +5,14 @@
 
 ## 新增`仪表盘`图，图表类型`gauge`，可以高度自定义，参数请参考demo。
 ## 原`圆弧进度条`的图表类型变更为`arcbar`,新增起始、结束角度自定义，新增背景颜色自定义，新增`整圆进度图`，参数请参考demo。
+## 完善X轴Y轴网格设置，增加X轴网格设置，增加XY轴`虚线网格`绘制,`gridType`网格线型 'solid'为实线、'dash'为虚线。
 
 ## 更新记录
 - [ ] 2019.05.xx 计划加入柱状图、饼图、环形图、雷达图等`ToolTip`事件
 - [ ] 2019.05.xx 计划加入`堆叠图`、`条状图`、`K线图`、`分时图`
 - [ ] 2019.05.xx 计划完善X轴Y轴网格设置，增加X轴网格设置，增加XY轴`虚线网格`绘制。
-- [ ] 2019.05.08 计划加入`第二种仪表盘样式`，
+- [ ] 2019.05.08 计划加入`第二种仪表盘样式`,增加《亲手教您如何改造wx-charts，打造您的专属图表》教程。
+- [x] 2019.05.06 完善X轴Y轴网格设置，增加X轴网格设置，增加XY轴`虚线网格`绘制,`gridType`网格线型 'solid'为实线、'dash'为虚线。整理并归类帮助文档。
 - [x] 2019.05.05 完善`圆弧进度图`增加起始结束角度自定义，新增背景颜色自定义，新增`整圆进度图`，参数请参考demo。
 - [x] 2019.05.04 完善`仪表盘`更新数据时`指针切换动画`，增加`仪表盘数据标签`。
 - [x] 2019.05.01 新增`仪表盘`图，图表类型`gauge`，可以高度自定义，参数请参考demo。注意原`圆弧进度条`的图表类型变更为`arcbar`,给您带来不便请谅解
@@ -55,11 +57,13 @@
 - 图表样式均可自定义，懂js的都可以读懂插件源码，直接修改wxcharts.js源码即可。
 - 本插件原为我公司产品所用，经过大量测试，反复论证并加以改造而成，请各位放心使用。
 
-## 亲手教您如何改造wx-charts
-为何要改造wx-charts?
-并不是所有图表插件直接拿来就可以满足客户需求，如果您的UI设计师设计一个图表，如下图:
+## 亲手教您如何改造wx-charts，打造您的专属图表
+- 为何要改造wx-charts?
+- 并不是所有图表插件直接拿来就可以满足客户需求，如果您的UI设计师设计一个图表，如下图:
+
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/example.gif?raw=true)
-您会发现这个图表即使在echarts里也不是很好实现，那么就需要我们自己动手去实现。下面就让我们一起来完成，本文旨在抛砖引玉，希望各位朋友能够更好的应用wx-charts来完成您的项目，如果您有更好的设计，请提交您的PR到github[uni-wx-charts跨端图表](https://github.com/16cheng/uni-wx-charts)，帮助更多朋友，感谢您的付出及贡献！
+
+- 您会发现这个图表即使在echarts里也不是很好实现，那么就需要我们自己动手去实现。下面就让我们一起来完成，本文旨在抛砖引玉，希望各位朋友能够更好的应用wx-charts来完成您的项目，如果您有更好的设计，请提交您的PR到github[uni-wx-charts跨端图表](https://github.com/16cheng/uni-wx-charts)，帮助更多朋友，感谢您的付出及贡献！
 
 ## [wx-charts跨端图表改造教程（暂未完成，请关注）](https://github.com/16cheng/uni-wx-charts/wiki/%E4%BA%B2%E6%89%8B%E6%95%99%E6%82%A8%E5%A6%82%E4%BD%95%E6%94%B9%E9%80%A0wx-charts)
 
@@ -198,36 +202,67 @@
 
 ## 参数说明
 
+
+###通用基础配置项
+
 | 属性 | 类型 | 默认 |说明|
-| :------ | :-----: | :-----: | :------------ |
+| :------ | :-----: | :-----: | :-------------------- |
 |opts |Object| | |
 |opts.canvasId | String|required|微信小程序canvas-id|
 |opts.width |Number |required| canvas宽度，单位为px`H5端高分屏需要乘像素比`|
 |opts.height| Number| required |canvas高度，单位为px`H5端高分屏需要乘像素比`|
-|`opts.pixelRatio`| Number| required |`新增参数，像素比，默认为1，非H5端引用无需设置`|
-|`opts.rotate`| Boolean| 默认false |`新增参数，横屏模式，默认为false`|
-|`opts.fontSize`| Number | 默认13px |`新增参数，全局默认字体大小（可选，单位为px，默认13px）高分屏不必乘像素比，自动根据pixelRatio计算`|
+|opts.type|String |required| 图表类型，可选值为pie, line, column, area, ring, radar, arcbar, gauge|
+|opts.pixelRatio| Number| required |像素比，默认为1，非H5端引用无需设置|
+|opts.rotate| Boolean| 默认false |横屏模式，默认为false|
+|opts.fontSize| Number | 默认13px |全局默认字体大小（可选，单位为px，默认13px）高分屏不必乘像素比，自动根据pixelRatio计算|
 |opts.background| String | |canvas背景颜色（如果页面背景颜色不是白色请设置为页面的背景颜色，默认#ffffff）|
-|opts.enableScroll |Boolean | |是否开启图表可拖拽滚动 默认false 支持line, area，`新增支持column`图表类型(需配合绑定@touchstart, @touchmove,  @touchend方法)|
-|opts.title| Object| | (only for ring chart)|
+|opts.enableScroll |Boolean | |是否开启图表可拖拽滚动 默认false 支持line, area, column图表类型(需配合绑定@touchstart, @touchmove,  @touchend方法)|
+|opts.animation| Boolean |默认为 true |是否动画展示|
+|opts.legend| Boolen |默认为 true| 图例设置，是否显示图表下方各类别的标识|
+|opts.dataLabel| Boolean |默认为 true |是否在图表中显示数据标签内容值|
+|opts.dataPointShape| Boolean |默认为 true| 是否在图表中显示数据点图形标识|
+|opts.disablePieStroke |Boolean |默认为 false| 不绘制饼图（圆环图）各区块的白色分割线|
+
+
+
+###数据列表每项结构定义
+
+| 属性 | 类型 | 默认 |说明|
+| :------ | :-----: | :-----: | :-------------------- |
+|opts.categories| Array| required |数据类别(饼图、圆环图不需要) |
+|`opts.categories.value`| Number|  |`新增参数，仅仪表盘有效，定义仪表盘分段值`|
+|`opts.categories.color`| String|  |`新增参数，仅仪表盘有效，定义仪表盘分段背景颜色`|
+|opts.series |Array |required |数据列表|
+|opts.series.data| Array |required |(饼图、圆环图为Number) 数据，如果传入null图表该处出现断点|
+| `opts.series.data.value` | Number | |`新增参数，仅针对柱状图有效，主要作用为柱状图自定义颜色`|
+| `opts.series.data.color` | String | |`新增参数，仅针对柱状图有效，主要作用为柱状图自定义颜色`|
+|opts.series.color |String | |例如#7cb5ec 不传入则使用系统默认配色方案|
+|opts.series.name |String | |数据名称|
+|opts.series.format| Function| | 自定义显示数据内容|
+
+
+###标题配置项（适用于ring、arcbar、gauge）
+
+| 属性 | 类型 | 默认 |说明|
+| :------ | :-----: | :-----: | :-------------------- |
+|opts.title| Object| | 适用于`ring`、`arcbar`、`gauge`|
 |opts.title.name| String | |标题内容|
 |opts.title.fontSize| Number |  |标题字体大小（可选，单位为px）|
 |opts.title.color| String| | 标题颜色（可选）|
 |opts.title.offsetX |Number| 默认0px | 标题横向位置偏移量，单位px，默认0|
-|`opts.title.offsetY` |Number| 默认0px | `新增参数，标题纵向位置偏移量，单位px，默认0`|
-|opts.subtitle| Object| | (only for ring chart)|
+|opts.title.offsetY |Number| 默认0px | 标题纵向位置偏移量，单位px，默认0|
+|opts.subtitle| Object| | 适用于`ring`、`arcbar`、`gauge`|
 |opts.subtitle.name| String| | 副标题内容|
 |opts.subtitle.offsetX| Number| 默认0px | 副标题横向位置偏移量，单位px，默认0|
-|`opts.subtitle.offsetY`| Number| 默认0px | `新增参数，副标题横向位置偏移量，单位px，默认0`|
+|opts.subtitle.offsetY| Number| 默认0px | 副标题横向位置偏移量，单位px，默认0|
 |opts.subtitle.fontSize| Number| | 副标题字体大小（可选，单位为px）|
 |opts.subtitle.color| String| | 副标题颜色（可选）|
-|opts.animation| Boolean |默认为 true |是否动画展示|
-|opts.legend| Boolen |默认为 true| 是否显示图表下方各类别的标识|
-|opts.type|String |required| 图表类型，可选值为pie, line, column, area, ring, radar, 新增`arcbar`、`gauge`|
-|opts.categories| Array| required |(饼图、圆环图不需要) 数据类别分类|
-|opts.dataLabel| Boolean |默认为 true |是否在图表中显示数据内容值|
-|opts.dataPointShape| Boolean |默认为 true| 是否在图表中显示数据点图形标识|
-|opts.disablePieStroke |Boolean |默认为 false| 不绘制饼图（圆环图）各区块的白色分割线|
+
+
+###坐标轴配置项
+
+| 属性 | 类型 | 默认 |说明|
+| :------ | :-----: | :-----: | :-------------------- |
 |opts.xAxis |Object | |X轴配置|
 |`opts.xAxis.itemCount`| Number| 默认为 5 | `新增参数，X轴可见区域刻度数量（即X轴数据密度），配合拖拽滚动使用（即仅在启用enableScroll时有效）`|
 |`opts.xAxis.scrollShow`| Boolean| 默认为 false | `新增参数，是否显示滚动条，配合拖拽滚动使用（即仅在启用enableScroll时有效）`|
@@ -236,70 +271,84 @@
 |opts.xAxis.gridColor| String| 默认为 #cccccc | X轴网格颜色 例如#7cb5ec|
 |opts.xAxis.fontColor| String| 默认为 #666666 | X轴数据点颜色 例如#7cb5ec|
 |opts.xAxis.disableGrid |Boolean| 默认为 false| 不绘制X轴网格|
-|opts.xAxis.type |String | |可选值calibration(刻度) 默认为包含样式|
+|`opts.xAxis.type` |String | 默认为calibration |`X轴网格样式，可选值calibration（刻度）、grid（网格） 默认为包含样式`|
+|`opts.xAxis.gridType` |String | 默认为 solid| `X轴网格线型 'solid'为实线、'dash'为虚线`|
+|`opts.xAxis.dashLength` |Number | 默认为 4px | `X轴网格为虚线时，单段虚线长度`  |
 |opts.yAxis |Object | |Y轴配置|
 |opts.yAxis.format |Function| | 自定义Y轴文案显示|
 |opts.yAxis.min| Number| | Y轴起始值|
 |opts.yAxis.max| Number | |Y轴终止值|
 |opts.yAxis.title| String | |Y轴title|
-|opts.yAxis.gridColor |String | 默认为 #cccccc| Y轴网格颜色 例如#7cb5ec |
+|`opts.yAxis.splitNumber` |Number | 默认5 |`Y轴网格数量`|
+|`opts.yAxis.gridType` |String | 默认为 solid| `Y轴网格线型 'solid'为实线、'dash'为虚线`|
+|`opts.yAxis.dashLength` |Number | 默认为 4px | `Y轴网格为虚线时，单段虚线长度`  |
+|opts.yAxis.gridColor |String | 默认为 solid | Y轴网格颜色 'solid'为实线、''为虚线 |
 |opts.yAxis.fontColor| String | 默认为 #666666 | Y轴数据点颜色 例如#7cb5ec|
 |opts.yAxis.titleFontColor |String | 默认为 #333333 | Y轴title颜色 例如#7cb5ec|
 |opts.yAxis.disabled |Boolean |默认为 false| 不绘制Y轴|
 
-###其他非通用配置项
+
+###扩展配置项（圆弧进度条）
 
 | 属性 | 类型 | 默认 |说明|
 | :------ | :-----: | :-----: | :------------ |
 |opts.extra| Object| |其他非通用配置项|
-|opts.extra.ringWidth| Number | |ringChart圆环宽度，单位为px|
-|`opts.extra.arcbar`| Number | 默认12px |`新增参数，圆弧进度图相关配置`|
-|`opts.extra.arcbar.type`| String | 默认default |`新增参数，圆弧进度图样式，default为半圆弧，circle为整圆`|
-|`opts.extra.arcbar.width`| Number | 默认12px |`新增参数，圆弧进度图弧线宽度，单位为px`|
-|`opts.extra.arcbar.backgroundColor`| String | 默认#E9E9E9 |`新增参数，圆弧进度图背景颜色`|
-|`opts.extra.arcbar.startAngle`| Number | 默认0.75 |`新增参数，圆弧进度图起始角度，0-2之间，0为3点钟位置，0.5为6点钟，1为9点钟，1.5为12点钟`|
-|`opts.extra.arcbar.endAngle`| Number | 默认0.25 |`新增参数，圆弧进度图结束角度，0-2之间，0为3点钟位置，0.5为6点钟，1为9点钟，1.5为12点钟`|
-|`opts.extra.gauge`| Object | |`新增参数，仪表盘相关配置`|
-|`opts.extra.gauge.type`| String | 默认default |`新增参数，仪表盘样式，default为百度样式，其他样式开发中`|
-|`opts.extra.gauge.width`| Number | 默认15px |`新增参数，仪表盘坐标轴（指示盘）线宽度，单位为px`|
-|`opts.extra.gauge.labelColor`| String | 默认#666666|`新增参数，仪表盘刻度尺标签文字颜色`|
-|`opts.extra.gauge.startAngle`| Number | 默认0.75 |`新增参数，仪表盘起始角度，0-2之间，0为3点钟位置，0.5为6点钟，1为9点钟，1.5为12点钟`|
-|`opts.extra.gauge.endAngle`| Number | 默认0.25 |`新增参数，仪表盘结束角度，0-2之间，0为3点钟位置，0.5为6点钟，1为9点钟，1.5为12点钟`|
-|`opts.extra.gauge.startNumber`| Number | 默认0 |`新增参数，仪表盘起始数值`|
-|`opts.extra.gauge.endNumber`| Number | 默认100 |`新增参数，仪表盘结束数值`|
-|`opts.extra.gauge.splitLine`| Object | |`新增参数，仪表盘刻度线配置`|
-|`opts.extra.gauge.splitLine.fixRadius`| Number | 默认0 |`新增参数，仪表盘刻度线径向偏移量`|
-|`opts.extra.gauge.splitLine.splitNumber`| Number | 默认10 |`新增参数，仪表盘刻度线分段总数量`|
-|`opts.extra.gauge.splitLine.width`| Number | 默认15px |`新增参数，仪表盘分割线长度`|
-|`opts.extra.gauge.splitLine.color`| String | 默认#FFFFFF |`新增参数，仪表盘分割线颜色`|
-|`opts.extra.gauge.splitLine.childNumber`| Number | 默认5 |`新增参数，仪表盘子刻度线数量`|
-|`opts.extra.gauge.splitLine.childWidth`| Number | 默认5px |`新增参数，仪表盘子刻度线长度`|
-|`opts.extra.gauge.pointer`| Object | |`新增参数，仪表盘指针配置`|
-|`opts.extra.gauge.pointer.width`| Number | 默认15px |`新增参数，仪表盘指针宽度`|
-|`opts.extra.gauge.pointer.color`| String | 默认auto |`新增参数，仪表盘指针颜色，定义为auto时，随仪表盘背景颜色改变`|
-|opts.extra.lineStyle| String| straight | (仅对line, area图表有效) 可选值：curve曲线，straight直线 (default)|
-|opts.extra.column| Object | |柱状图相关配置|
-|opts.extra.column.width |Number| | 柱状图每项的图形宽度，单位为px|
-|opts.extra.legendTextColor |String | 默认为 #cccccc | legend文案颜色 例如#7cb5ec|
+|opts.extra.arcbar| Number | 默认12px |圆弧进度图相关配置|
+|opts.extra.arcbar.type| String | 默认default |圆弧进度图样式，default为半圆弧，circle为整圆|
+|opts.extra.arcbar.width| Number | 默认12px |圆弧进度图弧线宽度，单位为px|
+|opts.extra.arcbar.backgroundColor| String | 默认#E9E9E9 |圆弧进度图背景颜色|
+|opts.extra.arcbar.startAngle| Number | 默认0.75 |圆弧进度图起始角度，0-2之间，0为3点钟位置，0.5为6点钟，1为9点钟，1.5为12点钟|
+|opts.extra.arcbar.endAngle| Number | 默认0.25 |圆弧进度图结束角度，0-2之间，0为3点钟位置，0.5为6点钟，1为9点钟，1.5为12点钟|
+
+
+###扩展配置项（仪表盘）
+
+| 属性 | 类型 | 默认 |说明|
+| :------ | :-----: | :-----: | :------------ |
+|opts.extra.gauge| Object | |仪表盘相关配置|
+|opts.extra.gauge.type| String | 默认default |仪表盘样式，default为百度样式，`其他样式开发中`|
+|opts.extra.gauge.width| Number | 默认15px |仪表盘坐标轴（指示盘）线宽度，单位为px|
+|opts.extra.gauge.labelColor| String | 默认#666666|仪表盘刻度尺标签文字颜色|
+|opts.extra.gauge.startAngle| Number | 默认0.75 |仪表盘起始角度，0-2之间，0为3点钟位置，0.5为6点钟，1为9点钟，1.5为12点钟|
+|opts.extra.gauge.endAngle| Number | 默认0.25 |仪表盘结束角度，0-2之间，0为3点钟位置，0.5为6点钟，1为9点钟，1.5为12点钟|
+|opts.extra.gauge.startNumber| Number | 默认0 |仪表盘起始数值|
+|opts.extra.gauge.endNumber| Number | 默认100 |仪表盘结束数值|
+|opts.extra.gauge.splitLine| Object | |仪表盘刻度线配置|
+|opts.extra.gauge.splitLine.fixRadius| Number | 默认0 |仪表盘刻度线径向偏移量|
+|opts.extra.gauge.splitLine.splitNumber| Number | 默认10 |仪表盘刻度线分段总数量|
+|opts.extra.gauge.splitLine.width| Number | 默认15px |仪表盘分割线长度|
+|opts.extra.gauge.splitLine.color| String | 默认#FFFFFF |仪表盘分割线颜色|
+|opts.extra.gauge.splitLine.childNumber| Number | 默认5 |仪表盘子刻度线数量|
+|opts.extra.gauge.splitLine.childWidth| Number | 默认5px |仪表盘子刻度线长度|
+|opts.extra.gauge.pointer| Object | |仪表盘指针配置|
+|opts.extra.gauge.pointer.width| Number | 默认15px |仪表盘指针宽度|
+|opts.extra.gauge.pointer.color| String | 默认auto |仪表盘指针颜色，定义为auto时，随仪表盘背景颜色改变,或者可以指定颜色例如'#7cb5ec'|
+
+
+###扩展配置项（雷达图）
+
+| 属性 | 类型 | 默认 |说明|
+| :------ | :-----: | :-----: | :------------ |
 |opts.extra.radar| Object | |雷达图相关配置|
 |opts.extra.radar.max| Number|默认为 series |data的最大值，数据区间最大值，用于调整数据显示的比例|
 |opts.extra.radar.labelColor |String|默认为 #666666|各项标识文案的颜色|
 |opts.extra.radar.gridColor |String| 默认为 #cccccc| 雷达图网格颜色|
-|opts.extra.pie| Object| | 饼图、圆环图相关配置|
-|opts.extra.pie.offsetAngle| Number| 默认为0| 起始角度偏移度数，顺时针方向，起点为3点钟位置（比如要设置起点为12点钟位置，即逆时针偏移90度，传入-90即可）|
-|opts.series |Array |required |数据列表|
 
-###数据列表每项结构定义
+
+###扩展配置项（其他）
 
 | 属性 | 类型 | 默认 |说明|
 | :------ | :-----: | :-----: | :------------ |
-|dataItem|  Object| | |
-|dataItem.data| Array |required |(饼图、圆环图为Number) 数据，如果传入null图表该处出现断点|
-| `dataItem.data.value` | Number | |`新增参数，仅针对柱状图有效，主要作用为柱状图自定义颜色`|
-| `dataItem.data.color` | String | |`新增参数，仅针对柱状图有效，主要作用为柱状图自定义颜色`|
-|dataItem.color |String | |例如#7cb5ec 不传入则使用系统默认配色方案|
-|dataItem.name |String | |数据名称|
-|dateItem.format| Function| | 自定义显示数据内容|
+|`opts.extra.legendTextColor` |String | 默认为 #cccccc | `图例文案颜色 例如#7cb5ec`|
+|opts.extra.lineStyle| String| straight | (仅对line, area图表有效) 可选值：curve曲线，straight直线 (default)|
+|opts.extra.column| Object | |柱状图相关配置|
+|opts.extra.column.width |Number| | 柱状图每项的图形宽度，单位为px|
+|opts.extra.ringWidth| Number | |ringChart圆环宽度，单位为px|
+|opts.extra.pie| Object| | 饼图、圆环图相关配置|
+|opts.extra.pie.offsetAngle| Number| 默认为0| 起始角度偏移度数，顺时针方向，起点为3点钟位置（比如要设置起点为12点钟位置，即逆时针偏移90度，传入-90即可）|
+
+
+
 
 ## 方法 & 事件
 
