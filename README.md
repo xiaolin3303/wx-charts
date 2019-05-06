@@ -10,7 +10,6 @@
 ## 更新记录
 - [ ] 2019.05.xx 计划加入柱状图、饼图、环形图、雷达图等`ToolTip`事件
 - [ ] 2019.05.xx 计划加入`堆叠图`、`条状图`、`K线图`、`分时图`
-- [ ] 2019.05.xx 计划完善X轴Y轴网格设置，增加X轴网格设置，增加XY轴`虚线网格`绘制。
 - [ ] 2019.05.08 计划加入`第二种仪表盘样式`,增加《亲手教您如何改造wx-charts，打造您的专属图表》教程。
 - [x] 2019.05.06 完善X轴Y轴网格设置，增加X轴网格设置，增加XY轴`虚线网格`绘制,`gridType`网格线型 'solid'为实线、'dash'为虚线。整理并归类帮助文档。
 - [x] 2019.05.05 完善`圆弧进度图`增加起始结束角度自定义，新增背景颜色自定义，新增`整圆进度图`，参数请参考demo。
@@ -75,6 +74,7 @@
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/column2.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/lineA.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/lineA-scroll.gif?raw=true)
+![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/dashLine.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/area.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/pie.gif?raw=true)
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/ring.gif?raw=true)
