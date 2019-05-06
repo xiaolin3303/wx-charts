@@ -319,7 +319,10 @@
 					yAxis: {
 						//disabled:true
 						gridType:'dash',
-						
+						splitNumber:8,
+						min:0,
+						max:180,
+						format:(val)=>{return val.toFixed(0)+'元'}//如不写此方法，Y轴刻度默认保留两位小数
 					},
 					width: _self.cWidth*_self.pixelRatio,
 					height: _self.cHeight*_self.pixelRatio,
