@@ -269,6 +269,7 @@
 			},
 			showColumn(canvasId,chartData){
 				canvaColumn=new wxCharts({
+					$this:_self,
 					canvasId: canvasId,
 					type: 'column',
 					legend:true,
@@ -297,6 +298,7 @@
 			},
 			showLineA(canvasId,chartData){
 				canvaLineA=new wxCharts({
+					$this:_self,
 					canvasId: canvasId,
 					type: 'line',
 					fontSize:11,
@@ -336,6 +338,7 @@
 			},
 			showLineB(canvasId,chartData){
 				canvaLineB=new wxCharts({
+					$this:_self,
 					canvasId: canvasId,
 					type: 'line',
 					fontSize:11,
@@ -363,6 +366,7 @@
 			},
 			showArea(canvasId,chartData){
 				canvaArea=new wxCharts({
+					$this:_self,
 					canvasId: canvasId,
 					type: 'area',
 					fontSize:11,
@@ -386,6 +390,7 @@
 			},
 			showPie(canvasId,chartData){
 				new wxCharts({
+					$this:_self,
 					canvasId: canvasId,
 					type: 'pie',
 					fontSize:11,
@@ -401,6 +406,7 @@
 			},
 			showRing(canvasId,chartData){
 				new wxCharts({
+					$this:_self,
 					canvasId: canvasId,
 					type: 'ring',
 					fontSize:11,
@@ -436,6 +442,7 @@
 			},
 			showRadar(canvasId,chartData){
 				new wxCharts({
+					$this:_self,
 					canvasId: canvasId,
 					type: 'radar',
 					fontSize:11,
@@ -457,6 +464,7 @@
 			},
 			showArcbar(canvasId,chartData){
 				new wxCharts({
+					$this:_self,
 					canvasId: canvasId,
 					type: 'arcbar',
 					fontSize:11,
@@ -489,6 +497,7 @@
 			},
 			showArcbar2(canvasId,chartData){
 				new wxCharts({
+					$this:_self,
 					canvasId: canvasId,
 					type: 'arcbar',
 					fontSize:11,
@@ -524,6 +533,7 @@
 			},
 			showArcbar3(canvasId,chartData){
 				new wxCharts({
+					$this:_self,
 					canvasId: canvasId,
 					type: 'arcbar',
 					fontSize:11,
@@ -557,6 +567,7 @@
 			},
 			showGauge(canvasId,chartData){
 				canvaGauge = new wxCharts({
+					$this:_self,
 					canvasId: canvasId,
 					type: 'gauge',
 					fontSize:11,
