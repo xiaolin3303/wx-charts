@@ -3,11 +3,18 @@
 
 # `【开源不易、改造不易、哪(拿)来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请先参见页面最后章节【常见问题】解决，如没有您的问题，请在页面最下面【撰写评论】，尽量不要在【问答】中提问（因有可能会漏掉您的问题）。`
 
+## 快速体验
+
+一套代码编到7个平台(IOS因demo比较简单无法上架，请自行编译)，依次扫描二维码，亲自体验wx-charts图表跨平台效果！
+
+![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/qrcode.png?raw=true)
+
+
 ## 初步解决`组件内使用问题`，感谢`342805357@qq.com`提出组件问题解决方案，增加`opts.$this`参数，组件使用时实例化前请传递this。后续会增加组件使用示例，请关注。
 ## 完善X轴Y轴网格设置，增加X轴网格设置，增加XY轴`虚线网格`绘制,`gridType`网格线型 'solid'为实线、'dash'为虚线。增加Y轴`format格式化刻度`示例(Y轴刻度数值取整)，增加Y轴`网格数量`示例，详见demo折线图一。
 ## `因很多朋友急需K线图，故计划先开发K线图，推迟其他计划，请谅解。`
 
-![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/qrcode.gif?raw=true)
+
 
 ## 更新记录
 - [ ] 2019.05.xx 计划太多~~~~轮子不好造啊~~~~
