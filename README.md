@@ -5,12 +5,17 @@
 
 ## 初步解决`组件内使用问题`，感谢`342805357@qq.com`提出组件问题解决方案，增加`opts.$this`参数，组件使用时实例化前请传递this。后续会增加组件使用示例，请关注。
 ## 完善X轴Y轴网格设置，增加X轴网格设置，增加XY轴`虚线网格`绘制,`gridType`网格线型 'solid'为实线、'dash'为虚线。增加Y轴`format格式化刻度`示例(Y轴刻度数值取整)，增加Y轴`网格数量`示例，详见demo折线图一。
+## `因很多朋友急需K线图，故计划先开发K线图，推迟其他计划，请谅解。`
+
 
 ## 更新记录
+- [ ] 2019.05.xx 计划太多~~~~轮子不好造啊~~~~
 - [ ] 2019.05.xx 计划加入柱状图、饼图、环形图、雷达图等`ToolTip`事件
 - [ ] 2019.05.xx 计划加入`组件内使用示例`
-- [ ] 2019.05.xx 计划加入`堆叠图`、`条状图`、`K线图`、`分时图`
-- [ ] 2019.05.09 计划加入`第二种仪表盘样式`,增加[《亲手教您如何改造wx-charts，打造您的专属图表》](https://github.com/16cheng/uni-wx-charts/wiki/%E4%BA%B2%E6%89%8B%E6%95%99%E6%82%A8%E5%A6%82%E4%BD%95%E6%94%B9%E9%80%A0wx-charts)教程。
+- [ ] 2019.05.xx 计划加入`堆叠图`、`条状图`、`分时图`
+- [ ] 2019.05.xx 计划加入`渐变颜色填充`功能
+- [ ] 2019.05.xx 推迟计划加入`第二种仪表盘样式`,增加[《亲手教您如何改造wx-charts，打造您的专属图表》](https://github.com/16cheng/uni-wx-charts/wiki/%E4%BA%B2%E6%89%8B%E6%95%99%E6%82%A8%E5%A6%82%E4%BD%95%E6%94%B9%E9%80%A0wx-charts)教程。
+- [ ] 2019.05.13 因很多朋友急需`K线图`，故计划先开发K线图，推迟其他计划，请谅解。
 - [x] 2019.05.07 初步解决`组件内使用问题`，感谢`342805357@qq.com`提出组件问题解决方案，增加`opts.$this`参数，组件使用时实例化前请传递this。后续会增加组件使用实例，请关注。
 - [x] 2019.05.06 增加Y轴`format格式化刻度`示例(Y轴刻度数值取整)，增加Y轴`网格数量`示例，详见demo折线图一。
 - [x] 2019.05.06 完善X轴Y轴网格设置，增加X轴网格设置，增加XY轴`虚线网格`绘制,`gridType`网格线型 'solid'为实线、'dash'为虚线。整理并归类帮助文档。
@@ -42,6 +47,9 @@
 - 雷达图 `radar`
 - 圆弧进度图 `arcbar`
 - 仪表盘 `gauge`
+- K线图  `candle`(开发中)
+- 条状图 `bar`(开发中)
+
 
 ## 插件特点
 - 改造后的插件可以跨端使用，支持H5、小程序（微信/支付宝/百度/头条）、APP，调用简单方便、性能及体验极佳。
@@ -58,7 +66,7 @@
 - 图表样式均可自定义，懂js的都可以读懂插件源码，直接修改wxcharts.js源码即可。
 - 本插件原为我公司产品所用，经过大量测试，反复论证并加以改造而成，请各位放心使用。
 
-## uni-app图表选型参考图
+## uni-app图表选型参考流程
 
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/xuanxing.png?raw=true)
 
@@ -90,7 +98,7 @@
 ## 引用方法
 `import wxCharts from '../../components/wx-charts/wxcharts.js';`
 
-## &lt; template &gt; 模板
+## &lt; template &gt; 模板（其它图表请参考demo中vue文件）
 ```html
 <template>
 	<view>
@@ -107,7 +115,7 @@
 ```
 > 通过cWidth、cHeight、pixelRatio三个参数解决H5端canvas组件在高分屏下模糊的问题
 
-## &lt; script &gt;模板
+## &lt; script &gt;模板（其它图表请参考demo中vue文件）
 ```javascript
 <script>
 	import wxCharts from '../../components/wx-charts/wxcharts.js';
@@ -121,7 +129,7 @@
 				pixelRatio:1
 			}
 		},
-		onLoad() {
+		“on Load”:()=>{//复制这里代码请去掉双引号及空格，官方有过滤只能这么写
 			_self = this;
 			//#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO
 			uni.getSystemInfo({
@@ -137,8 +145,6 @@
 			this.cWidth=uni.upx2px(750);
 			this.cHeight=uni.upx2px(500);
 			this.getServerData();
-		},
-		onReady() {
 		},
 		methods: {
 			getServerData(){
@@ -216,9 +222,9 @@
 |opts |Object| | |
 |`opts.$this` | Object |required|this实例`组件内使用图表，必须传入this实例`|
 |opts.canvasId | String|required|页面组件canvas-id|
-|opts.width |Number |required| canvas宽度，单位为px`H5端高分屏需要乘像素比`|
-|opts.height| Number| required |canvas高度，单位为px`H5端高分屏需要乘像素比`|
-|opts.type|String |required| 图表类型，可选值为pie, line, column, area, ring, radar, arcbar, gauge|
+|opts.width |Number |required| canvas宽度，单位为px`H5、支付宝、百度、头条，高分屏需要乘像素比`|
+|opts.height| Number| required |canvas高度，单位为px`H5、支付宝、百度、头条，高分屏需要乘像素比`|
+|opts.type|String |required| 图表类型，可选值为pie, line, column, area, ring, radar, arcbar, gauge, `K线图candle条状图bar开发中`|
 |opts.pixelRatio| Number| required |像素比，默认为1，非H5端引用无需设置|
 |opts.rotate| Boolean| 默认false |横屏模式，默认为false|
 |opts.fontSize| Number | 默认13px |全局默认字体大小（可选，单位为px，默认13px）高分屏不必乘像素比，自动根据pixelRatio计算|
@@ -228,8 +234,7 @@
 |opts.legend| Boolen |默认为 true| 图例设置，是否显示图表下方各类别的标识|
 |opts.dataLabel| Boolean |默认为 true |是否在图表中显示数据标签内容值|
 |opts.dataPointShape| Boolean |默认为 true| 是否在图表中显示数据点图形标识|
-|opts.disablePieStroke |Boolean |默认为 false| 不绘制饼图（圆环图）各区块的白色分割线|
-
+|opts.disablePieStroke |Boolean |默认为 false| 不绘制饼图（圆环图）各区块的白色分割线`即将迁移至扩展配置中`|
 
 
 ### 数据列表每项结构定义
@@ -237,12 +242,12 @@
 | 属性 | 类型 | 默认 |说明|
 | :------ | :-----: | :-----: | :-------------------- |
 |opts.categories| Array| required |数据类别(饼图、圆环图不需要) |
-|`opts.categories.value`| Number|  |`新增参数，仅仪表盘有效，定义仪表盘分段值`|
-|`opts.categories.color`| String|  |`新增参数，仅仪表盘有效，定义仪表盘分段背景颜色`|
+|`opts.categories.value`| Number|  |`仅仪表盘有效，定义仪表盘分段值`|
+|`opts.categories.color`| String|  |`仅仪表盘有效，定义仪表盘分段背景颜色`|
 |opts.series |Array |required |数据列表|
 |opts.series.data| Array |required |(饼图、圆环图为Number) 数据，如果传入null图表该处出现断点|
-| `opts.series.data.value` | Number | |`新增参数，仅针对柱状图有效，主要作用为柱状图自定义颜色`|
-| `opts.series.data.color` | String | |`新增参数，仅针对柱状图有效，主要作用为柱状图自定义颜色`|
+| `opts.series.data.value` | Number | |`仅针对柱状图有效，主要作用为柱状图自定义颜色`|
+| `opts.series.data.color` | String | |`仅针对柱状图有效，主要作用为柱状图自定义颜色`|
 |opts.series.color |String | |例如#7cb5ec 不传入则使用系统默认配色方案|
 |opts.series.name |String | |数据名称|
 |opts.series.format| Function| | 自定义显示数据内容|
@@ -271,10 +276,10 @@
 | 属性 | 类型 | 默认 |说明|
 | :------ | :-----: | :-----: | :-------------------- |
 |opts.xAxis |Object | |X轴配置|
-|`opts.xAxis.itemCount`| Number| 默认为 5 | `新增参数，X轴可见区域刻度数量（即X轴数据密度），配合拖拽滚动使用（即仅在启用enableScroll时有效）`|
-|`opts.xAxis.scrollShow`| Boolean| 默认为 false | `新增参数，是否显示滚动条，配合拖拽滚动使用（即仅在启用enableScroll时有效）`|
-|`opts.xAxis.scrollBackgroundColor`| String| 默认为 #EFEBEF | `新增参数，X轴滚动条背景颜色，配合拖拽滚动使用（即仅在启用enableScroll时有效）`|
-|`opts.xAxis.scrollColor`| String| 默认为 #A6A6A6 | `新增参数，X轴滚动条颜色，配合拖拽滚动使用（即仅在启用enableScroll时有效）`|
+|`opts.xAxis.itemCount`| Number| 默认为 5 | `X轴可见区域刻度数量（即X轴数据密度），配合拖拽滚动使用（即仅在启用enableScroll时有效）`|
+|`opts.xAxis.scrollShow`| Boolean| 默认为 false | `是否显示滚动条，配合拖拽滚动使用（即仅在启用enableScroll时有效）`|
+|`opts.xAxis.scrollBackgroundColor`| String| 默认为 #EFEBEF | `X轴滚动条背景颜色，配合拖拽滚动使用（即仅在启用enableScroll时有效）`|
+|`opts.xAxis.scrollColor`| String| 默认为 #A6A6A6 | `X轴滚动条颜色，配合拖拽滚动使用（即仅在启用enableScroll时有效）`|
 |opts.xAxis.gridColor| String| 默认为 #cccccc | X轴网格颜色 例如#7cb5ec|
 |opts.xAxis.fontColor| String| 默认为 #666666 | X轴数据点颜色 例如#7cb5ec|
 |opts.xAxis.disableGrid |Boolean| 默认为 false| 不绘制X轴网格|
@@ -342,18 +347,52 @@
 |opts.extra.radar.gridColor |String| 默认为 #cccccc| 雷达图网格颜色|
 
 
+### 扩展配置项（柱状图）
+
+| 属性 | 类型 | 默认 |说明|
+| :------ | :-----: | :-----: | :------------ |
+|opts.extra.column| Object | |柱状图相关配置|
+|`opts.extra.column.type`| Object | 默认group |柱状图类型：`group`分组柱状图，`stack`为堆叠柱状图`未完成开发中`|
+|opts.extra.column.width |Number| | 柱状图每项的图形宽度，单位为px|
+
+
+### 扩展配置项（饼图、圆环图）
+
+| 属性 | 类型 | 默认 |说明|
+| :------ | :-----: | :-----: | :------------ |
+|opts.extra.pie| Object| | 饼图、圆环图相关配置|
+|opts.extra.pie.offsetAngle| Number| 默认为0| 起始角度偏移度数，顺时针方向，起点为3点钟位置（比如要设置起点为12点钟位置，即逆时针偏移90度，传入-90即可）|
+|opts.extra.ringWidth| Number | |ringChart圆环宽度，单位为px`即将变更为opts.extra.pie.ringWidth`|
+
+
+### 扩展配置项（折线图）
+
+| 属性 | 类型 | 默认 |说明|
+| :------ | :-----: | :-----: | :------------ |
+|opts.extra.lineStyle| String| 默认straight | (仅对line, area图表有效) 可选值：curve曲线，straight直线 `即将变更为opts.extra.line.type`|
+
+
+### 扩展配置项（K线图`未完成开发中`）
+
+| 属性 | 类型 | 默认 |说明|
+| :------ | :-----: | :-----: | :------------ |
+|opts.extra.candle| Object | |K线图相关配置|
+
+
+### 扩展配置项（条状图`未完成开发中`）
+
+| 属性 | 类型 | 默认 |说明|
+| :------ | :-----: | :-----: | :------------ |
+|opts.extra.bar| Object | |条状图相关配置`开发中`|
+|opts.extra.bar.type| Object | 默认group |条状图类型：`group`分组条状图，`stack`为堆叠条状图`开发中`|
+|opts.extra.bar.width |Number| | 条状图每项的图形宽度，单位为px`开发中`|
+
+
 ### 扩展配置项（其他）
 
 | 属性 | 类型 | 默认 |说明|
 | :------ | :-----: | :-----: | :------------ |
-|`opts.extra.legendTextColor` |String | 默认为 #cccccc | `图例文案颜色 例如#7cb5ec`|
-|opts.extra.lineStyle| String| straight | (仅对line, area图表有效) 可选值：curve曲线，straight直线 (default)|
-|opts.extra.column| Object | |柱状图相关配置|
-|opts.extra.column.width |Number| | 柱状图每项的图形宽度，单位为px|
-|opts.extra.ringWidth| Number | |ringChart圆环宽度，单位为px|
-|opts.extra.pie| Object| | 饼图、圆环图相关配置|
-|opts.extra.pie.offsetAngle| Number| 默认为0| 起始角度偏移度数，顺时针方向，起点为3点钟位置（比如要设置起点为12点钟位置，即逆时针偏移90度，传入-90即可）|
-
+|opts.extra.legendTextColor |String | 默认为 #cccccc | 图例文案颜色 例如#7cb5ec`后期将变更为opts.legend.textColor迁移到基础配置里`|
 
 
 
