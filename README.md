@@ -7,6 +7,7 @@
 ## 完善X轴Y轴网格设置，增加X轴网格设置，增加XY轴`虚线网格`绘制,`gridType`网格线型 'solid'为实线、'dash'为虚线。增加Y轴`format格式化刻度`示例(Y轴刻度数值取整)，增加Y轴`网格数量`示例，详见demo折线图一。
 ## `因很多朋友急需K线图，故计划先开发K线图，推迟其他计划，请谅解。`
 
+![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/qrcode.gif?raw=true)
 
 ## 更新记录
 - [ ] 2019.05.xx 计划太多~~~~轮子不好造啊~~~~
