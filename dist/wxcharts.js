@@ -1086,6 +1086,7 @@ function drawPieText(series, opts, config, context, radius, center) {
         context.closePath();
         context.fill();
         context.beginPath();
+		context.setFontSize(config.fontSize);
         context.setFillStyle('#666666');
         context.fillText(item.text, textStartX, textPosition.y + 3);
         context.closePath();
@@ -1749,6 +1750,7 @@ function drawLegend(series, opts, config, context) {
             }
             startX += padding + shapeWidth;
             context.beginPath();
+			context.setFontSize(config.fontSize);
             context.setFillStyle(opts.extra.legendTextColor || '#333333');
             context.fillText(item.name, startX, startY + 6*opts.pixelRatio+3*opts.pixelRatio);
             context.closePath();
