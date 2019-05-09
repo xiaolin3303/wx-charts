@@ -894,8 +894,8 @@ function drawRingTitle(opts, config, context) {
         context.setFontSize(subtitlefontSize);
         context.setFillStyle(subtitleFontColor);
         context.fillText(subtitle, startX, startY);
-        context.stroke();
         context.closePath();
+        context.stroke();
     }
     if (title) {
         var _textWidth = measureText(title, titlefontSize);
@@ -908,8 +908,8 @@ function drawRingTitle(opts, config, context) {
         context.setFontSize(titlefontSize);
         context.setFillStyle(titleFontColor);
         context.fillText(title, _startX, _startY);
-        context.stroke();
         context.closePath();
+        context.stroke();
     }
 }
 
@@ -917,26 +917,26 @@ function drawPointText(points, series, config, context) {
     // 绘制数据文案
     var data = series.data;
 
-    context.beginPath();
-    context.setFontSize(config.fontSize);
-    context.setFillStyle('#666666');
+    
     points.forEach(function (item, index) {
         if (item !== null) {
             //var formatVal = series.format ? series.format(data[index]) : data[index];
+			context.beginPath();
+			context.setFontSize(config.fontSize);
+			context.setFillStyle('#666666');
 			var value = data[index].value || data[index]
             var formatVal = series.format ? series.format(value) : value;
             context.fillText(formatVal, item.x - measureText(formatVal) / 2, item.y - 2);
+			context.closePath();
+			context.stroke();
         }
     });
-    context.closePath();
-    context.stroke();
+   
 }
 
 function drawGaugeLabel(gaugeOption, radius, centerPosition, opts, config, context) {
     radius -= gaugeOption.width/2+config.gaugeLabelTextMargin;
-    context.beginPath();
-    context.setFontSize(config.fontSize);
-    context.setFillStyle(gaugeOption.labelColor || '#666666');
+    
 	let totalAngle=gaugeOption.startAngle-gaugeOption.endAngle+1;
 	let splitAngle=totalAngle/gaugeOption.splitLine.splitNumber;
 	let totalNumber=gaugeOption.endNumber-gaugeOption.startNumber;
@@ -952,23 +952,27 @@ function drawGaugeLabel(gaugeOption, radius, centerPosition, opts, config, conte
 		pos.y+=centerPosition.y;
 		var startX = pos.x;
 		var startY = pos.y;
+		
+		context.beginPath();
+		context.setFontSize(config.fontSize);
+		context.setFillStyle(gaugeOption.labelColor || '#666666');
 		context.fillText(nowNumber, startX, startY + config.fontSize / 2);
+		context.closePath();
+		context.stroke();
+		
 		nowAngle+=splitAngle;
 		if(nowAngle>=2){
 			nowAngle=nowAngle % 2;
 		}
 		nowNumber+=splitNumber;
 	}
-	context.stroke();
-	context.closePath();
+	
 }
 
 function drawRadarLabel(angleList, radius, centerPosition, opts, config, context) {
     var radarOption = opts.extra.radar || {};
     radius += config.radarLabelTextMargin;
-    context.beginPath();
-    context.setFontSize(config.fontSize);
-    context.setFillStyle(radarOption.labelColor || '#666666');
+    
     angleList.forEach(function (angle, index) {
         var pos = {
             x: radius * Math.cos(angle),
@@ -982,10 +986,14 @@ function drawRadarLabel(angleList, radius, centerPosition, opts, config, context
         } else if (pos.x < 0) {
             startX -= measureText(opts.categories[index] || '');
         }
+		context.beginPath();
+		context.setFontSize(config.fontSize);
+		context.setFillStyle(radarOption.labelColor || '#666666');
         context.fillText(opts.categories[index] || '', startX, startY + config.fontSize / 2);
+		context.closePath();
+		context.stroke();
     });
-    context.stroke();
-    context.closePath();
+    
 }
 
 function drawPieText(series, opts, config, context, radius, center) {
@@ -1082,7 +1090,6 @@ function drawPieText(series, opts, config, context, radius, center) {
         context.fillText(item.text, textStartX, textPosition.y + 3);
         context.closePath();
         context.stroke();
-
         context.closePath();
     });
 }
@@ -1157,19 +1164,20 @@ function drawToolTip(textList, offset, opts, config, context) {
     });
 
     // draw text list
-    context.beginPath();
-    context.setFontSize(config.fontSize);
-    context.setFillStyle('#ffffff');
+    
     textList.forEach(function (item, index) {
         var startX = offset.x + arrowWidth + 2 * config.toolTipPadding + legendWidth + legendMarginRight;
         if (isOverRightBorder) {
             startX = offset.x - toolTipWidth - arrowWidth + 2 * config.toolTipPadding + +legendWidth + legendMarginRight;
         }
         var startY = offset.y + (config.toolTipLineHeight - config.fontSize) / 2 + config.toolTipLineHeight * index + config.toolTipPadding;
+		context.beginPath();
+		context.setFontSize(config.fontSize);
+		context.setFillStyle('#ffffff');
         context.fillText(item.text, startX, startY + config.fontSize);
+		context.closePath();
+		context.stroke();
     });
-    context.stroke();
-    context.closePath();
 }
 
 function drawYAxisTitle(title, opts, config, context) {
@@ -1181,8 +1189,8 @@ function drawYAxisTitle(title, opts, config, context) {
     context.translate(0, opts.height);
     context.rotate(-90 * Math.PI / 180);
     context.fillText(title, startX, config.padding + 0.5 * config.fontSize);
-    context.stroke();
     context.closePath();
+    context.stroke();
     context.restore();
 }
 
@@ -1534,15 +1542,17 @@ function drawXAxis(categories, opts, config, context) {
     });
 
     if (config._xAxisTextAngle_ === 0) {
-        context.beginPath();
-        context.setFontSize(config.fontSize);
-        context.setFillStyle(opts.xAxis.fontColor || '#666666');
+        
         categories.forEach(function (item, index) {
             var offset = eachSpacing / 2 - measureText(item) / 2;
+			context.beginPath();
+			context.setFontSize(config.fontSize);
+			context.setFillStyle(opts.xAxis.fontColor || '#666666');
             context.fillText(item, xAxisPoints[index] + offset, startY + config.fontSize + 5);
+			context.closePath();
+			context.stroke();
         });
-        context.closePath();
-        context.stroke();
+        
     } else {
         categories.forEach(function (item, index) {
             context.save();
@@ -1638,15 +1648,17 @@ function drawYAxis(series, opts, config, context) {
     }
 
     context.stroke();
-    context.beginPath();
-    context.setFontSize(config.fontSize);
-    context.setFillStyle(opts.yAxis.fontColor || '#666666');
+    
     rangesFormat.forEach(function (item, index) {
         var pos = points[index] ? points[index] : endY;
+		context.beginPath();
+		context.setFontSize(config.fontSize);
+		context.setFillStyle(opts.yAxis.fontColor || '#666666');
         context.fillText(item, config.padding + config.yAxisTitleWidth, pos + config.fontSize / 2);
+		context.closePath();
+		context.stroke();
     });
-    context.closePath();
-    context.stroke();
+    
 
     if (opts.yAxis.title) {
         drawYAxisTitle(opts.yAxis.title, opts, config, context);
@@ -2228,6 +2240,7 @@ function drawCharts(type, opts, config, context) {
                     drawYAxis(series, opts, config, context);
                     drawToolTipBridge(opts, config, context, process);
                     drawCanvas(opts, context);
+					
                 },
                 onAnimationFinish: function onAnimationFinish() {
                     _this.event.trigger('renderComplete');

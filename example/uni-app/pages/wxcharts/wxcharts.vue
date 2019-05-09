@@ -1,7 +1,7 @@
 <template>
 	<view class="qiun-columns">
 		<view class="qiun-padding" style="font-size: 32upx;">
-			<text>【开源不易、改造不易、哪(拿)来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请先参见页面最后章节【常见问题】解决，如没有您的问题，请在页面最下面【撰写评论】，尽量不要在【问答】中提问（因有可能会漏掉您的问题）。</text>
+			<text>{{tips}}</text>
 		</view>
 		<view class="qiun-padding">
 			<view class="qiun-tip" @tap="changeData()">修改柱状图数据</view>
@@ -65,7 +65,7 @@
 		</view>
 		<view class="qiun-charts-rotate">
 			<!--#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
-			<canvas canvas-id="canvasLineB" id="canvasLineB" class="charts-rotate" :style="{'width':cWidth2*pixelRatio+'px','height':cHeight2*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth2*(pixelRatio-1)/2+'px','margin-top':-cHeight2*(pixelRatio-1)/2+'px'}" @touchstart="touchLineB"></canvas>
+			<canvas canvas-id="canvasLineB" id="canvasLineB" class="charts-rotate" :style="{'width':cWidth2*pixelRatio+'px','height':cHeight2*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth2*(pixelRatio-1)/2+'px','margin-top':-cHeight2*(pixelRatio-1)/2+'px'}" ></canvas>
 			<!--#endif-->
 			<!--#ifdef MP-WEIXIN || APP-PLUS -->
 			<canvas canvas-id="canvasLineB" id="canvasLineB" class="charts-rotate" @touchstart="touchLineB"></canvas>
@@ -154,6 +154,7 @@
 				cHeight3:'',//圆弧进度图
 				arcbarWidth:'',//圆弧进度图，进度条宽度,此设置可使各端宽度一致
 				gaugeWidth:'',//仪表盘宽度,此设置可使各端宽度一致
+				tips:'【开源不易、改造不易、哪(拿)来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请先参见插件市场最后章节【常见问题】解决，如没有您的问题，请在页面最下面【撰写评论】，尽量不要在【问答】中提问（因有可能会漏掉您的问题）。',
 				pixelRatio:1,
 				serverData:''
 			}
@@ -193,6 +194,7 @@
 						console.log(res.data.data)
 						//下面这个根据需要保存后台数据，我是为了模拟更新柱状图，所以存下来了
 						_self.serverData=res.data.data;
+						_self.tips=res.data.data.tips;
 						let Column={categories:[],series:[]};
 						let LineA={categories:[],series:[]};
 						let LineB={categories:[],series:[]};
@@ -263,7 +265,7 @@
 						}
 					},
 					fail: () => {
-						console.log("数据获取失败！")
+						_self.tips="网络错误，小程序端请检查合法域名";
 					},
 				});
 			},
@@ -687,7 +689,7 @@
 </script>
 
 <style>
-page{background:#F2F2F2;}
+page{background:#F2F2F2;width: 750upx;overflow-x: hidden;}
 .qiun-padding{padding:2%; width:96%;}
 .qiun-wrap{display:flex; flex-wrap:wrap;}
 .qiun-rows{display:flex; flex-direction:row !important;}
