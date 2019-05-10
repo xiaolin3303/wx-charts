@@ -10,10 +10,10 @@
         	<view class="qiun-title-dot-light">柱状图</view>
         </view>
         <view class="qiun-charts" style="background-color: #E5FDC3;">
-        	<!--#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO -->
+        	<!--#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO -->
         	<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts" style="background-color: #E5FDC3;" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
         	<!--#endif-->
-        	<!--#ifdef MP-WEIXIN || APP-PLUS -->
+        	<!--#ifdef H5 || MP-WEIXIN || APP-PLUS -->
         	<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts" style="background-color: #E5FDC3;"></canvas>
         	<!--#endif-->
         </view>
@@ -24,10 +24,10 @@
 			<view class="qiun-title-dot-light">仪表盘</view>
 		</view>
 		<view class="qiun-charts">
-			<!--#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
+			<!--#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
 			<canvas canvas-id="canvasGauge" id="canvasGauge" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
 			<!--#endif-->
-			<!--#ifdef MP-WEIXIN || APP-PLUS -->
+			<!--#ifdef H5 || MP-WEIXIN || APP-PLUS -->
 			<canvas canvas-id="canvasGauge" id="canvasGauge" class="charts"></canvas>
 			<!--#endif-->
 		</view>
@@ -35,12 +35,12 @@
 			<view class="qiun-title-dot-light">圆弧进度图</view>
 		</view>
 		<view class="qiun-charts3">
-			<!--#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
+			<!--#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
 			<canvas canvas-id="canvasArcbar1" id="canvasArcbar1" class="charts3" :style="{'width':cWidth3*pixelRatio+'px','height':cHeight3*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth3*(pixelRatio-1)/2+'px','margin-top':-cHeight3*(pixelRatio-1)/2+'px'}"></canvas>
 			<canvas canvas-id="canvasArcbar2" id="canvasArcbar2" class="charts3" :style="{'width':cWidth3*pixelRatio+'px','height':cHeight3*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':cWidth3-cWidth3*(pixelRatio-1)/2+'px','margin-top':-cHeight3*(pixelRatio-1)/2+'px'}"></canvas>
 			<canvas canvas-id="canvasArcbar3" id="canvasArcbar3" class="charts3" :style="{'width':cWidth3*pixelRatio+'px','height':cHeight3*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':cWidth3*2-cWidth3*(pixelRatio-1)/2+'px','margin-top':-cHeight3*(pixelRatio-1)/2+'px'}"></canvas>
 			<!--#endif-->
-			<!--#ifdef MP-WEIXIN || APP-PLUS -->
+			<!--#ifdef H5 || MP-WEIXIN || APP-PLUS -->
 			<canvas canvas-id="canvasArcbar1" id="canvasArcbar1" class="charts3"></canvas>
 			<canvas canvas-id="canvasArcbar2" id="canvasArcbar2" class="charts3" style="margin-left: 250upx;"></canvas>
 			<canvas canvas-id="canvasArcbar3" id="canvasArcbar3" class="charts3" style="margin-left: 500upx;"></canvas>
@@ -51,12 +51,12 @@
 			<!-- 使用图表拖拽功能时，建议给canvas增加disable-scroll=true属性，在拖拽时禁止屏幕滚动 -->
 		</view>
 		<view class="qiun-charts">
-			<!--#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
-			<canvas canvas-id="canvasLineA" id="canvasLineA" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}" @touchstart="touchLineA" @touchmove="moveLineA" @touchend="touchEndLineA"></canvas>
+			<!--#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
+			<canvas canvas-id="canvasLineA" id="canvasLineA" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}" disable-scroll=true @touchstart="touchLineA" @touchmove="moveLineA" @touchend="touchEndLineA"></canvas>
 			<!-- 使用图表拖拽功能时，建议给canvas增加disable-scroll=true属性，在拖拽时禁止屏幕滚动 -->
 			<!--#endif-->
-			<!--#ifdef MP-WEIXIN || APP-PLUS -->
-			<canvas canvas-id="canvasLineA" id="canvasLineA" class="charts" @touchstart="touchLineA" @touchmove="moveLineA" @touchend="touchEndLineA"></canvas>
+			<!--#ifdef H5 || MP-WEIXIN || APP-PLUS -->
+			<canvas canvas-id="canvasLineA" id="canvasLineA" class="charts" disable-scroll=true @touchstart="touchLineA" @touchmove="moveLineA" @touchend="touchEndLineA"></canvas>
 			<!-- 使用图表拖拽功能时，建议给canvas增加disable-scroll=true属性，在拖拽时禁止屏幕滚动 -->
 			<!--#endif-->
 		</view>
@@ -64,10 +64,10 @@
 			<view class="qiun-title-dot-light">折线图二（横屏图表）</view>
 		</view>
 		<view class="qiun-charts-rotate">
-			<!--#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
+			<!--#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
 			<canvas canvas-id="canvasLineB" id="canvasLineB" class="charts-rotate" :style="{'width':cWidth2*pixelRatio+'px','height':cHeight2*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth2*(pixelRatio-1)/2+'px','margin-top':-cHeight2*(pixelRatio-1)/2+'px'}" ></canvas>
 			<!--#endif-->
-			<!--#ifdef MP-WEIXIN || APP-PLUS -->
+			<!--#ifdef H5 || MP-WEIXIN || APP-PLUS -->
 			<canvas canvas-id="canvasLineB" id="canvasLineB" class="charts-rotate" @touchstart="touchLineB"></canvas>
 			<!--#endif-->
 		</view>
@@ -75,10 +75,10 @@
 			<view class="qiun-title-dot-light">区域图</view>
 		</view>
 		<view class="qiun-charts">
-			<!--#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
+			<!--#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
 			<canvas canvas-id="canvasArea" id="canvasArea" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}" @touchstart="touchArea" ></canvas>
 			<!--#endif-->
-			<!--#ifdef MP-WEIXIN || APP-PLUS -->
+			<!--#ifdef H5 || MP-WEIXIN || APP-PLUS -->
 			<canvas canvas-id="canvasArea" id="canvasArea" class="charts" @touchstart="touchArea"></canvas>
 			<!--#endif-->
 		</view>
@@ -86,10 +86,10 @@
 			<view class="qiun-title-dot-light">饼状图</view>
 		</view>
 		<view class="qiun-charts">
-			<!--#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
+			<!--#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
 			<canvas canvas-id="canvasPie" id="canvasPie" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
 			<!--#endif-->
-			<!--#ifdef MP-WEIXIN || APP-PLUS -->
+			<!--#ifdef H5 || MP-WEIXIN || APP-PLUS -->
 			<canvas canvas-id="canvasPie" id="canvasPie" class="charts"></canvas>
 			<!--#endif-->
 		</view>
@@ -97,10 +97,10 @@
 			<view class="qiun-title-dot-light">环形图</view>
 		</view>
 		<view class="qiun-charts">
-			<!--#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
+			<!--#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
 			<canvas canvas-id="canvasRing" id="canvasRing" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
 			<!--#endif-->
-			<!--#ifdef MP-WEIXIN || APP-PLUS -->
+			<!--#ifdef H5 || MP-WEIXIN || APP-PLUS -->
 			<canvas canvas-id="canvasRing" id="canvasRing" class="charts"></canvas>
 			<!--#endif-->
 		</view>
@@ -108,10 +108,10 @@
 			<view class="qiun-title-dot-light">雷达图</view>
 		</view>
 		<view class="qiun-charts">
-			<!--#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
+			<!--#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
 			<canvas canvas-id="canvasRadar" id="canvasRadar" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
 			<!--#endif-->
-			<!--#ifdef MP-WEIXIN || APP-PLUS -->
+			<!--#ifdef H5 || MP-WEIXIN || APP-PLUS -->
 			<canvas canvas-id="canvasRadar" id="canvasRadar" class="charts"></canvas>
 			<!--#endif-->
 		</view>
@@ -161,7 +161,7 @@
 		},
 		onLoad() {
 			_self = this;
-			//#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO
+			//#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO
 			uni.getSystemInfo({
 				success: function (res) {
 					if(res.pixelRatio>1){
@@ -187,7 +187,7 @@
 		methods: {
 			getServerData(){
 				uni.request({
-					url: 'https://www.easy-mock.com/mock/5cc586b64fc5576cba3d647b/uni-wx-charts/chartsdata',
+					url: 'https://www.easy-mock.com/mock/5cc586b64fc5576cba3d647b/uni-wx-charts/chartsdata2',
 					data:{
 					},
 					success: function(res) {
@@ -229,40 +229,17 @@
 						Arcbar3.series=res.data.data.Arcbar3.series;
 						Gauge.categories=res.data.data.Gauge.categories;
 						Gauge.series=res.data.data.Gauge.series;
-						//实例化图表前，请先检查您的数据是否为空，空数据会造成客户端卡死
-						if(Column.categories.length>0 && Column.series.length>0){
-							_self.showColumn("canvasColumn",Column);
-						}
-						if(LineA.categories.length>0 && LineA.series.length>0){
-							_self.showLineA("canvasLineA",LineA);
-						}
-						if(LineB.categories.length>0 && LineB.series.length>0){
-							_self.showLineB("canvasLineB",LineB);
-						}
-						if(Area.categories.length>0 && Area.series.length>0){
-							_self.showArea("canvasArea",Area);
-						}
-						if(Pie.series.length>0){
-							_self.showPie("canvasPie",Pie);
-						}
-						if(Ring.series.length>0){
-							_self.showRing("canvasRing",Ring);
-						}
-						if(Radar.categories.length>0 && Radar.series.length>0){
-							_self.showRadar("canvasRadar",Radar);
-						}
-						if(Arcbar1.series.length>0){
-							_self.showArcbar("canvasArcbar1",Arcbar1);
-						}
-						if(Arcbar2.series.length>0){
-							_self.showArcbar2("canvasArcbar2",Arcbar2);
-						}
-						if(Arcbar3.series.length>0){
-							_self.showArcbar3("canvasArcbar3",Arcbar3);
-						}
-						if(Gauge.categories.length>0 && Gauge.series.length>0){
-							_self.showGauge("canvasGauge",Gauge);
-						}
+						_self.showColumn("canvasColumn",Column);
+						_self.showLineA("canvasLineA",LineA);
+						_self.showLineB("canvasLineB",LineB);
+						_self.showArea("canvasArea",Area);
+						_self.showPie("canvasPie",Pie);
+						_self.showRing("canvasRing",Ring);
+						_self.showRadar("canvasRadar",Radar);
+						_self.showArcbar("canvasArcbar1",Arcbar1);
+						_self.showArcbar2("canvasArcbar2",Arcbar2);
+						_self.showArcbar3("canvasArcbar3",Arcbar3);
+						_self.showGauge("canvasGauge",Gauge);
 					},
 					fail: () => {
 						_self.tips="网络错误，小程序端请检查合法域名";
@@ -324,7 +301,7 @@
 						//disabled:true
 						gridType:'dash',
 						splitNumber:8,
-						min:0,
+						min:10,
 						max:180,
 						format:(val)=>{return val.toFixed(0)+'元'}//如不写此方法，Y轴刻度默认保留两位小数
 					},
@@ -647,13 +624,10 @@
 				});
 			},
 			changeData(){
-				//这里只做了柱状图数据动态更新，其他图表同理，数据是我之前获取的数据，您可以重新获取数据，更新前，也需要检查下数据是否为空，否则不要更新。
-				if(_self.serverData.ColumnB.categories.length>0 && _self.serverData.ColumnB.series.length>0){
-					canvaColumn.updateData({
-						series: _self.serverData.ColumnB.series,
-						categories: _self.serverData.ColumnB.categories
-					});
-				}
+				canvaColumn.updateData({
+					series: _self.serverData.ColumnB.series,
+					categories: _self.serverData.ColumnB.categories
+				});
 			},
 			touchLineA(e){
 				canvaLineA.scrollStart(e);

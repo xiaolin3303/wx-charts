@@ -3,16 +3,20 @@
 
 # `【开源不易、改造不易、哪(拿)来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请先参见页面最后章节【常见问题】解决，如没有您的问题，请在页面最下面【撰写评论】，尽量不要在【问答】中提问（因有可能会漏掉您的问题）。`
 
+# `最近很多热心朋友提出很多问题及解决方案，更好的完善wxCharts，在此感谢大家的付出和贡献！`
+
 ## 快速体验
 
 一套代码编到7个平台(IOS因demo比较简单无法上架，请自行编译)，依次扫描二维码，亲自体验wx-charts图表跨平台效果！
 
+百度小程序和头条小程序审核较严格，可能一时半会不能上线了，大家可以在小程序IDE中自行编译测试。
+
 ![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/qrcode.png?raw=true)
 
 
-## 初步解决`组件内使用问题`，感谢`342805357@qq.com`提出组件问题解决方案，增加`opts.$this`参数，组件使用时实例化前请传递this。后续会增加组件使用示例，请关注。
-## 修复`Android9.0`文字标签只显示一个的bug，感谢`houyongbo03@163.com`发现问题，并提出解决方案。
-## `因很多朋友急需K线图，故计划先开发K线图，推迟其他计划，请谅解。`
+## 感谢`不是发哥`提示官方H5画布现已支持高分屏，更改H5端模板写法，详见最新版demo。
+## 修复传入`空数组`导致客户端卡死的问题，实例化前无需再判断数组长度是否为0了。
+## 修复传入null值线段断点不显示问题。
 
 
 
@@ -23,7 +27,8 @@
 - [ ] 2019.05.xx 计划加入`堆叠图`、`条状图`、`分时图`
 - [ ] 2019.05.xx 计划加入`渐变颜色填充`功能
 - [ ] 2019.05.xx 推迟计划加入`第二种仪表盘样式`,增加[《亲手教您如何改造wx-charts，打造您的专属图表》](https://github.com/16cheng/uni-wx-charts/wiki/%E4%BA%B2%E6%89%8B%E6%95%99%E6%82%A8%E5%A6%82%E4%BD%95%E6%94%B9%E9%80%A0wx-charts)教程。
-- [ ] 2019.05.13 因很多朋友急需`K线图`，故计划先开发K线图，推迟其他计划，请谅解。
+- [ ] 2019.05.14 因很多朋友急需`K线图`，故计划先开发K线图，推迟其他计划，请谅解。
+- [x] 2019.05.10 感谢`不是发哥`提示官方H5画布现已支持高分屏，更改H5端模板写法，详见最新版demo。修复传入`空数组`导致客户端卡死的问题，实例化前无需再判断数组长度是否为0了。修复传入null值线段断点不显示问题。
 - [x] 2019.05.09 修复Android9.0文字标签只显示一个的bug，感谢`houyongbo03@163.com`发现问题，并提出解决方案，更新线上Android版本。
 - [x] 2019.05.07 初步解决`组件内使用问题`，感谢`342805357@qq.com`提出组件问题解决方案，增加`opts.$this`参数，组件使用时实例化前请传递this。后续会增加组件使用实例，请关注。
 - [x] 2019.05.06 增加Y轴`format格式化刻度`示例(Y轴刻度数值取整)，增加Y轴`网格数量`示例，详见demo折线图一。
@@ -107,122 +112,10 @@
 ## 引用方法
 `import wxCharts from '../../components/wx-charts/wxcharts.js';`
 
-## &lt; template &gt; 模板（其它图表请参考demo中vue文件）
-```html
-<template>
-	<view>
-		<view class="qiun-charts">
-			<!--#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
-			<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
-			<!--#endif-->
-			<!--#ifdef MP-WEIXIN || APP-PLUS -->
-			<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts"></canvas>
-			<!--#endif-->
-		</view>
-	</view>
-<template>
-```
-> 通过cWidth、cHeight、pixelRatio三个参数解决H5端canvas组件在高分屏下模糊的问题
-
-## &lt; script &gt;模板（其它图表请参考demo中vue文件）
-```javascript
-<script>
-	import wxCharts from '../../components/wx-charts/wxcharts.js';
-	var _self;
-	var canvaColumn=null;
-	export default {
-		data() {
-			return {
-				cWidth:'',
-				cHeight:'',
-				pixelRatio:1
-			}
-		},
-		“on Load”:()=>{//复制这里代码请去掉双引号及空格，官方有过滤只能这么写
-			_self = this;
-			//#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO
-			uni.getSystemInfo({
-				success: function (res) {
-					if(res.pixelRatio>1){
-						_self.pixelRatio =2;
-						//正常这里_self.pixelRatio给2就行，如果要求高可用下行
-						//_self.pixelRatio =res.pixelRatio;
-					}
-				}
-			});
-			//#endif
-			this.cWidth=uni.upx2px(750);
-			this.cHeight=uni.upx2px(500);
-			this.getServerData();
-		},
-		methods: {
-			getServerData(){
-				uni.request({
-					url: 'https://www.easy-mock.com/mock/5cc586b64fc5576cba3d647b/uni-wx-charts/chartsdata',
-					data:{
-					},
-					success: function(res) {
-						let Column={categories:[],series:[]};
-						Column.categories=res.data.data.Column.categories;
-						Column.series=res.data.data.Column.series;
-						if(Column.categories.length>0 && Column.series.length>0){
-							_self.showColumn("canvasColumn",Column);
-						}
-					}
-				});
-			},
-			showColumn(canvasId,chartData){
-				canvaColumn=new wxCharts({
-					canvasId: canvasId,
-					type: 'column',
-					legend:true,
-					fontSize:11,
-					background:'#FFFFFF',
-					pixelRatio:_self.pixelRatio,
-					rotate:false,//新增横屏模式（非必填参数，默认false）
-					animation: true,
-					categories: chartData.categories,
-					series: chartData.series,
-					xAxis: {
-						disableGrid:true
-					},
-					yAxis: {
-						//disabled:true
-					},
-					dataLabel: true,
-					width: _self.cWidth*_self.pixelRatio,
-					height: _self.cHeight*_self.pixelRatio,
-					extra: {
-						column: {
-						  width: _self.cWidth*_self.pixelRatio*0.45/chartData.categories.length
-						}
-					  }
-				});
-			},
-			changeData(){
-				//这里只做了柱状图数据动态更新，其他图表同理。
-				canvaColumn.updateData({
-					series: Data.ColumnB.series,
-					categories: Data.ColumnB.categories
-				});
-			},
-		}
-	}
-</script>
-```
-> - `var canvaColumn=null;`不是必须定义的变量，如果需要动态更新数据或者需要交互显示ToolTip则需要定义。
-> - 如果在H5端使用，`cWidth`和`cHeight`是必须定义的（当然你也可以用别的变量名），需要注意的是要和当前canvas中的样式定义的数值相等，即uni-app中的upx数值相等。
-> - `pixelRatio`参数是解决了H5端高分屏canvas模糊而设置的，非H5端给1即可，H5端正常给2就可以，当然如果项目需求较高，设置为当前设备的像素比也没问题。
-
-## &lt; style &gt;模板
-```css
-<style>
-.charts{width: 750upx; height:500upx;background-color: #FFFFFF;}
-</style>
-```
+## 具体用法
+## 因官方过滤了代码，这里就不贴写法了，以免误导大家，请详见demo中的`pages/wxcharts/wxcharts.vue`文件。
 
 ## 参数说明
-
 
 ### 通用基础配置项
 

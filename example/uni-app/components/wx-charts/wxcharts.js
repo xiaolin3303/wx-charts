@@ -769,7 +769,7 @@ function getYAxisTextList(series, opts, config) {
     // remove null from data
     data = data.filter(function (item) {
         //return item !== null;
-		if(typeof item === 'object') {
+		if(typeof item === 'object' && item !== null) {
             return item.value !== null;
         } else {
             return item !== null
@@ -780,11 +780,14 @@ function getYAxisTextList(series, opts, config) {
 	data.map((item)=>{
         typeof item === 'object' ? sorted.push(item.value) : sorted.push(item)
     })
-    var minData = Math.min.apply(this, sorted);
-    var maxData = Math.max.apply(this, sorted);
-	
+	var minData = 0;
+	var maxData = 0;
+	if(sorted.length>0){
+		minData = Math.min.apply(this, sorted);
+		maxData = Math.max.apply(this, sorted);
+	}
     if (typeof opts.yAxis.min === 'number') {
-        minData = Math.min(opts.yAxis.min, minData);
+       minData = Math.min(opts.yAxis.min, minData);
     }
     if (typeof opts.yAxis.max === 'number') {
         maxData = Math.max(opts.yAxis.max, maxData);
@@ -792,8 +795,8 @@ function getYAxisTextList(series, opts, config) {
 
     // fix issue https://github.com/xiaolin3303/wx-charts/issues/9
     if (minData === maxData) {
-        var rangeSpan = maxData || 1;
-        minData -= rangeSpan;
+        var rangeSpan = maxData || 10;
+        //minData -= rangeSpan;
         maxData += rangeSpan;
     }
 
