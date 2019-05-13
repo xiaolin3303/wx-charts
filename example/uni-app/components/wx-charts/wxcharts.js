@@ -1,16 +1,22 @@
 /*
- * charts for WeChat small app v1.0
- *
- * https://github.com/xiaolin3303/wx-charts
- * 2016-11-28
- *
- * Designed and built with all the love of Web
+ * uCharts v1.6.8
+ * uni-app平台高性能跨全端图表
+ * 支持H5、APP、小程序（微信/支付宝/百度/头条）
+ * Designed by QIUN秋云
  * 
- * 【秋云科技】修改为uni-app跨全端图表
- * https://github.com/16cheng/uni-wx-charts
- * 插件市场地址：
+ * uCharts官方网站
+ * https://www.uCharts.cn
+ * 
+ * 开源地址:
+ * https://github.com/16cheng/uCharts
+ * 开源地址即将变更为：
+ * https://gitee.com/qiuyunkeji/uCharts
+ * 开源协议变更为Apache-2.0
+ * 
+ * uni-app插件市场地址：
  * http://ext.dcloud.net.cn/plugin?id=271
  * 
+ * 主要更新记录
  * 2019-04-01
  * 修改为兼容uni-wx-charts
  * 2019-04-14
@@ -1476,10 +1482,8 @@ function drawXAxis(categories, opts, config, context) {
 
 	//绘制滚动条
 	if(opts.enableScroll && opts.xAxis.scrollShow){
-		var scrollStartX=startX+3*opts.pixelRatio;
-		var scrollendX=endX-3*opts.pixelRatio;
 		var scrollY=startY + config.xAxisLineHeight+8*opts.pixelRatio;
-		var scrollScreenWidth=scrollendX-scrollStartX;
+		var scrollScreenWidth=endX-startX;
 		var scrollTotalWidth=eachSpacing*(xAxisPoints.length-1);
 		var scrollWidth=scrollScreenWidth*scrollScreenWidth/scrollTotalWidth;
 		var scrollLeft=0;
@@ -1490,16 +1494,16 @@ function drawXAxis(categories, opts, config, context) {
 		context.setLineCap('round');
 		context.setLineWidth(6*opts.pixelRatio);
 		context.setStrokeStyle(opts.xAxis.scrollBackgroundColor || "#EFEBEF");
-		context.moveTo(scrollStartX, scrollY);
-		context.lineTo(scrollendX, scrollY);
+		context.moveTo(startX, scrollY);
+		context.lineTo(endX, scrollY);
 		context.stroke();
 		context.closePath();
 		context.beginPath();
 		context.setLineCap('round');
 		context.setLineWidth(6*opts.pixelRatio);
 		context.setStrokeStyle(opts.xAxis.scrollColor ||"#A6A6A6");
-		context.moveTo(scrollStartX+scrollLeft, scrollY);
-		context.lineTo(scrollStartX+scrollLeft+scrollWidth, scrollY);
+		context.moveTo(startX+scrollLeft, scrollY);
+		context.lineTo(startX+scrollLeft+scrollWidth, scrollY);
 		context.stroke();
 		context.closePath();
 	}
@@ -1642,9 +1646,9 @@ function drawYAxis(series, opts, config, context) {
     // set YAxis background
     context.setFillStyle(opts.background || '#ffffff');
     if (opts._scrollDistance_ < 0) {
-        context.fillRect(0, 0, startX, endY + config.xAxisHeight + 5);
+        context.fillRect(0, 0, startX, endY + config.xAxisHeight );
     }
-    context.fillRect(endX, 0, opts.width, endY + config.xAxisHeight + 5);
+    context.fillRect(endX, 0, opts.width, endY + config.xAxisHeight );
 
     var points = [];
     for (var i = 0; i <= config.yAxisSplit; i++) {
@@ -2379,6 +2383,21 @@ function drawCharts(type, opts, config, context) {
 			    }
 			});
 			break;
+		case 'candle':
+		    this.animationInstance = new Animation({
+		        timing: 'easeIn',
+		        duration: duration,
+		        onProcess: function onProcess(process) {
+		            if(opts.rotate){
+		            	context.translate(opts.height, 0);
+		            	context.rotate(90 * Math.PI / 180);
+		            }
+		        },
+		        onAnimationFinish: function onAnimationFinish() {
+		            _this.event.trigger('renderComplete');
+		        }
+		    });
+		    break;
     }
 }
 
@@ -2423,6 +2442,7 @@ var Charts = function Charts(opts) {
 	opts.xAxis.gridType=opts.xAxis.gridType? opts.xAxis.gridType : 'solid';
 	opts.xAxis.dashLength=opts.xAxis.dashLength? opts.xAxis.dashLength : 4*opts.pixelRatio;
 	opts.xAxis.itemCount = opts.xAxis.itemCount ? opts.xAxis.itemCount : 5;
+	opts.xAxis.scrollAlign = opts.xAxis.scrollAlign ? opts.xAxis.scrollAlign : 'left';
     opts.extra = opts.extra || {};
     opts.legend = opts.legend === false ? false : true;
 	opts.rotate = opts.rotate ? true : false;
@@ -2472,12 +2492,35 @@ var Charts = function Charts(opts) {
     // such as chart point coordinate
     this.chartData = {};
     this.event = new Event();
+	
     this.scrollOption = {
         currentOffset: 0,
         startTouchX: 0,
         distance: 0
     };
-
+	
+	//计算右对齐偏移距离
+	if(opts.enableScroll && opts.xAxis.scrollAlign=='right'){
+		let _calYAxisData = calYAxisData(opts.series, opts, config$$1),
+		    yAxisWidth = _calYAxisData.yAxisWidth;
+		config$$1.yAxisWidth = yAxisWidth;
+		let offsetLeft=0;
+		let _getXAxisPoints0 = getXAxisPoints(opts.categories, opts, config$$1),
+		    xAxisPoints = _getXAxisPoints0.xAxisPoints,
+		    startX = _getXAxisPoints0.startX,
+		    endX = _getXAxisPoints0.endX,
+		    eachSpacing = _getXAxisPoints0.eachSpacing;
+		let totalWidth=eachSpacing*(xAxisPoints.length-1);
+		let screenWidth=endX-startX;
+		offsetLeft=screenWidth-totalWidth;
+		this.scrollOption = {
+		    currentOffset: offsetLeft,
+		    startTouchX: offsetLeft,
+		    distance: 0
+		};
+		opts._scrollDistance_= offsetLeft;
+	}
+	
     drawCharts.call(this, opts.type, opts, config$$1, this.context);
 };
 
@@ -2523,7 +2566,7 @@ Charts.prototype.getCurrentDataIndex = function (e) {
 					y = _touches$.y*this.opts.pixelRatio;
 				}
 			}
-        if (this.opts.type === 'pie' || this.opts.type === 'ring' || this.opts.type === 'arcbar') {
+        if (this.opts.type === 'pie' || this.opts.type === 'ring') {
             return findPieChartCurrentIndex({ x: x, y: y }, this.chartData.pieData);
         } else if (this.opts.type === 'radar') {
             return findRadarChartCurrentIndex({ x: x, y: y }, this.chartData.radarData, this.opts.categories.length);
@@ -2593,7 +2636,6 @@ Charts.prototype.scroll = function (e) {
             _scrollDistance_: currentOffset + _distance,
             animation: false
         });
-
         drawCharts.call(this, opts.type, opts, this.config, this.context);
     }
 };

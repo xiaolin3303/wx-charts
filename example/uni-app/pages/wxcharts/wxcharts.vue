@@ -17,6 +17,20 @@
         	<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts" style="background-color: #E5FDC3;"></canvas>
         	<!--#endif-->
         </view>
+		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
+			<view class="qiun-title-dot-light">K线图（蜡烛图）（未完成即将上线）</view>
+			<!-- 使用图表拖拽功能时，建议给canvas增加disable-scroll=true属性，在拖拽时禁止屏幕滚动 -->
+		</view>
+		<view class="qiun-charts">
+			<!--#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
+			<canvas canvas-id="canvasCandle" id="canvasCandle" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}" disable-scroll=true @touchstart="touchCandle" @touchmove="moveCandle" @touchend="touchEndCandle"></canvas>
+			<!-- 使用图表拖拽功能时，建议给canvas增加disable-scroll=true属性，在拖拽时禁止屏幕滚动 -->
+			<!--#endif-->
+			<!--#ifdef H5 || MP-WEIXIN || APP-PLUS -->
+			<canvas canvas-id="canvasCandle" id="canvasCandle" class="charts" disable-scroll=true @touchstart="touchCandle" @touchmove="moveCandle" @touchend="touchEndCandle"></canvas>
+			<!-- 使用图表拖拽功能时，建议给canvas增加disable-scroll=true属性，在拖拽时禁止屏幕滚动 -->
+			<!--#endif-->
+		</view>
 		<view class="qiun-padding">
 			<view class="qiun-tip" @tap="changeGaugeData()">更新仪表盘数据</view>
 		</view>
@@ -126,6 +140,7 @@
 	var canvaLineB=null;
 	var canvaArea=null;
 	var canvaGauge=null;
+	var canvaCandle=null;
 	/*下面是服务器返回的数据格式，现已改成从服务器获取数据，以供有些朋友不知道怎么从后台获取数据后调用
 	var Data={
 		Column:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量1',data:[15, {value:20,color:'#f04864'},45, 37, 43, 34]},{name: '成交量2',data:[30, {value:40,color:'#facc14'}, 25, 14, 34, 18]}]},
@@ -140,6 +155,7 @@
 		Arcbar2:{series:[{ name: '错误率', data: 0.65 , color:'#f04864'}]},
 		Arcbar3:{series:[{ name: '完成率', data: 0.85 , color:'#1890ff'}]},
 		Gauge:{categories:[{value:0.2,color:'#2fc25b'},{value:0.8,color:'#f04864'}，{value:1,color:'#1890ff'}],series:[{ name: '完成率', data: 0.85 }]},
+		Candle:{categories:['2019/5/5', '2019/5/6', '2019/5/6', '2019/5/8', '2019/5/9', '2019/5/10'],series:[{name: '上证指数',data:[15, 23,45, 37, 43, 34]}]},
 		}
 	*/
    
@@ -206,6 +222,7 @@
 						let Arcbar2={series:[]};
 						let Arcbar3={series:[]};
 						let Gauge={categories:[],series:[]};
+						let Candle={categories:[],series:[]};
 						//这里我后台返回的是数组，所以用等于，如果您后台返回的是单条数据，需要push进去
 						Column.categories=res.data.data.Column.categories;
 						//这里的series数据是后台做好的，如果您的数据没有和前面我注释掉的格式一样，请自行拼接数据
@@ -229,6 +246,8 @@
 						Arcbar3.series=res.data.data.Arcbar3.series;
 						Gauge.categories=res.data.data.Gauge.categories;
 						Gauge.series=res.data.data.Gauge.series;
+						Candle.categories=res.data.data.Candle.categories;
+						Candle.series=res.data.data.Candle.series;
 						_self.showColumn("canvasColumn",Column);
 						_self.showLineA("canvasLineA",LineA);
 						_self.showLineB("canvasLineB",LineB);
@@ -240,6 +259,9 @@
 						_self.showArcbar2("canvasArcbar2",Arcbar2);
 						_self.showArcbar3("canvasArcbar3",Arcbar3);
 						_self.showGauge("canvasGauge",Gauge);
+						//K线图方法，即将上线
+						//_self.showCandle("canvasCandle",Candle);
+						
 					},
 					fail: () => {
 						_self.tips="网络错误，小程序端请检查合法域名";
@@ -294,6 +316,7 @@
 						gridType:'dash',
 						itemCount:4,//可不填写，配合enableScroll图表拖拽功能使用，x轴单屏显示数据的数量，默认为5个
 						scrollShow:true,//新增是否显示滚动条，默认false
+						scrollAlign:'right',
 						//scrollBackgroundColor:'#F7F7FF',//可不填写，配合enableScroll图表拖拽功能使用，X轴滚动条背景颜色,默认为 #EFEBEF
 						//scrollColor:'#DEE7F7',//可不填写，配合enableScroll图表拖拽功能使用，X轴滚动条颜色,默认为 #A6A6A6
 					},
@@ -622,6 +645,46 @@
 						offsetY:-50*_self.pixelRatio,//新增参数，自定义调整Y轴文案距离
 					}
 				});
+			},
+			showCandle(canvasId,chartData){
+				canvaCandle=new wxCharts({
+					$this:_self,
+					canvasId: canvasId,
+					type: 'line',
+					fontSize:11,
+					legend:true,
+					background:'#FFFFFF',
+					pixelRatio:_self.pixelRatio,
+					categories: chartData.categories,
+					series: chartData.series,
+					animation: false,
+					enableScroll: true,//开启图表拖拽功能
+					xAxis: {
+						disableGrid:false,
+						type:'grid',
+						gridType:'dash',
+						itemCount:10,//可不填写，配合enableScroll图表拖拽功能使用，x轴单屏显示数据的数量，默认为5个
+						scrollShow:true,//新增是否显示滚动条，默认false
+						scrollAlign:'right',
+						//scrollBackgroundColor:'#F7F7FF',//可不填写，配合enableScroll图表拖拽功能使用，X轴滚动条背景颜色,默认为 #EFEBEF
+						//scrollColor:'#DEE7F7',//可不填写，配合enableScroll图表拖拽功能使用，X轴滚动条颜色,默认为 #A6A6A6
+					},
+					yAxis: {
+						//disabled:true
+						gridType:'dash',
+						splitNumber:5
+					},
+					width: _self.cWidth*_self.pixelRatio,
+					height: _self.cHeight*_self.pixelRatio,
+					dataLabel: true,
+					dataPointShape: true,
+					extra: {
+						candle:{
+							
+						}
+					},
+				});
+				
 			},
 			changeData(){
 				canvaColumn.updateData({

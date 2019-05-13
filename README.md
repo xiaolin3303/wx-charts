@@ -1,19 +1,28 @@
-## wx-charts轻量级跨全端图表
-- 基于`wx-charts`微信小程序图表改造成，适用于uni-app平台的跨端图表插件，感谢原作者`xiaolin3303`，原插件gitHub地址：<https://github.com/xiaolin3303/wx-charts>
+## uCharts高性能跨全端图表（原wx-charts）
+- 适用于uni-app平台的跨全端图表插件，顾名`uCharts`。
+- 基于`wx-charts`微信小程序图表改造成，感谢原作者`xiaolin3303`。
+- 原插件gitHub地址：<https://github.com/xiaolin3303/wx-charts>
 
-# `【开源不易、改造不易、哪(拿)来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请先参见页面最后章节【常见问题】解决，如没有您的问题，请在页面最下面【撰写评论】，尽量不要在【问答】中提问（因有可能会漏掉您的问题）。`
 
-# `最近很多热心朋友提出很多问题及解决方案，更好的完善wxCharts，在此感谢大家的付出和贡献！`
+## uCharts官方网站
+- https://www.ucharts.cn(已注册，备案中，现无法访问)
+- 后续将在官网提供在线示例及参数说明指引等，以帮助大家方便使用。
+
+# `uCharts的发展，离不开各位的支持和帮助！最近很多热心朋友提出很多问题及解决方案，更好的完善uCharts，以帮助更多朋友解决问题，在此感谢大家的付出和贡献！`
+
 
 ## 快速体验
 
-一套代码编到7个平台(IOS因demo比较简单无法上架，请自行编译)，依次扫描二维码，亲自体验wx-charts图表跨平台效果！
+一套代码编到7个平台，依次扫描二维码，亲自体验uCharts图表跨平台效果！
 
-百度小程序和头条小程序审核较严格，可能一时半会不能上线了，大家可以在小程序IDE中自行编译测试。
+IOS因demo比较简单无法上架，请自行编译；百度小程序和头条小程序审核较严格，可能一时半会不能上线了，大家可以暂时在小程序IDE中自行编译测试。
 
-![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/qrcode.png?raw=true)
+![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/qrcode.png?raw=true)
 
 
+# `【开源不易、改造不易、哪(拿)来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请先参见页面最后章节【常见问题】解决，如没有您的问题，请在页面最下面【撰写评论】，尽量不要在【问答】中提问（因有可能会漏掉您的问题）。`
+
+## 增加`opts.xAxis.scrollAlign`参数，滚动条初始位置，left为数据整体左对齐，right为右对齐。修复滚动条拉到最右侧不到位问题。
 ## 感谢`不是发哥`提示官方H5画布现已支持高分屏，更改H5端模板写法，详见最新版demo。
 ## 修复传入`空数组`导致客户端卡死的问题，实例化前无需再判断数组长度是否为0了。
 ## 修复传入null值线段断点不显示问题。
@@ -21,13 +30,18 @@
 
 
 ## 更新记录
-- [ ] 2019.05.xx 计划太多~~~~轮子不好造啊~~~~
-- [ ] 2019.05.xx 计划加入柱状图、饼图、环形图、雷达图等`ToolTip`事件
-- [ ] 2019.05.xx 计划加入`组件内使用示例`
-- [ ] 2019.05.xx 计划加入`堆叠图`、`条状图`、`分时图`
-- [ ] 2019.05.xx 计划加入`渐变颜色填充`功能
-- [ ] 2019.05.xx 推迟计划加入`第二种仪表盘样式`,增加[《亲手教您如何改造wx-charts，打造您的专属图表》](https://github.com/16cheng/uni-wx-charts/wiki/%E4%BA%B2%E6%89%8B%E6%95%99%E6%82%A8%E5%A6%82%E4%BD%95%E6%94%B9%E9%80%A0wx-charts)教程。
-- [ ] 2019.05.14 因很多朋友急需`K线图`，故计划先开发K线图，推迟其他计划，请谅解。
+- [ ] 2019.xx.xx 计划太多~~~~轮子不好造啊~~~~
+- [ ] 2019.08.xx 计划搭建`uCharts官方网站`，以供初学者快速上手uCharts
+- [ ] 2019.07.xx 计划重建各端demo，以供初学者快速上手uCharts
+- [ ] 2019.07.xx 计划加入柱状图、饼图、环形图、雷达图等`ToolTip`事件
+- [ ] 2019.06.xx 计划加入`组件内使用示例`
+- [ ] 2019.06.xx 计划加入`堆叠图`、`条状图`、`分时图`
+- [ ] 2019.06.xx 计划加入`渐变颜色填充`功能
+- [ ] 2019.05.xx 推迟计划加入`第二种仪表盘样式`,增加[《亲手教您如何改造uCharts，打造您的专属图表》](https://github.com/16cheng/uCharts/wiki/%E4%BA%B2%E6%89%8B%E6%95%99%E6%82%A8%E5%A6%82%E4%BD%95%E6%94%B9%E9%80%A0wx-charts)教程。
+- [ ] 2019.05.xx 计划修改X轴刻度标签`抽稀策略`，以适应K线图及不需要文案旋转的需求
+- [ ] 2019.05.xx 计划加入`辅助线（标记线）`功能，支持`柱状图、折线图、区域图、K线图`
+- [ ] 2019.05.15 因很多朋友急需`K线图`，故计划先开发K线图，推迟其他计划，请谅解。
+- [x] 2019.05.13 增加`opts.xAxis.scrollAlign`参数，滚动条初始位置，left为数据整体左对齐，right为右对齐。修复滚动条拉到最右侧不到位问题。
 - [x] 2019.05.10 感谢`不是发哥`提示官方H5画布现已支持高分屏，更改H5端模板写法，详见最新版demo。修复传入`空数组`导致客户端卡死的问题，实例化前无需再判断数组长度是否为0了。修复传入null值线段断点不显示问题。
 - [x] 2019.05.09 修复Android9.0文字标签只显示一个的bug，感谢`houyongbo03@163.com`发现问题，并提出解决方案，更新线上Android版本。
 - [x] 2019.05.07 初步解决`组件内使用问题`，感谢`342805357@qq.com`提出组件问题解决方案，增加`opts.$this`参数，组件使用时实例化前请传递this。后续会增加组件使用实例，请关注。
@@ -49,7 +63,7 @@
 - [x] 2019.04.15 支持`横屏模式`，新增`rotate`参数，默认flase，示例见`折线图二`
 - [x] 2019.04.14 支持百度、头条小程序，实现彻底跨全端
 - [x] 2019.04.12 支持支付宝小程序（开发者工具不显示，上传代码真机预览可以显示）
-- [x] 2019.04.01 改造成uni-app跨端组件
+- [x] 2019.04.01 改造成uni-app跨端组件（虽是愚人节，但图表是真图表^.^）
 
 
 ## 支持图表类型
@@ -76,41 +90,41 @@
 - 相比Echarts及F2的复杂的设置，本插件几乎等于傻瓜式的配置。
 - Echarts在跨端使用更复杂，本插件只需要简单的两个`<canvas>`标签轻松区别搞定，代码整洁易维护。
 - 本插件打包后的体积相比Echarts小很多很多，所以性能更好。
-- 如果您是uni-app初学者，那么强烈建议您使用wx-charts，并且目前可以跨全端通用，减少工作量，增强一致性体验。
+- 如果您是uni-app初学者，那么强烈建议您使用uCharts，并且目前可以跨全端通用，减少工作量，增强一致性体验。
 - 图表样式均可自定义，懂js的都可以读懂插件源码，直接修改wxcharts.js源码即可。
 - 本插件原为我公司产品所用，经过大量测试，反复论证并加以改造而成，请各位放心使用。
 
 ## uni-app图表选型参考流程
 
-![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/xuanxing.png?raw=true)
+![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/xuanxing.png?raw=true)
 
-## 亲手教您如何改造wx-charts，打造您的专属图表
-- 为何要改造wx-charts?
+## 亲手教您如何改造uCharts，打造您的专属图表
+- 为何要改造uCharts?
 - 并不是所有图表插件直接拿来就可以满足客户需求，如果您的UI设计师设计一个图表，如下图:
 
-![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/example.gif?raw=true)
+![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/example.gif?raw=true)
 
-- 您会发现这个图表即使在echarts里也不是很好实现，那么就需要我们自己动手去实现。下面就让我们一起来完成，本文旨在抛砖引玉，希望各位朋友能够更好的应用wx-charts来完成您的项目，如果您有更好的设计，请提交您的PR到github[uni-wx-charts跨端图表](https://github.com/16cheng/uni-wx-charts)，帮助更多朋友，感谢您的付出及贡献！
+- 您会发现这个图表即使在echarts里也不是很好实现，那么就需要我们自己动手去实现。下面就让我们一起来完成，本文旨在抛砖引玉，希望各位朋友能够更好的应用uCharts来完成您的项目，如果您有更好的设计，请提交您的PR到github[uCharts跨端图表](https://github.com/16cheng/uCharts)，帮助更多朋友，感谢您的付出及贡献！
 
-## [wx-charts跨端图表改造教程（暂未完成，请关注）](https://github.com/16cheng/uni-wx-charts/wiki/%E4%BA%B2%E6%89%8B%E6%95%99%E6%82%A8%E5%A6%82%E4%BD%95%E6%94%B9%E9%80%A0wx-charts)
+## [uCharts跨端图表改造教程（暂未完成，请关注）](https://github.com/16cheng/uCharts/wiki/%E4%BA%B2%E6%89%8B%E6%95%99%E6%82%A8%E5%A6%82%E4%BD%95%E6%94%B9%E9%80%A0wx-charts)
 
 
 ## 图表示例
-![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/yibiaopan.gif?raw=true)
-![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/arcbar.gif?raw=true)
-![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/column.gif?raw=true)
-![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/column2.gif?raw=true)
-![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/lineA.gif?raw=true)
-![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/lineA-scroll.gif?raw=true)
-![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/dashLine.gif?raw=true)
-![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/area.gif?raw=true)
-![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/pie.gif?raw=true)
-![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/ring.gif?raw=true)
-![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/radar.gif?raw=true)
-![](https://github.com/16cheng/uni-wx-charts/blob/master/example/uni-app/static/lineB.gif?raw=true)
+![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/yibiaopan.gif?raw=true)
+![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/arcbar.gif?raw=true)
+![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/column.gif?raw=true)
+![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/column2.gif?raw=true)
+![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/lineA.gif?raw=true)
+![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/lineA-scroll.gif?raw=true)
+![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/dashLine.gif?raw=true)
+![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/area.gif?raw=true)
+![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/pie.gif?raw=true)
+![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/ring.gif?raw=true)
+![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/radar.gif?raw=true)
+![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/lineB.gif?raw=true)
 
 ## 引用方法
-`import wxCharts from '../../components/wx-charts/wxcharts.js';`
+`import wxCharts from '../../components/uCharts/wxcharts.js';`
 
 ## 具体用法
 ## 因官方过滤了代码，这里就不贴写法了，以免误导大家，请详见demo中的`pages/wxcharts/wxcharts.vue`文件。
@@ -124,14 +138,15 @@
 |opts |Object| | |
 |`opts.$this` | Object |required|this实例`组件内使用图表，必须传入this实例`|
 |opts.canvasId | String|required|页面组件canvas-id|
-|opts.width |Number |required| canvas宽度，单位为px`H5、支付宝、百度、头条，高分屏需要乘像素比`|
-|opts.height| Number| required |canvas高度，单位为px`H5、支付宝、百度、头条，高分屏需要乘像素比`|
-|opts.type|String |required| 图表类型，可选值为pie, line, column, area, ring, radar, arcbar, gauge, `K线图candle条状图bar开发中`|
+|opts.width |Number |required| canvas宽度，单位为px`支付宝、百度、头条，高分屏需要乘像素比`|
+|opts.height| Number| required |canvas高度，单位为px`支付宝、百度、头条，高分屏需要乘像素比`|
+|opts.type|String |required| 图表类型，可选值为pie, line, column, area, ring, radar, arcbar, gauge, `K线图candle、条状图bar开发中`|
 |opts.pixelRatio| Number| required |像素比，默认为1，非H5端引用无需设置|
 |opts.rotate| Boolean| 默认false |横屏模式，默认为false|
 |opts.fontSize| Number | 默认13px |全局默认字体大小（可选，单位为px，默认13px）高分屏不必乘像素比，自动根据pixelRatio计算|
 |opts.background| String | |canvas背景颜色（如果页面背景颜色不是白色请设置为页面的背景颜色，默认#ffffff）|
-|opts.enableScroll |Boolean | |是否开启图表可拖拽滚动 默认false 支持line, area, column图表类型(需配合绑定@touchstart, @touchmove,  @touchend方法)|
+|opts.enableScroll |Boolean | 默认false |是否开启图表可拖拽滚动 默认false 支持line, area, column, candle图表类型(需配合绑定@touchstart, @touchmove,  @touchend方法)|
+|`opts.enableMarkLine` |Boolean | 默认false |是否显示辅助线 默认false 支持line, area, column, candle图表类型`开发中`|
 |opts.animation| Boolean |默认为 true |是否动画展示|
 |opts.legend| Boolen |默认为 true| 图例设置，是否显示图表下方各类别的标识|
 |opts.dataLabel| Boolean |默认为 true |是否在图表中显示数据标签内容值|
@@ -178,24 +193,25 @@
 | 属性 | 类型 | 默认 |说明|
 | :------ | :-----: | :-----: | :-------------------- |
 |opts.xAxis |Object | |X轴配置|
-|`opts.xAxis.itemCount`| Number| 默认为 5 | `X轴可见区域刻度数量（即X轴数据密度），配合拖拽滚动使用（即仅在启用enableScroll时有效）`|
-|`opts.xAxis.scrollShow`| Boolean| 默认为 false | `是否显示滚动条，配合拖拽滚动使用（即仅在启用enableScroll时有效）`|
-|`opts.xAxis.scrollBackgroundColor`| String| 默认为 #EFEBEF | `X轴滚动条背景颜色，配合拖拽滚动使用（即仅在启用enableScroll时有效）`|
-|`opts.xAxis.scrollColor`| String| 默认为 #A6A6A6 | `X轴滚动条颜色，配合拖拽滚动使用（即仅在启用enableScroll时有效）`|
+|opts.xAxis.itemCount| Number| 默认为 5 | X轴可见区域`数据数量`（即X轴数据密度），配合拖拽滚动使用（即仅在启用enableScroll时有效）|
+|opts.xAxis.scrollShow| Boolean| 默认为 false | 是否显示滚动条，配合拖拽滚动使用（即仅在启用enableScroll时有效）|
+|`opts.xAxis.scrollAlign`| String| 默认为 left | `滚动条初始位置，left为数据整体左对齐，right为右对齐`|
+|opts.xAxis.scrollBackgroundColor| String| 默认为 #EFEBEF | X轴滚动条背景颜色，配合拖拽滚动使用（即仅在启用enableScroll时有效）|
+|opts.xAxis.scrollColor| String| 默认为 #A6A6A6 | X轴滚动条颜色，配合拖拽滚动使用（即仅在启用enableScroll时有效）|
 |opts.xAxis.gridColor| String| 默认为 #cccccc | X轴网格颜色 例如#7cb5ec|
 |opts.xAxis.fontColor| String| 默认为 #666666 | X轴数据点颜色 例如#7cb5ec|
 |opts.xAxis.disableGrid |Boolean| 默认为 false| 不绘制X轴网格|
-|`opts.xAxis.type` |String | 默认为calibration |`X轴网格样式，可选值calibration（刻度）、grid（网格） 默认为包含样式`|
-|`opts.xAxis.gridType` |String | 默认为 solid| `X轴网格线型 'solid'为实线、'dash'为虚线`|
-|`opts.xAxis.dashLength` |Number | 默认为 4px | `X轴网格为虚线时，单段虚线长度`  |
+|opts.xAxis.type |String | 默认为calibration |X轴网格样式，可选值calibration（刻度）、grid（网格）|
+|opts.xAxis.gridType |String | 默认为 solid| X轴网格线型 'solid'为实线、'dash'为虚线`|
+|opts.xAxis.dashLength |Number | 默认为 4px | X轴网格为虚线时，单段虚线长度 |
 |opts.yAxis |Object | |Y轴配置|
 |opts.yAxis.format |Function| | 自定义Y轴文案显示|
 |opts.yAxis.min| Number| | Y轴起始值|
 |opts.yAxis.max| Number | |Y轴终止值|
 |opts.yAxis.title| String | |Y轴title|
-|`opts.yAxis.splitNumber` |Number | 默认5 |`Y轴网格数量`|
-|`opts.yAxis.gridType` |String | 默认为 solid| `Y轴网格线型 'solid'为实线、'dash'为虚线`|
-|`opts.yAxis.dashLength` |Number | 默认为 4px | `Y轴网格为虚线时，单段虚线长度`  |
+|opts.yAxis.splitNumber |Number | 默认5 |Y轴网格数量|
+|opts.yAxis.gridType |String | 默认为 solid| Y轴网格线型 'solid'为实线、'dash'为虚线|
+|opts.yAxis.dashLength |Number | 默认为 4px | Y轴网格为虚线时，单段虚线长度  |
 |opts.yAxis.gridColor |String | 默认为 solid | Y轴网格颜色 'solid'为实线、''为虚线 |
 |opts.yAxis.fontColor| String | 默认为 #666666 | Y轴数据点颜色 例如#7cb5ec|
 |opts.yAxis.titleFontColor |String | 默认为 #333333 | Y轴title颜色 例如#7cb5ec|
@@ -279,6 +295,14 @@
 | 属性 | 类型 | 默认 |说明|
 | :------ | :-----: | :-----: | :------------ |
 |opts.extra.candle| Object | |K线图相关配置|
+|opts.extra.candle.color.upLine| String | |K线图为涨时线颜色|
+|opts.extra.candle.color.upFill| String | |K线图为涨时填充颜色|
+|opts.extra.candle.color.downLine| String | |K线图为跌时线颜色|
+|opts.extra.candle.color.downFill| String | |K线图为跌时填充颜色|
+|opts.extra.candle.average| Object | |均线设置|
+|opts.extra.candle.average.show | Boolean | 默认false |是否显示均线|
+|opts.extra.candle.average.day | `Array` |  |均线单位日期（例如[5,20]为显示5日及20日均线）|
+|opts.extra.candle.average.color | `Array` |  |均线颜色，例如['#1890ff', '#2fc25b']|
 
 
 ### 扩展配置项（条状图`未完成开发中`）
@@ -288,6 +312,27 @@
 |opts.extra.bar| Object | |条状图相关配置`开发中`|
 |opts.extra.bar.type| Object | 默认group |条状图类型：`group`分组条状图，`stack`为堆叠条状图`开发中`|
 |opts.extra.bar.width |Number| | 条状图每项的图形宽度，单位为px`开发中`|
+
+
+### 扩展配置项（辅助线`未完成开发中`）
+
+| 属性 | 类型 | 默认 |说明|
+| :------ | :-----: | :-----: | :------------ |
+|opts.extra.markLine |Object | | 在柱状图、折线图、区域图、K线图中额外增加水平直线，仅在`opts.enableMarkLine`为true时显示|
+|opts.extra.markLine.type |String | 默认为 solid| 线型 'solid'为实线、'dash'为虚线|
+|opts.extra.markLine.dashLength |Number | 默认为 4px | 单段虚线长度  |
+|opts.extra.markLine.data |`Array` | | 辅助线数据，请传入`数组`类型，支持多条辅助线|
+|opts.extra.markLine.data.value |Number | | 辅助线数值|
+|opts.extra.markLine.data.color |String | 默认为 #| 辅助线颜色|
+|opts.extra.markLine.data.label |Boolean| 默认为 true| 是否显示数据标签|
+|opts.extra.markLine.data.align |String| 默认为 right| 数据标签对齐方式，left为左侧显示，right为右侧显示|
+
+
+### 扩展配置项（ToolTip设置`未完成开发中`）
+
+| 属性 | 类型 | 默认 |说明|
+| :------ | :-----: | :-----: | :------------ |
+|opts.extra.tooltip |Object | | ToolTip设置|
 
 
 ### 扩展配置项（其他）
@@ -329,18 +374,20 @@ chart.addEventListener('renderComplete', () => {
 - 如发现实例化图表后，`客户端卡死`的状况，请在实例化图表前（即调用`showColumn(canvasId,chartData)`前）检查传入图表数组（`chartData.categories`和`chartData.series`）是否为空，如果为空则不要实例化图表。后续将在源码中解决此问题。
 - 图表`背景颜色`问题，很多朋友设置图表背景颜色时候，只修改了view和canvas的css,忘记了修改实例化参数中的`background:'#FFFFFF'`，导致图表画板右侧有一道白条（这个是图表配置中的右边距），所以特修改了demo中的`柱状图`的背景颜色供大家参考。
 
-### H5、支付宝、百度、头条问题
+### 支付宝、百度、头条问题
 - 在高分屏模式下，如果发现图表已显示，但位置不正确，请检查上级`view`容器的`样式`，为了解决高分屏canvas模糊问题，使用了css的`transform`，所以请修改上级样式使canvas容器缩放至相应位置。
 - 如果将canvas放在多级<view>组件下，遇到ToolTip不显示或点击区域不正确，请在`touch`事件中增加以下代码解决。
 ```javascript
-//#ifdef H5
+//#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO
 e.mp.currentTarget.offsetTop+=uni.upx2px(510);
 //#endif
 ```
 > `uni.upx2px(510);`是canvas组件的上级<view>组件的高度
 
 ### 组件问题
-- 很多小伙伴们自行把本插件做成组件来调用，做成组件需要注意，如果涉及到v-if切换显示图表组件，第二次可能会变空白，这里有两个建议：1、建议用v-show替代v-if切换显示图表组件。2、建议参考demo，不要将canvas做到组件里使用，即直接写在主页面中。
+- 很多小伙伴们自行把本插件做成组件来调用，做成组件需要注意，如果涉及到v-if切换显示图表组件，第二次可能会变空白，这里有两个建议：
+1、建议用v-show替代v-if切换显示图表组件。
+2、建议参考demo，不要将canvas做到组件里使用，即直接写在主页面中。
 ### 初步解决`组件内使用问题`，感谢`342805357@qq.com`提出组件问题解决方案，增加`opts.$this`参数，组件使用时实例化前请传递this。后续会增加组件使用示例，请关注。
 
 # `支付宝小程序IDE中不显示，但运行到真机是可以显示的，请真机测试。`
