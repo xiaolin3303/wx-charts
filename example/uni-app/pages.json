@@ -1,16 +1,20 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-			"path": "pages/wxcharts/wxcharts",
+			"path": "pages/ucharts-demo/ucharts-demo",
 			"style": {
-				"navigationBarTitleText": "wx-charts跨端图表"
+				"navigationBarTitleText": "uCharts跨端图表",
+				"navigationBarTextStyle":"black"
 			}
 		}
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "wx-charts跨端图表",
+		"navigationBarTitleText": "uCharts跨端图表",
 		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"backgroundColor": "#F8F8F8",
+		"mp-alipay" : {
+		    "titleBarColor" : "#FFFFFF"
+		}
 	}
 }

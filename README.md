@@ -1,4 +1,4 @@
-## uCharts高性能跨全端图表（原wx-charts）
+## uCharts高性能跨全端图表
 - 适用于uni-app平台的跨全端图表插件，顾名`uCharts`。
 - 基于`wx-charts`微信小程序图表改造成，感谢原作者`xiaolin3303`。
 - 原插件gitHub地址：<https://github.com/xiaolin3303/wx-charts>
@@ -22,11 +22,9 @@ IOS因demo比较简单无法上架，请自行编译；百度小程序和头条�
 
 # `【开源不易、改造不易、哪(拿)来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请先参见页面最后章节【常见问题】解决，如没有您的问题，请在页面最下面【撰写评论】，尽量不要在【问答】中提问（因有可能会漏掉您的问题）。`
 
-## 增加`opts.xAxis.scrollAlign`参数，滚动条初始位置，left为数据整体左对齐，right为右对齐。修复滚动条拉到最右侧不到位问题。
-## 感谢`不是发哥`提示官方H5画布现已支持高分屏，更改H5端模板写法，详见最新版demo。
-## 修复传入`空数组`导致客户端卡死的问题，实例化前无需再判断数组长度是否为0了。
-## 修复传入null值线段断点不显示问题。
-
+## 增加`头条小程序`二维码，非正式上线版（体验版）
+## 增加`K线图`，图表类型`candle`,目前仍需完善，有需要的朋友，可以先用着，后续会加入`叠加均线`设置，及tooltip事件时加入水平指示线。
+## 修复IOS系统app端tooltip事件多次点击后丢失半透明背景bug，感谢`傲奇`发现问题并提出解决方案；增加不绘制X轴及Y轴网格参数，详见参数说明。
 
 
 ## 更新记录
@@ -40,7 +38,9 @@ IOS因demo比较简单无法上架，请自行编译；百度小程序和头条�
 - [ ] 2019.05.xx 推迟计划加入`第二种仪表盘样式`,增加[《亲手教您如何改造uCharts，打造您的专属图表》](https://github.com/16cheng/uCharts/wiki/%E4%BA%B2%E6%89%8B%E6%95%99%E6%82%A8%E5%A6%82%E4%BD%95%E6%94%B9%E9%80%A0wx-charts)教程。
 - [ ] 2019.05.xx 计划修改X轴刻度标签`抽稀策略`，以适应K线图及不需要文案旋转的需求
 - [ ] 2019.05.xx 计划加入`辅助线（标记线）`功能，支持`柱状图、折线图、区域图、K线图`
-- [ ] 2019.05.15 因很多朋友急需`K线图`，故计划先开发K线图，推迟其他计划，请谅解。
+- [ ] 2019.05.19 完善K线图及其辅助功能。
+- [x] 2019.05.14 修复IOS系统app端tooltip事件多次点击后丢失半透明背景bug，感谢`傲奇`发现问题并提出解决方案；增加不绘制X轴及Y轴网格参数，详见参数说明。
+- [x] 2019.05.14 增加`K线图`，图表类型`candle`,目前仍需完善，有需要的朋友，可以先用着，后续会加入`叠加均线`设置，及tooltip事件时加入水平指示线。
 - [x] 2019.05.13 增加`opts.xAxis.scrollAlign`参数，滚动条初始位置，left为数据整体左对齐，right为右对齐。修复滚动条拉到最右侧不到位问题。
 - [x] 2019.05.10 感谢`不是发哥`提示官方H5画布现已支持高分屏，更改H5端模板写法，详见最新版demo。修复传入`空数组`导致客户端卡死的问题，实例化前无需再判断数组长度是否为0了。修复传入null值线段断点不显示问题。
 - [x] 2019.05.09 修复Android9.0文字标签只显示一个的bug，感谢`houyongbo03@163.com`发现问题，并提出解决方案，更新线上Android版本。
@@ -110,6 +110,7 @@ IOS因demo比较简单无法上架，请自行编译；百度小程序和头条�
 
 
 ## 图表示例
+![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/candle.gif?raw=true)
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/yibiaopan.gif?raw=true)
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/arcbar.gif?raw=true)
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/column.gif?raw=true)
@@ -124,7 +125,7 @@ IOS因demo比较简单无法上架，请自行编译；百度小程序和头条�
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/lineB.gif?raw=true)
 
 ## 引用方法
-`import wxCharts from '../../components/uCharts/wxcharts.js';`
+`import uCharts from '../../components/u-charts/u-charts.js';`
 
 ## 具体用法
 ## 因官方过滤了代码，这里就不贴写法了，以免误导大家，请详见demo中的`pages/wxcharts/wxcharts.vue`文件。
@@ -193,22 +194,25 @@ IOS因demo比较简单无法上架，请自行编译；百度小程序和头条�
 | 属性 | 类型 | 默认 |说明|
 | :------ | :-----: | :-----: | :-------------------- |
 |opts.xAxis |Object | |X轴配置|
+|`opts.xAxis.rotateLabel`| Boolean| 默认为 false | `X轴刻度（数值）标签是否旋转`|
 |opts.xAxis.itemCount| Number| 默认为 5 | X轴可见区域`数据数量`（即X轴数据密度），配合拖拽滚动使用（即仅在启用enableScroll时有效）|
 |opts.xAxis.scrollShow| Boolean| 默认为 false | 是否显示滚动条，配合拖拽滚动使用（即仅在启用enableScroll时有效）|
 |`opts.xAxis.scrollAlign`| String| 默认为 left | `滚动条初始位置，left为数据整体左对齐，right为右对齐`|
 |opts.xAxis.scrollBackgroundColor| String| 默认为 #EFEBEF | X轴滚动条背景颜色，配合拖拽滚动使用（即仅在启用enableScroll时有效）|
 |opts.xAxis.scrollColor| String| 默认为 #A6A6A6 | X轴滚动条颜色，配合拖拽滚动使用（即仅在启用enableScroll时有效）|
-|opts.xAxis.gridColor| String| 默认为 #cccccc | X轴网格颜色 例如#7cb5ec|
-|opts.xAxis.fontColor| String| 默认为 #666666 | X轴数据点颜色 例如#7cb5ec|
-|opts.xAxis.disableGrid |Boolean| 默认为 false| 不绘制X轴网格|
+|opts.xAxis.disableGrid |Boolean| 默认为 false| 不绘制X轴网格(即默认绘制网格)|
 |opts.xAxis.type |String | 默认为calibration |X轴网格样式，可选值calibration（刻度）、grid（网格）|
+|opts.xAxis.gridColor| String| 默认为 #cccccc | X轴网格颜色 例如#7cb5ec|
 |opts.xAxis.gridType |String | 默认为 solid| X轴网格线型 'solid'为实线、'dash'为虚线`|
 |opts.xAxis.dashLength |Number | 默认为 4px | X轴网格为虚线时，单段虚线长度 |
+|opts.xAxis.fontColor| String| 默认为 #666666 | X轴数据点颜色 例如#7cb5ec|
+|`opts.xAxis.disabled` |Boolean |默认为 false| `不绘制X轴`|
 |opts.yAxis |Object | |Y轴配置|
 |opts.yAxis.format |Function| | 自定义Y轴文案显示|
 |opts.yAxis.min| Number| | Y轴起始值|
 |opts.yAxis.max| Number | |Y轴终止值|
 |opts.yAxis.title| String | |Y轴title|
+|opts.yAxis.disableGrid |Boolean| 默认为 false| 不绘制Y轴网格(即默认绘制网格)|
 |opts.yAxis.splitNumber |Number | 默认5 |Y轴网格数量|
 |opts.yAxis.gridType |String | 默认为 solid| Y轴网格线型 'solid'为实线、'dash'为虚线|
 |opts.yAxis.dashLength |Number | 默认为 4px | Y轴网格为虚线时，单段虚线长度  |
@@ -295,12 +299,14 @@ IOS因demo比较简单无法上架，请自行编译；百度小程序和头条�
 | 属性 | 类型 | 默认 |说明|
 | :------ | :-----: | :-----: | :------------ |
 |opts.extra.candle| Object | |K线图相关配置|
-|opts.extra.candle.color.upLine| String | |K线图为涨时线颜色|
-|opts.extra.candle.color.upFill| String | |K线图为涨时填充颜色|
-|opts.extra.candle.color.downLine| String | |K线图为跌时线颜色|
-|opts.extra.candle.color.downFill| String | |K线图为跌时填充颜色|
+|opts.extra.candle.color| Object | |K线图颜色配置|
+|opts.extra.candle.color.upLine| String | 默认#f04864 |K线图为涨时线颜色|
+|opts.extra.candle.color.upFill| String | 默认#f04864 |K线图为涨时填充颜色|
+|opts.extra.candle.color.downLine| String | 默认#2fc25b |K线图为跌时线颜色|
+|opts.extra.candle.color.downFill| String | 默认#2fc25b |K线图为跌时填充颜色|
 |opts.extra.candle.average| Object | |均线设置|
 |opts.extra.candle.average.show | Boolean | 默认false |是否显示均线|
+|opts.extra.candle.average.name | `Array` |  |均线名称（例如['MA5','MA20']）用于下方图例显示|
 |opts.extra.candle.average.day | `Array` |  |均线单位日期（例如[5,20]为显示5日及20日均线）|
 |opts.extra.candle.average.color | `Array` |  |均线颜色，例如['#1890ff', '#2fc25b']|
 

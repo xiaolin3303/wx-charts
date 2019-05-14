@@ -10,23 +10,22 @@
         	<view class="qiun-title-dot-light">柱状图</view>
         </view>
         <view class="qiun-charts" style="background-color: #E5FDC3;">
-        	<!--#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO -->
+        	<!--#ifdef MP-ALIPAY -->
         	<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts" style="background-color: #E5FDC3;" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
         	<!--#endif-->
-        	<!--#ifdef H5 || MP-WEIXIN || APP-PLUS -->
+        	<!--#ifndef MP-ALIPAY -->
         	<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts" style="background-color: #E5FDC3;"></canvas>
         	<!--#endif-->
         </view>
 		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
-			<view class="qiun-title-dot-light">K线图（蜡烛图）（未完成即将上线）</view>
-			<!-- 使用图表拖拽功能时，建议给canvas增加disable-scroll=true属性，在拖拽时禁止屏幕滚动 -->
+			<view class="qiun-title-dot-light">K线图（蜡烛图）</view>
 		</view>
 		<view class="qiun-charts">
-			<!--#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
+			<!--#ifdef MP-ALIPAY -->
 			<canvas canvas-id="canvasCandle" id="canvasCandle" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}" disable-scroll=true @touchstart="touchCandle" @touchmove="moveCandle" @touchend="touchEndCandle"></canvas>
 			<!-- 使用图表拖拽功能时，建议给canvas增加disable-scroll=true属性，在拖拽时禁止屏幕滚动 -->
 			<!--#endif-->
-			<!--#ifdef H5 || MP-WEIXIN || APP-PLUS -->
+			<!--#ifndef MP-ALIPAY -->
 			<canvas canvas-id="canvasCandle" id="canvasCandle" class="charts" disable-scroll=true @touchstart="touchCandle" @touchmove="moveCandle" @touchend="touchEndCandle"></canvas>
 			<!-- 使用图表拖拽功能时，建议给canvas增加disable-scroll=true属性，在拖拽时禁止屏幕滚动 -->
 			<!--#endif-->
@@ -38,10 +37,10 @@
 			<view class="qiun-title-dot-light">仪表盘</view>
 		</view>
 		<view class="qiun-charts">
-			<!--#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
+			<!--#ifdef MP-ALIPAY -->
 			<canvas canvas-id="canvasGauge" id="canvasGauge" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
 			<!--#endif-->
-			<!--#ifdef H5 || MP-WEIXIN || APP-PLUS -->
+			<!--#ifndef MP-ALIPAY -->
 			<canvas canvas-id="canvasGauge" id="canvasGauge" class="charts"></canvas>
 			<!--#endif-->
 		</view>
@@ -49,12 +48,12 @@
 			<view class="qiun-title-dot-light">圆弧进度图</view>
 		</view>
 		<view class="qiun-charts3">
-			<!--#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
+			<!--#ifdef MP-ALIPAY -->
 			<canvas canvas-id="canvasArcbar1" id="canvasArcbar1" class="charts3" :style="{'width':cWidth3*pixelRatio+'px','height':cHeight3*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth3*(pixelRatio-1)/2+'px','margin-top':-cHeight3*(pixelRatio-1)/2+'px'}"></canvas>
 			<canvas canvas-id="canvasArcbar2" id="canvasArcbar2" class="charts3" :style="{'width':cWidth3*pixelRatio+'px','height':cHeight3*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':cWidth3-cWidth3*(pixelRatio-1)/2+'px','margin-top':-cHeight3*(pixelRatio-1)/2+'px'}"></canvas>
 			<canvas canvas-id="canvasArcbar3" id="canvasArcbar3" class="charts3" :style="{'width':cWidth3*pixelRatio+'px','height':cHeight3*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':cWidth3*2-cWidth3*(pixelRatio-1)/2+'px','margin-top':-cHeight3*(pixelRatio-1)/2+'px'}"></canvas>
 			<!--#endif-->
-			<!--#ifdef H5 || MP-WEIXIN || APP-PLUS -->
+			<!--#ifndef MP-ALIPAY -->
 			<canvas canvas-id="canvasArcbar1" id="canvasArcbar1" class="charts3"></canvas>
 			<canvas canvas-id="canvasArcbar2" id="canvasArcbar2" class="charts3" style="margin-left: 250upx;"></canvas>
 			<canvas canvas-id="canvasArcbar3" id="canvasArcbar3" class="charts3" style="margin-left: 500upx;"></canvas>
@@ -65,11 +64,11 @@
 			<!-- 使用图表拖拽功能时，建议给canvas增加disable-scroll=true属性，在拖拽时禁止屏幕滚动 -->
 		</view>
 		<view class="qiun-charts">
-			<!--#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
+			<!--#ifdef MP-ALIPAY -->
 			<canvas canvas-id="canvasLineA" id="canvasLineA" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}" disable-scroll=true @touchstart="touchLineA" @touchmove="moveLineA" @touchend="touchEndLineA"></canvas>
 			<!-- 使用图表拖拽功能时，建议给canvas增加disable-scroll=true属性，在拖拽时禁止屏幕滚动 -->
 			<!--#endif-->
-			<!--#ifdef H5 || MP-WEIXIN || APP-PLUS -->
+			<!--#ifndef MP-ALIPAY -->
 			<canvas canvas-id="canvasLineA" id="canvasLineA" class="charts" disable-scroll=true @touchstart="touchLineA" @touchmove="moveLineA" @touchend="touchEndLineA"></canvas>
 			<!-- 使用图表拖拽功能时，建议给canvas增加disable-scroll=true属性，在拖拽时禁止屏幕滚动 -->
 			<!--#endif-->
@@ -78,10 +77,10 @@
 			<view class="qiun-title-dot-light">折线图二（横屏图表）</view>
 		</view>
 		<view class="qiun-charts-rotate">
-			<!--#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
+			<!--#ifdef MP-ALIPAY -->
 			<canvas canvas-id="canvasLineB" id="canvasLineB" class="charts-rotate" :style="{'width':cWidth2*pixelRatio+'px','height':cHeight2*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth2*(pixelRatio-1)/2+'px','margin-top':-cHeight2*(pixelRatio-1)/2+'px'}" ></canvas>
 			<!--#endif-->
-			<!--#ifdef H5 || MP-WEIXIN || APP-PLUS -->
+			<!--#ifndef MP-ALIPAY -->
 			<canvas canvas-id="canvasLineB" id="canvasLineB" class="charts-rotate" @touchstart="touchLineB"></canvas>
 			<!--#endif-->
 		</view>
@@ -89,10 +88,10 @@
 			<view class="qiun-title-dot-light">区域图</view>
 		</view>
 		<view class="qiun-charts">
-			<!--#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
+			<!--#ifdef MP-ALIPAY -->
 			<canvas canvas-id="canvasArea" id="canvasArea" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}" @touchstart="touchArea" ></canvas>
 			<!--#endif-->
-			<!--#ifdef H5 || MP-WEIXIN || APP-PLUS -->
+			<!--#ifndef MP-ALIPAY -->
 			<canvas canvas-id="canvasArea" id="canvasArea" class="charts" @touchstart="touchArea"></canvas>
 			<!--#endif-->
 		</view>
@@ -100,10 +99,10 @@
 			<view class="qiun-title-dot-light">饼状图</view>
 		</view>
 		<view class="qiun-charts">
-			<!--#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
+			<!--#ifdef MP-ALIPAY -->
 			<canvas canvas-id="canvasPie" id="canvasPie" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
 			<!--#endif-->
-			<!--#ifdef H5 || MP-WEIXIN || APP-PLUS -->
+			<!--#ifndef MP-ALIPAY -->
 			<canvas canvas-id="canvasPie" id="canvasPie" class="charts"></canvas>
 			<!--#endif-->
 		</view>
@@ -111,10 +110,10 @@
 			<view class="qiun-title-dot-light">环形图</view>
 		</view>
 		<view class="qiun-charts">
-			<!--#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
+			<!--#ifdef MP-ALIPAY -->
 			<canvas canvas-id="canvasRing" id="canvasRing" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
 			<!--#endif-->
-			<!--#ifdef H5 || MP-WEIXIN || APP-PLUS -->
+			<!--#ifndef MP-ALIPAY -->
 			<canvas canvas-id="canvasRing" id="canvasRing" class="charts"></canvas>
 			<!--#endif-->
 		</view>
@@ -122,10 +121,10 @@
 			<view class="qiun-title-dot-light">雷达图</view>
 		</view>
 		<view class="qiun-charts">
-			<!--#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO-->
+			<!--#ifdef MP-ALIPAY -->
 			<canvas canvas-id="canvasRadar" id="canvasRadar" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
 			<!--#endif-->
-			<!--#ifdef H5 || MP-WEIXIN || APP-PLUS -->
+			<!--#ifndef MP-ALIPAY -->
 			<canvas canvas-id="canvasRadar" id="canvasRadar" class="charts"></canvas>
 			<!--#endif-->
 		</view>
@@ -133,7 +132,7 @@
 </template>
 
 <script>
-	import wxCharts from '../../components/wx-charts/wxcharts.js';
+	import uCharts from '../../components/u-charts/u-charts.js';
 	var _self;
 	var canvaColumn=null;
 	var canvaLineA=null;
@@ -145,7 +144,7 @@
 	var Data={
 		Column:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量1',data:[15, {value:20,color:'#f04864'},45, 37, 43, 34]},{name: '成交量2',data:[30, {value:40,color:'#facc14'}, 25, 14, 34, 18]}]},
 		ColumnB:{categories:['2013', '2014', '2015', '2016', '2017', '2018'],series:[{name: '新成交量3',data:[35, 36, 31, 33, 13, 34]},{name: '新成交量4',data:[18, 27, 21, 34, 14, 38]}]},
-		LineA:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量A',data:[35, 20, 25, 37, 4, 20]},{name: '成交量B',data:[70, 40, 65, 100, 44, 68]},{name: '成交量C',data:[100, 80, 95, 150, 112, 132]}]},
+		LineA:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量A',data:[35, 20, 25, 37, 4, 20],color:'#000000'},{name: '成交量B',data:[70, 40, 65, 100, 44, 68]},{name: '成交量C',data:[100, 80, 95, 150, 112, 132]}]},
 		LineB:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量A',data:[35, 20, 25, 37, 4, 20]},{name: '成交量B',data:[70, 40, 65, 100, 44, 68]},{name: '成交量C',data:[100, 80, 95, 150, 112, 132]}]},
 		Area:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量A',data:[100, 80, 95, 150, 112, 132],color:'#facc14'},{name: '成交量B',data:[70, 40, 65, 100, 44, 68],color:'#2fc25b'},{name: '成交量C',data:[35, 20, 25, 37, 4, 20],color:'#1890ff'}]},
 		Pie:{series:[{ name: '一班', data: 50 }, { name: '二班', data: 30 }, { name: '三班', data: 20 }, { name: '四班', data: 18 }, { name: '五班', data: 8 }]},
@@ -155,7 +154,16 @@
 		Arcbar2:{series:[{ name: '错误率', data: 0.65 , color:'#f04864'}]},
 		Arcbar3:{series:[{ name: '完成率', data: 0.85 , color:'#1890ff'}]},
 		Gauge:{categories:[{value:0.2,color:'#2fc25b'},{value:0.8,color:'#f04864'}，{value:1,color:'#1890ff'}],series:[{ name: '完成率', data: 0.85 }]},
-		Candle:{categories:['2019/5/5', '2019/5/6', '2019/5/6', '2019/5/8', '2019/5/9', '2019/5/10'],series:[{name: '上证指数',data:[15, 23,45, 37, 43, 34]}]},
+		Candle:{categories:['2019/5/5', '2019/5/6', '2019/5/6', '2019/5/8', '2019/5/9', '2019/5/10'],series:[{name: '上证指数',data:[
+		  [2320.26, 2302.6, 2287.3, 2362.94],
+          [2300, 2291.3, 2288.26, 2308.38],
+          [2295.35, 2346.5, 2295.35, 2346.92],
+          [2347.22, 2358.98, 2337.35, 2363.8],
+          [2360.75, 2382.48, 2347.89, 2383.76],
+          [2383.43, 2385.42, 2371.23, 2391.82],
+          [2377.41, 2419.02, 2369.57, 2421.15]
+		  ]}]},
+		* K线图data[n]传入顺序：开盘，收盘，最低，最高
 		}
 	*/
    
@@ -170,14 +178,14 @@
 				cHeight3:'',//圆弧进度图
 				arcbarWidth:'',//圆弧进度图，进度条宽度,此设置可使各端宽度一致
 				gaugeWidth:'',//仪表盘宽度,此设置可使各端宽度一致
-				tips:'【开源不易、改造不易、哪(拿)来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请先参见插件市场最后章节【常见问题】解决，如没有您的问题，请在页面最下面【撰写评论】，尽量不要在【问答】中提问（因有可能会漏掉您的问题）。',
+				tips:'【开源不易、改造不易、哪(拿)来简单】uCharts将始终坚持开源，为您提供最便捷的高性能图表工具！',
 				pixelRatio:1,
 				serverData:''
 			}
 		},
 		onLoad() {
 			_self = this;
-			//#ifdef MP-ALIPAY || MP-BAIDU || MP-TOUTIAO
+			//#ifdef MP-ALIPAY
 			uni.getSystemInfo({
 				success: function (res) {
 					if(res.pixelRatio>1){
@@ -259,8 +267,7 @@
 						_self.showArcbar2("canvasArcbar2",Arcbar2);
 						_self.showArcbar3("canvasArcbar3",Arcbar3);
 						_self.showGauge("canvasGauge",Gauge);
-						//K线图方法，即将上线
-						//_self.showCandle("canvasCandle",Candle);
+						_self.showCandle("canvasCandle",Candle);
 						
 					},
 					fail: () => {
@@ -269,7 +276,7 @@
 				});
 			},
 			showColumn(canvasId,chartData){
-				canvaColumn=new wxCharts({
+				canvaColumn=new uCharts({
 					$this:_self,
 					canvasId: canvasId,
 					type: 'column',
@@ -298,7 +305,7 @@
 				
 			},
 			showLineA(canvasId,chartData){
-				canvaLineA=new wxCharts({
+				canvaLineA=new uCharts({
 					$this:_self,
 					canvasId: canvasId,
 					type: 'line',
@@ -316,7 +323,7 @@
 						gridType:'dash',
 						itemCount:4,//可不填写，配合enableScroll图表拖拽功能使用，x轴单屏显示数据的数量，默认为5个
 						scrollShow:true,//新增是否显示滚动条，默认false
-						scrollAlign:'right',
+						scrollAlign:'left',
 						//scrollBackgroundColor:'#F7F7FF',//可不填写，配合enableScroll图表拖拽功能使用，X轴滚动条背景颜色,默认为 #EFEBEF
 						//scrollColor:'#DEE7F7',//可不填写，配合enableScroll图表拖拽功能使用，X轴滚动条颜色,默认为 #A6A6A6
 					},
@@ -339,7 +346,7 @@
 				
 			},
 			showLineB(canvasId,chartData){
-				canvaLineB=new wxCharts({
+				canvaLineB=new uCharts({
 					$this:_self,
 					canvasId: canvasId,
 					type: 'line',
@@ -367,7 +374,7 @@
 				});
 			},
 			showArea(canvasId,chartData){
-				canvaArea=new wxCharts({
+				canvaArea=new uCharts({
 					$this:_self,
 					canvasId: canvasId,
 					type: 'area',
@@ -391,7 +398,7 @@
 				});
 			},
 			showPie(canvasId,chartData){
-				new wxCharts({
+				new uCharts({
 					$this:_self,
 					canvasId: canvasId,
 					type: 'pie',
@@ -407,7 +414,7 @@
 				   });
 			},
 			showRing(canvasId,chartData){
-				new wxCharts({
+				new uCharts({
 					$this:_self,
 					canvasId: canvasId,
 					type: 'ring',
@@ -443,7 +450,7 @@
 				
 			},
 			showRadar(canvasId,chartData){
-				new wxCharts({
+				new uCharts({
 					$this:_self,
 					canvasId: canvasId,
 					type: 'radar',
@@ -465,7 +472,7 @@
 				});
 			},
 			showArcbar(canvasId,chartData){
-				new wxCharts({
+				new uCharts({
 					$this:_self,
 					canvasId: canvasId,
 					type: 'arcbar',
@@ -498,7 +505,7 @@
 				
 			},
 			showArcbar2(canvasId,chartData){
-				new wxCharts({
+				new uCharts({
 					$this:_self,
 					canvasId: canvasId,
 					type: 'arcbar',
@@ -534,7 +541,7 @@
 				
 			},
 			showArcbar3(canvasId,chartData){
-				new wxCharts({
+				new uCharts({
 					$this:_self,
 					canvasId: canvasId,
 					type: 'arcbar',
@@ -568,7 +575,7 @@
 				
 			},
 			showGauge(canvasId,chartData){
-				canvaGauge = new wxCharts({
+				canvaGauge = new uCharts({
 					$this:_self,
 					canvasId: canvasId,
 					type: 'gauge',
@@ -647,23 +654,23 @@
 				});
 			},
 			showCandle(canvasId,chartData){
-				canvaCandle=new wxCharts({
+				canvaCandle=new uCharts({
 					$this:_self,
 					canvasId: canvasId,
-					type: 'line',
+					type: 'candle',
 					fontSize:11,
 					legend:true,
 					background:'#FFFFFF',
 					pixelRatio:_self.pixelRatio,
 					categories: chartData.categories,
 					series: chartData.series,
-					animation: false,
+					animation: true,
 					enableScroll: true,//开启图表拖拽功能
 					xAxis: {
-						disableGrid:false,
-						type:'grid',
-						gridType:'dash',
-						itemCount:10,//可不填写，配合enableScroll图表拖拽功能使用，x轴单屏显示数据的数量，默认为5个
+						disableGrid:true,//不绘制X轴网格线
+						//type:'grid',
+						//gridType:'dash',
+						itemCount:20,//可不填写，配合enableScroll图表拖拽功能使用，x轴单屏显示数据的数量，默认为5个
 						scrollShow:true,//新增是否显示滚动条，默认false
 						scrollAlign:'right',
 						//scrollBackgroundColor:'#F7F7FF',//可不填写，配合enableScroll图表拖拽功能使用，X轴滚动条背景颜色,默认为 #EFEBEF
@@ -676,15 +683,41 @@
 					},
 					width: _self.cWidth*_self.pixelRatio,
 					height: _self.cHeight*_self.pixelRatio,
-					dataLabel: true,
+					dataLabel: false,
 					dataPointShape: true,
 					extra: {
 						candle:{
-							
+							color:{
+								upLine:'#f04864',
+								upFill:'#f04864',
+								downLine:'#2fc25b',
+								downFill:'#2fc25b'
+							},
+							average:{
+								show:true,
+								name:['MA5','MA10','MA30'],
+								day:[5,10,30],
+								color:['#1890ff', '#2fc25b', '#facc14']
+							}
 						}
 					},
 				});
 				
+			},
+			touchCandle(e){
+				canvaCandle.scrollStart(e);
+			},
+			moveCandle(e) {
+				canvaCandle.scroll(e);
+			},
+			touchEndCandle(e) {
+				canvaCandle.scrollEnd(e);
+				//下面是toolTip事件，如果滚动后不需要显示，可不填写
+				canvaCandle.showToolTip(e, {
+					format: function (item, category) {
+						return category + ' ' + item.name + ':' + item.data 
+					}
+				});
 			},
 			changeData(){
 				canvaColumn.updateData({
