@@ -23,8 +23,7 @@ IOS因demo比较简单无法上架，请自行编译；百度小程序和头条�
 # `【开源不易、改造不易、哪(拿)来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请先参见页面最后章节【常见问题】解决，如没有您的问题，请在页面最下面【撰写评论】，尽量不要在【问答】中提问（因有可能会漏掉您的问题）。`
 
 ## 增加`头条小程序`二维码，非正式上线版（体验版）
-## 增加`K线图`，图表类型`candle`,目前仍需完善，有需要的朋友，可以先用着，后续会加入`叠加均线`设置，及tooltip事件时加入水平指示线。
-## 修复IOS系统app端tooltip事件多次点击后丢失半透明背景bug，感谢`傲奇`发现问题并提出解决方案；增加不绘制X轴及Y轴网格参数，详见参数说明。
+## 新增混合图，图表类型`mix`（支持画point、line、column，目前只支持单坐标系，即只有左面一个Y轴）。完善K线图tooltip增加顶部显示日期，增加K线图放大缩小功能，与uni-app官方组件及按钮联动。
 
 
 ## 更新记录
@@ -39,6 +38,7 @@ IOS因demo比较简单无法上架，请自行编译；百度小程序和头条�
 - [ ] 2019.05.xx 计划修改X轴刻度标签`抽稀策略`，以适应K线图及不需要文案旋转的需求
 - [ ] 2019.05.xx 计划加入`辅助线（标记线）`功能，支持`柱状图、折线图、区域图、K线图`
 - [ ] 2019.05.19 完善K线图及其辅助功能。
+- [x] 2019.05.15 新增混合图，图表类型`mix`（支持画point、line、column，目前只支持单坐标系，即只有左面一个Y轴）。完善K线图tooltip增加顶部显示日期，增加K线图放大缩小功能，与uni-app官方组件及按钮联动。
 - [x] 2019.05.14 修复IOS系统app端tooltip事件多次点击后丢失半透明背景bug，感谢`傲奇`发现问题并提出解决方案；增加不绘制X轴及Y轴网格参数，详见参数说明。
 - [x] 2019.05.14 增加`K线图`，图表类型`candle`,目前仍需完善，有需要的朋友，可以先用着，后续会加入`叠加均线`设置，及tooltip事件时加入水平指示线。
 - [x] 2019.05.13 增加`opts.xAxis.scrollAlign`参数，滚动条初始位置，left为数据整体左对齐，right为右对齐。修复滚动条拉到最右侧不到位问题。
@@ -75,8 +75,9 @@ IOS因demo比较简单无法上架，请自行编译；百度小程序和头条�
 - 雷达图 `radar`
 - 圆弧进度图 `arcbar`
 - 仪表盘 `gauge`
-- K线图  `candle`(开发中)
+- K线图  `candle`(完善中)
 - 条状图 `bar`(开发中)
+- 混合图 `mix`（支持画point、line、column，目前只支持单坐标系）
 
 
 ## 插件特点
@@ -110,6 +111,7 @@ IOS因demo比较简单无法上架，请自行编译；百度小程序和头条�
 
 
 ## 图表示例
+![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/mix.gif?raw=true)
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/candle.gif?raw=true)
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/yibiaopan.gif?raw=true)
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/arcbar.gif?raw=true)
@@ -164,10 +166,11 @@ IOS因demo比较简单无法上架，请自行编译；百度小程序和头条�
 |`opts.categories.color`| String|  |`仅仪表盘有效，定义仪表盘分段背景颜色`|
 |opts.series |Array |required |数据列表|
 |opts.series.data| Array |required |(饼图、圆环图为Number) 数据，如果传入null图表该处出现断点|
-| `opts.series.data.value` | Number | |`仅针对柱状图有效，主要作用为柱状图自定义颜色`|
-| `opts.series.data.color` | String | |`仅针对柱状图有效，主要作用为柱状图自定义颜色`|
+|opts.series.data.value | Number | |仅针对柱状图有效，主要作用为柱状图自定义颜色|
+|opts.series.data.color | String | |仅针对柱状图有效，主要作用为柱状图自定义颜色|
 |opts.series.color |String | |例如#7cb5ec 不传入则使用系统默认配色方案|
 |opts.series.name |String | |数据名称|
+|opts.series.type |String | |`混合图表`图形展示方式，有效值为`point`,`line`,`column`详细使用方法见demo|
 |opts.series.format| Function| | 自定义显示数据内容|
 
 
@@ -358,6 +361,7 @@ IOS因demo比较简单无法上架，请自行编译；百度小程序和头条�
 - `getCurrentDataIndex(e) `获取图表中点击时的数据序列编号(-1表示未找到对应的数据区域), e: Object微信小程序标准事件，需要手动的去绑定touch事件，具体可参考wx-charts-demo中column图示例
 - `showToolTip(e, options?)` 图表中展示数据详细内容(目前仅支持line和area图表类型)，e: Object微信小程序标准事件，options: Object可选，tooltip的自定义配置，支持option.background，默认为#000000; option.format, function类型，接受两个传入的参数，seriesItem(Object, 包括seriesItem.name以及seriesItem.data)和category，可自定义tooltip显示内容。具体可参考wx-charts-demo中line图示例
 - `scrollStart(e)`, `scroll(e)`, `scrollEnd(e)`设置支持图表拖拽系列事件(支持line, area, column)，具体参考wx-charts-demo中ScrollLine图示例
+- `zoom(val)`启用滚动条时，放大或缩小屏幕范围内数据数量。
 
 ### 事件
 - `renderComplete` 图表渲染完成（如果有动画效果，则动画效果完成时触发）

@@ -18,7 +18,22 @@
         	<!--#endif-->
         </view>
 		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
+			<view class="qiun-title-dot-light">混合图（单坐标系支持画点、线、柱）</view>
+		</view>
+		<view class="qiun-charts">
+			<!--#ifdef MP-ALIPAY -->
+			<canvas canvas-id="canvasMix" id="canvasMix" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}" disable-scroll=true @touchstart="touchMix" @touchmove="moveMix" @touchend="touchEndMix"></canvas>
+			<!--#endif-->
+			<!--#ifndef MP-ALIPAY -->
+			<canvas canvas-id="canvasMix" id="canvasMix" class="charts" disable-scroll=true @touchstart="touchMix" @touchmove="moveMix" @touchend="touchEndMix"></canvas>
+			<!--#endif-->
+		</view>
+		<view class="qiun-bg-white qiun-title-bar qiun-common-mt qiun-rows" >
 			<view class="qiun-title-dot-light">K线图（蜡烛图）</view>
+			<view style="flex: 1;qiun-rows;text-align: right;">
+				<button type="default" size="mini" @tap="tapButton('in')">放大</button>
+				<button type="default" size="mini" style="margin-left: 20upx;" @tap="tapButton('out')">缩小</button>
+			</view>
 		</view>
 		<view class="qiun-charts">
 			<!--#ifdef MP-ALIPAY -->
@@ -29,6 +44,9 @@
 			<canvas canvas-id="canvasCandle" id="canvasCandle" class="charts" disable-scroll=true @touchstart="touchCandle" @touchmove="moveCandle" @touchend="touchEndCandle"></canvas>
 			<!-- 使用图表拖拽功能时，建议给canvas增加disable-scroll=true属性，在拖拽时禁止屏幕滚动 -->
 			<!--#endif-->
+		</view>
+		<view class="qiun-padding qiun-bg-white ">
+			<slider :value="itemCount" min="5" :max="sliderMax" block-color="#f8f8f8" block-size="18" @changing="sliderMove"/>
 		</view>
 		<view class="qiun-padding">
 			<view class="qiun-tip" @tap="changeGaugeData()">更新仪表盘数据</view>
@@ -140,10 +158,12 @@
 	var canvaArea=null;
 	var canvaGauge=null;
 	var canvaCandle=null;
+	var canvaMix=null;
 	/*下面是服务器返回的数据格式，现已改成从服务器获取数据，以供有些朋友不知道怎么从后台获取数据后调用
 	var Data={
 		Column:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量1',data:[15, {value:20,color:'#f04864'},45, 37, 43, 34]},{name: '成交量2',data:[30, {value:40,color:'#facc14'}, 25, 14, 34, 18]}]},
 		ColumnB:{categories:['2013', '2014', '2015', '2016', '2017', '2018'],series:[{name: '新成交量3',data:[35, 36, 31, 33, 13, 34]},{name: '新成交量4',data:[18, 27, 21, 34, 14, 38]}]},
+		Mix:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '柱',data:[35, 20, 25, 37, 4, 20],type:'column'},{name: '线',data:[70, 40, 65, 100, 44, 68],type:'line'},{name: '点',data:[100, 80, 95, 150, 112, 132],type:'point'}]},
 		LineA:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量A',data:[35, 20, 25, 37, 4, 20],color:'#000000'},{name: '成交量B',data:[70, 40, 65, 100, 44, 68]},{name: '成交量C',data:[100, 80, 95, 150, 112, 132]}]},
 		LineB:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量A',data:[35, 20, 25, 37, 4, 20]},{name: '成交量B',data:[70, 40, 65, 100, 44, 68]},{name: '成交量C',data:[100, 80, 95, 150, 112, 132]}]},
 		Area:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量A',data:[100, 80, 95, 150, 112, 132],color:'#facc14'},{name: '成交量B',data:[70, 40, 65, 100, 44, 68],color:'#2fc25b'},{name: '成交量C',data:[35, 20, 25, 37, 4, 20],color:'#1890ff'}]},
@@ -180,7 +200,9 @@
 				gaugeWidth:'',//仪表盘宽度,此设置可使各端宽度一致
 				tips:'【开源不易、改造不易、哪(拿)来简单】uCharts将始终坚持开源，为您提供最便捷的高性能图表工具！',
 				pixelRatio:1,
-				serverData:''
+				serverData:'',
+				itemCount:20,//x轴单屏数据密度
+				sliderMax:50
 			}
 		},
 		onLoad() {
@@ -219,6 +241,7 @@
 						//下面这个根据需要保存后台数据，我是为了模拟更新柱状图，所以存下来了
 						_self.serverData=res.data.data;
 						_self.tips=res.data.data.tips;
+						_self.sliderMax=res.data.data.Candle.categories.length;
 						let Column={categories:[],series:[]};
 						let LineA={categories:[],series:[]};
 						let LineB={categories:[],series:[]};
@@ -231,6 +254,7 @@
 						let Arcbar3={series:[]};
 						let Gauge={categories:[],series:[]};
 						let Candle={categories:[],series:[]};
+						let Mix={categories:[],series:[]};
 						//这里我后台返回的是数组，所以用等于，如果您后台返回的是单条数据，需要push进去
 						Column.categories=res.data.data.Column.categories;
 						//这里的series数据是后台做好的，如果您的数据没有和前面我注释掉的格式一样，请自行拼接数据
@@ -256,6 +280,8 @@
 						Gauge.series=res.data.data.Gauge.series;
 						Candle.categories=res.data.data.Candle.categories;
 						Candle.series=res.data.data.Candle.series;
+						Mix.categories=res.data.data.Mix.categories;
+						Mix.series=res.data.data.Mix.series;
 						_self.showColumn("canvasColumn",Column);
 						_self.showLineA("canvasLineA",LineA);
 						_self.showLineB("canvasLineB",LineB);
@@ -268,7 +294,7 @@
 						_self.showArcbar3("canvasArcbar3",Arcbar3);
 						_self.showGauge("canvasGauge",Gauge);
 						_self.showCandle("canvasCandle",Candle);
-						
+						_self.showMix("canvasMix",Mix);
 					},
 					fail: () => {
 						_self.tips="网络错误，小程序端请检查合法域名";
@@ -670,7 +696,7 @@
 						disableGrid:true,//不绘制X轴网格线
 						//type:'grid',
 						//gridType:'dash',
-						itemCount:20,//可不填写，配合enableScroll图表拖拽功能使用，x轴单屏显示数据的数量，默认为5个
+						itemCount:_self.itemCount,//可不填写，配合enableScroll图表拖拽功能使用，x轴单屏显示数据的数量，默认为5个
 						scrollShow:true,//新增是否显示滚动条，默认false
 						scrollAlign:'right',
 						//scrollBackgroundColor:'#F7F7FF',//可不填写，配合enableScroll图表拖拽功能使用，X轴滚动条背景颜色,默认为 #EFEBEF
@@ -719,6 +745,38 @@
 					}
 				});
 			},
+			tapButton(type){
+				uni.showToast({
+					title:'完善中'
+				});
+				let step=5;
+				if(type=='in'){
+					_self.itemCount -= step;
+					if(_self.itemCount<=5){
+						_self.itemCount=5;
+					}
+				}else{
+					_self.itemCount += step;
+					if(_self.itemCount>_self.serverData.Candle.categories.length){
+						_self.itemCount=_self.serverData.Candle.categories.length;
+					}
+				}
+				return;
+				_self.zoomCandle(_self.itemCount);
+			},
+			sliderMove(e){
+				_self.itemCount=e.detail.value;
+				uni.showToast({
+					title:'完善中'
+				});
+				return;
+				_self.zoomCandle(e.detail.value);
+			},
+			zoomCandle(val) {
+				canvaCandle.zoom({
+					itemCount: val
+				});
+			},
 			changeData(){
 				canvaColumn.updateData({
 					series: _self.serverData.ColumnB.series,
@@ -735,6 +793,57 @@
 				canvaLineA.scrollEnd(e);
 				//下面是toolTip事件，如果滚动后不需要显示，可不填写
 				canvaLineA.showToolTip(e, {
+					format: function (item, category) {
+						return category + ' ' + item.name + ':' + item.data 
+					}
+				});
+			},
+			showMix(canvasId,chartData){
+				canvaMix=new uCharts({
+					$this:_self,
+					canvasId: canvasId,
+					type: 'mix',
+					fontSize:11,
+					legend:true,
+					background:'#FFFFFF',
+					pixelRatio:_self.pixelRatio,
+					categories: chartData.categories,
+					series: chartData.series,
+					animation: true,
+					enableScroll: true,//开启图表拖拽功能
+					xAxis: {
+						disableGrid:false,
+						type:'grid',
+						gridType:'dash',
+						itemCount:4,
+						scrollShow:true,
+						scrollAlign:'left',
+					},
+					yAxis: {
+						gridType:'dash',
+						splitNumber:5,
+						min:10,
+						max:180
+					},
+					width: _self.cWidth*_self.pixelRatio,
+					height: _self.cHeight*_self.pixelRatio,
+					dataLabel: true,
+					dataPointShape: true,
+					extra: {
+						lineStyle: 'straight'
+					},
+				});
+			},
+			touchMix(e){
+				canvaMix.scrollStart(e);
+			},
+			moveMix(e) {
+				canvaMix.scroll(e);
+			},
+			touchEndMix(e) {
+				canvaMix.scrollEnd(e);
+				//下面是toolTip事件，如果滚动后不需要显示，可不填写
+				canvaMix.showToolTip(e, {
 					format: function (item, category) {
 						return category + ' ' + item.name + ':' + item.data 
 					}
