@@ -18,7 +18,18 @@
         	<!--#endif-->
         </view>
 		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
-			<view class="qiun-title-dot-light">混合图（单坐标系支持画点、线、柱）</view>
+			<view class="qiun-title-dot-light">温度计式图表</view>
+		</view>
+		<view class="qiun-charts" >
+			<!--#ifdef MP-ALIPAY -->
+			<canvas canvas-id="canvasColumnMeter" id="canvasColumnMeter" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
+			<!--#endif-->
+			<!--#ifndef MP-ALIPAY -->
+			<canvas canvas-id="canvasColumnMeter" id="canvasColumnMeter" class="charts"></canvas>
+			<!--#endif-->
+		</view>
+		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
+			<view class="qiun-title-dot-light">混合图（单坐标系支持画点、线、面、柱）</view>
 		</view>
 		<view class="qiun-charts">
 			<!--#ifdef MP-ALIPAY -->
@@ -243,6 +254,7 @@
 						_self.tips=res.data.data.tips;
 						_self.sliderMax=res.data.data.Candle.categories.length;
 						let Column={categories:[],series:[]};
+						let ColumnMeter={categories:[],series:[]};
 						let LineA={categories:[],series:[]};
 						let LineB={categories:[],series:[]};
 						let Area={categories:[],series:[]};
@@ -259,6 +271,9 @@
 						Column.categories=res.data.data.Column.categories;
 						//这里的series数据是后台做好的，如果您的数据没有和前面我注释掉的格式一样，请自行拼接数据
 						Column.series=res.data.data.Column.series;
+						ColumnMeter.categories=res.data.data.ColumnMeter.categories;
+						//这里的series数据,如果为Meter，series[0]定义为外层数据，series[1]定义为内层数据
+						ColumnMeter.series=res.data.data.ColumnMeter.series;
 						LineA.categories=res.data.data.LineA.categories;
 						LineA.series=res.data.data.LineA.series;
 						LineB.categories=res.data.data.LineB.categories;
@@ -283,6 +298,7 @@
 						Mix.categories=res.data.data.Mix.categories;
 						Mix.series=res.data.data.Mix.series;
 						_self.showColumn("canvasColumn",Column);
+						_self.showColumnMeter("canvasColumnMeter",ColumnMeter);
 						_self.showLineA("canvasLineA",LineA);
 						_self.showLineB("canvasLineB",LineB);
 						_self.showArea("canvasArea",Area);
@@ -325,6 +341,40 @@
 					extra: {
 						column: {
 						  width: _self.cWidth*_self.pixelRatio*0.45/chartData.categories.length
+						}
+					  }
+				});
+				
+			},
+			showColumnMeter(canvasId,chartData){
+				new uCharts({
+					$this:_self,
+					canvasId: canvasId,
+					type: 'column',
+					legend:true,
+					fontSize:11,
+					background:'#FFFFFF',
+					pixelRatio:_self.pixelRatio,
+					animation: true,
+					categories: chartData.categories,
+					series: chartData.series,
+					xAxis: {
+						disableGrid:true,
+					},
+					yAxis: {
+						//disabled:true
+					},
+					dataLabel: true,
+					width: _self.cWidth*_self.pixelRatio,
+					height: _self.cHeight*_self.pixelRatio,
+					extra: {
+						column: {
+							type:'meter',
+							width: _self.cWidth*_self.pixelRatio*0.45/chartData.categories.length,
+							meter:{
+								border:4,
+								fillColor:'#E5FDC3'
+							}
 						}
 					  }
 				});
@@ -381,6 +431,9 @@
 					background:'#FFFFFF',
 					pixelRatio:_self.pixelRatio,
 					rotate:true,//开启图表横屏
+					// #ifdef MP-ALIPAY
+					rotateLock:true,//百度及支付宝需要锁定旋转
+					// #endif
 					categories: chartData.categories,
 					animation: false,
 					series: chartData.series,
@@ -421,6 +474,9 @@
 					height: _self.cHeight*_self.pixelRatio,
 					dataLabel: true,
 					dataPointShape: true,
+					extra: {
+						lineStyle: 'curve'
+					},
 				});
 			},
 			showPie(canvasId,chartData){

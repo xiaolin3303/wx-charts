@@ -10,6 +10,19 @@
 
 # `uCharts的发展，离不开各位的支持和帮助！最近很多热心朋友提出很多问题及解决方案，更好的完善uCharts，以帮助更多朋友解决问题，在此感谢大家的付出和贡献！`
 
+## 引用方法
+`import uCharts from '../../components/u-charts/u-charts.js';`
+
+
+# `亲们，文档在下面等你哦`
+
+
+# [在线文档(参见API章节)（其他说明完善中）](https://www.kancloud.cn/qiun/ucharts/content)
+
+# [在线文档(参见API章节)（其他说明完善中）](https://www.kancloud.cn/qiun/ucharts/content)
+
+# [在线文档(参见API章节)（其他说明完善中）](https://www.kancloud.cn/qiun/ucharts/content)
+
 
 ## 快速体验
 
@@ -22,11 +35,12 @@ IOS因demo比较简单无法上架，请自行编译；百度小程序和头条�
 
 # `【开源不易、改造不易、哪(拿)来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请先参见页面最后章节【常见问题】解决，如没有您的问题，请在页面最下面【撰写评论】，尽量不要在【问答】中提问（因有可能会漏掉您的问题）。`
 
-## 增加`头条小程序`二维码，非正式上线版（体验版）
-## 新增混合图，图表类型`mix`（支持画point、line、column，目前只支持单坐标系，即只有左面一个Y轴）。完善K线图tooltip增加顶部显示日期，增加K线图放大缩小功能，与uni-app官方组件及按钮联动。
+## 新增`堆叠图`，`温度计式图表`
 
 
-## 更新记录
+## [更新记录](https://www.kancloud.cn/qiun/ucharts/content/%E6%9B%B4%E6%96%B0%E8%AE%B0%E5%BD%95.md)
+
+## 未来计划
 - [ ] 2019.xx.xx 计划太多~~~~轮子不好造啊~~~~
 - [ ] 2019.08.xx 计划搭建`uCharts官方网站`，以供初学者快速上手uCharts
 - [ ] 2019.07.xx 计划重建各端demo，以供初学者快速上手uCharts
@@ -37,52 +51,27 @@ IOS因demo比较简单无法上架，请自行编译；百度小程序和头条�
 - [ ] 2019.05.xx 推迟计划加入`第二种仪表盘样式`,增加[《亲手教您如何改造uCharts，打造您的专属图表》](https://github.com/16cheng/uCharts/wiki/%E4%BA%B2%E6%89%8B%E6%95%99%E6%82%A8%E5%A6%82%E4%BD%95%E6%94%B9%E9%80%A0wx-charts)教程。
 - [ ] 2019.05.xx 计划修改X轴刻度标签`抽稀策略`，以适应K线图及不需要文案旋转的需求
 - [ ] 2019.05.xx 计划加入`辅助线（标记线）`功能，支持`柱状图、折线图、区域图、K线图`
-- [ ] 2019.05.19 完善K线图及其辅助功能。
-- [x] 2019.05.15 新增混合图，图表类型`mix`（支持画point、line、column，目前只支持单坐标系，即只有左面一个Y轴）。完善K线图tooltip增加顶部显示日期，增加K线图放大缩小功能，与uni-app官方组件及按钮联动。
-- [x] 2019.05.14 修复IOS系统app端tooltip事件多次点击后丢失半透明背景bug，感谢`傲奇`发现问题并提出解决方案；增加不绘制X轴及Y轴网格参数，详见参数说明。
-- [x] 2019.05.14 增加`K线图`，图表类型`candle`,目前仍需完善，有需要的朋友，可以先用着，后续会加入`叠加均线`设置，及tooltip事件时加入水平指示线。
-- [x] 2019.05.13 增加`opts.xAxis.scrollAlign`参数，滚动条初始位置，left为数据整体左对齐，right为右对齐。修复滚动条拉到最右侧不到位问题。
-- [x] 2019.05.10 感谢`不是发哥`提示官方H5画布现已支持高分屏，更改H5端模板写法，详见最新版demo。修复传入`空数组`导致客户端卡死的问题，实例化前无需再判断数组长度是否为0了。修复传入null值线段断点不显示问题。
-- [x] 2019.05.09 修复Android9.0文字标签只显示一个的bug，感谢`houyongbo03@163.com`发现问题，并提出解决方案，更新线上Android版本。
-- [x] 2019.05.07 初步解决`组件内使用问题`，感谢`342805357@qq.com`提出组件问题解决方案，增加`opts.$this`参数，组件使用时实例化前请传递this。后续会增加组件使用实例，请关注。
-- [x] 2019.05.06 增加Y轴`format格式化刻度`示例(Y轴刻度数值取整)，增加Y轴`网格数量`示例，详见demo折线图一。
-- [x] 2019.05.06 完善X轴Y轴网格设置，增加X轴网格设置，增加XY轴`虚线网格`绘制,`gridType`网格线型 'solid'为实线、'dash'为虚线。整理并归类帮助文档。
-- [x] 2019.05.05 完善`圆弧进度图`增加起始结束角度自定义，新增背景颜色自定义，新增`整圆进度图`，参数请参考demo。
-- [x] 2019.05.04 完善`仪表盘`更新数据时`指针切换动画`，增加`仪表盘数据标签`。
-- [x] 2019.05.01 新增`仪表盘`图，图表类型`gauge`，可以高度自定义，参数请参考demo。注意原`圆弧进度条`的图表类型变更为`arcbar`,给您带来不便请谅解
-- [x] 2019.04.30 新增`opts.title.offsetY`标题纵向偏移距离，`opts.subtitle.offsetY`副标题纵向偏移距离，适用于`ring`、`arcbar`及即将上线的`gauge`，详见demo`圆环图`示例。
-- [x] 2019.04.28 修改demo为动态数据以帮助初学者使用，即后台获取数据后实例化图表；新增柱状图`自定义颜色`，传入数据标准如下(可混合使用)：
-``` series:[{name: '成交量1',data:[15, {value:20,color:'#f04864'},45, 37, 43, 34]},{name: '成交量2',data:[30, {value:40,color:'#facc14'}, 25, 14, 34, 18]}] ```
-- [x] 2019.04.23 增加`opts.xAxis.scrollShow`参数，默认为`false`，在`图表拖拽`时，是否显示滚动条，因为有些朋友可能不需要显示滚动条。增加`背景颜色`为其他颜色的示例，因为有些朋友设置的不太正确，请参考`柱状图`。详见v1.5.2demo页面。
-- [x] 2019.04.22 修复区域图拖拽模式下线段连接错位问题
-- [x] 2019.04.21 增加图表拖拽图`滚动条`显示当前拖拽进度，`scrollBackgroundColor`为滚动条背景色，`scrollColor`为滚动条颜色，均可自定义，详见demo折线图一
-- [x] 2019.04.19 增加`图表拖拽`示例，支持的图表有柱状图、折线图和区域图，除头条小程序外，其他各端现已全部支持拖拽功能（头条小程序canvas不支持点击事件），需配合绑定`@touchstart`, `@touchmove`, `@touchend`方法
-- [x] 2019.04.18 修复`圆弧进度图`示例中`进度数值`JS计算精度引起的小数位数问题，加`Math.round()`解决，感谢`开发者M_少`发现问题。更正`参数说明`中几个错误描述
-- [x] 2019.04.17 增加`自定义显示数据标签文案`示例，请下载1.4.1版本，参见圆环图ring数据事例
-- [x] 2019.04.16 新增`圆弧进度图`,图表类型`arcbar`，详见demo，感谢作者`2388306191@qq.com`提供思路
-- [x] 2019.04.15 支持`横屏模式`，新增`rotate`参数，默认flase，示例见`折线图二`
-- [x] 2019.04.14 支持百度、头条小程序，实现彻底跨全端
-- [x] 2019.04.12 支持支付宝小程序（开发者工具不显示，上传代码真机预览可以显示）
-- [x] 2019.04.01 改造成uni-app跨端组件（虽是愚人节，但图表是真图表^.^）
-
+- [ ] 2019.05.xx 完善K线图及其辅助功能。
+- [ ] 2019.05.xx 计划修复折线图样式为曲线时，个别情况下曲线超出x轴的问题。
+- [ ] 2019.05.21 计划新增堆叠图，温度计图。
 
 ## 支持图表类型
 - 饼图   `pie`
 - 圆环图 `ring`
-- 线图   `line`
-- 柱状图 `column`
-- 区域图 `area`
+- 线图   `line`（直线、曲线）
+- 柱状图 `column`（分组、堆叠、温度计）
+- 区域图 `area`（直线、曲线）
 - 雷达图 `radar`
 - 圆弧进度图 `arcbar`
 - 仪表盘 `gauge`
 - K线图  `candle`(完善中)
 - 条状图 `bar`(开发中)
-- 混合图 `mix`（支持画point、line、column，目前只支持单坐标系）
+- 混合图 `mix`（支持point、line直线曲线、column、area直线曲线）
 
 
 ## 插件特点
 - 改造后的插件可以跨端使用，支持H5、小程序（微信/支付宝/百度/头条）、APP，调用简单方便、性能及体验极佳。
-- 虽然没有Echarts及F2图表功能强大，但可以实现一套业务逻辑各端通用，并解决了H5端图表显示模糊等问题。
+- 虽然没有Echarts及F2图表功能强大，但可以实现一套业务逻辑各端通用，并解决了支付宝小程序图表显示模糊等问题。
 - 支持单页面多图表，demo中单页10个图表，响应速度超快。
 - 支持入场动画及ToolTip动画效果。
 - 独特支持`横屏模式`感谢`masterLi`提供需求。
@@ -90,10 +79,11 @@ IOS因demo比较简单无法上架，请自行编译；百度小程序和头条�
 ## 为何不用Echarts？
 - 相比Echarts及F2的复杂的设置，本插件几乎等于傻瓜式的配置。
 - Echarts在跨端使用更复杂，本插件只需要简单的两个`<canvas>`标签轻松区别搞定，代码整洁易维护。
+- Echarts在IOS端图表显示错位，只能引用网页解决。
 - 本插件打包后的体积相比Echarts小很多很多，所以性能更好。
 - 如果您是uni-app初学者，那么强烈建议您使用uCharts，并且目前可以跨全端通用，减少工作量，增强一致性体验。
 - 图表样式均可自定义，懂js的都可以读懂插件源码，直接修改wxcharts.js源码即可。
-- 本插件原为我公司产品所用，经过大量测试，反复论证并加以改造而成，请各位放心使用。
+- 本插件经过大量测试，反复论证并加以改造而成，请各位放心使用。
 
 ## uni-app图表选型参考流程
 
@@ -111,6 +101,8 @@ IOS因demo比较简单无法上架，请自行编译；百度小程序和头条�
 
 
 ## 图表示例
+![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/stack.gif?raw=true)
+![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/meter.gif?raw=true)
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/mix.gif?raw=true)
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/candle.gif?raw=true)
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/yibiaopan.gif?raw=true)
@@ -125,254 +117,6 @@ IOS因demo比较简单无法上架，请自行编译；百度小程序和头条�
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/ring.gif?raw=true)
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/radar.gif?raw=true)
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/lineB.gif?raw=true)
-
-## 引用方法
-`import uCharts from '../../components/u-charts/u-charts.js';`
-
-## 具体用法
-## 因官方过滤了代码，这里就不贴写法了，以免误导大家，请详见demo中的`pages/wxcharts/wxcharts.vue`文件。
-
-## 参数说明
-
-### 通用基础配置项
-
-| 属性 | 类型 | 默认 |说明|
-| :------ | :-----: | :-----: | :-------------------- |
-|opts |Object| | |
-|`opts.$this` | Object |required|this实例`组件内使用图表，必须传入this实例`|
-|opts.canvasId | String|required|页面组件canvas-id|
-|opts.width |Number |required| canvas宽度，单位为px`支付宝、百度、头条，高分屏需要乘像素比`|
-|opts.height| Number| required |canvas高度，单位为px`支付宝、百度、头条，高分屏需要乘像素比`|
-|opts.type|String |required| 图表类型，可选值为pie, line, column, area, ring, radar, arcbar, gauge, `K线图candle、条状图bar开发中`|
-|opts.pixelRatio| Number| required |像素比，默认为1，非H5端引用无需设置|
-|opts.rotate| Boolean| 默认false |横屏模式，默认为false|
-|opts.fontSize| Number | 默认13px |全局默认字体大小（可选，单位为px，默认13px）高分屏不必乘像素比，自动根据pixelRatio计算|
-|opts.background| String | |canvas背景颜色（如果页面背景颜色不是白色请设置为页面的背景颜色，默认#ffffff）|
-|opts.enableScroll |Boolean | 默认false |是否开启图表可拖拽滚动 默认false 支持line, area, column, candle图表类型(需配合绑定@touchstart, @touchmove,  @touchend方法)|
-|`opts.enableMarkLine` |Boolean | 默认false |是否显示辅助线 默认false 支持line, area, column, candle图表类型`开发中`|
-|opts.animation| Boolean |默认为 true |是否动画展示|
-|opts.legend| Boolen |默认为 true| 图例设置，是否显示图表下方各类别的标识|
-|opts.dataLabel| Boolean |默认为 true |是否在图表中显示数据标签内容值|
-|opts.dataPointShape| Boolean |默认为 true| 是否在图表中显示数据点图形标识|
-|opts.disablePieStroke |Boolean |默认为 false| 不绘制饼图（圆环图）各区块的白色分割线`即将迁移至扩展配置中`|
-
-
-### 数据列表每项结构定义
-
-| 属性 | 类型 | 默认 |说明|
-| :------ | :-----: | :-----: | :-------------------- |
-|opts.categories| Array| required |数据类别(饼图、圆环图不需要) |
-|`opts.categories.value`| Number|  |`仅仪表盘有效，定义仪表盘分段值`|
-|`opts.categories.color`| String|  |`仅仪表盘有效，定义仪表盘分段背景颜色`|
-|opts.series |Array |required |数据列表|
-|opts.series.data| Array |required |(饼图、圆环图为Number) 数据，如果传入null图表该处出现断点|
-|opts.series.data.value | Number | |仅针对柱状图有效，主要作用为柱状图自定义颜色|
-|opts.series.data.color | String | |仅针对柱状图有效，主要作用为柱状图自定义颜色|
-|opts.series.color |String | |例如#7cb5ec 不传入则使用系统默认配色方案|
-|opts.series.name |String | |数据名称|
-|opts.series.type |String | |`混合图表`图形展示方式，有效值为`point`,`line`,`column`详细使用方法见demo|
-|opts.series.format| Function| | 自定义显示数据内容|
-
-
-### 标题配置项（适用于ring、arcbar、gauge）
-
-| 属性 | 类型 | 默认 |说明|
-| :------ | :-----: | :-----: | :-------------------- |
-|opts.title| Object| | 适用于`ring`、`arcbar`、`gauge`|
-|opts.title.name| String | |标题内容|
-|opts.title.fontSize| Number |  |标题字体大小（可选，单位为px）|
-|opts.title.color| String| | 标题颜色（可选）|
-|opts.title.offsetX |Number| 默认0px | 标题横向位置偏移量，单位px，默认0|
-|opts.title.offsetY |Number| 默认0px | 标题纵向位置偏移量，单位px，默认0|
-|opts.subtitle| Object| | 适用于`ring`、`arcbar`、`gauge`|
-|opts.subtitle.name| String| | 副标题内容|
-|opts.subtitle.offsetX| Number| 默认0px | 副标题横向位置偏移量，单位px，默认0|
-|opts.subtitle.offsetY| Number| 默认0px | 副标题横向位置偏移量，单位px，默认0|
-|opts.subtitle.fontSize| Number| | 副标题字体大小（可选，单位为px）|
-|opts.subtitle.color| String| | 副标题颜色（可选）|
-
-
-### 坐标轴配置项
-
-| 属性 | 类型 | 默认 |说明|
-| :------ | :-----: | :-----: | :-------------------- |
-|opts.xAxis |Object | |X轴配置|
-|`opts.xAxis.rotateLabel`| Boolean| 默认为 false | `X轴刻度（数值）标签是否旋转`|
-|opts.xAxis.itemCount| Number| 默认为 5 | X轴可见区域`数据数量`（即X轴数据密度），配合拖拽滚动使用（即仅在启用enableScroll时有效）|
-|opts.xAxis.scrollShow| Boolean| 默认为 false | 是否显示滚动条，配合拖拽滚动使用（即仅在启用enableScroll时有效）|
-|`opts.xAxis.scrollAlign`| String| 默认为 left | `滚动条初始位置，left为数据整体左对齐，right为右对齐`|
-|opts.xAxis.scrollBackgroundColor| String| 默认为 #EFEBEF | X轴滚动条背景颜色，配合拖拽滚动使用（即仅在启用enableScroll时有效）|
-|opts.xAxis.scrollColor| String| 默认为 #A6A6A6 | X轴滚动条颜色，配合拖拽滚动使用（即仅在启用enableScroll时有效）|
-|opts.xAxis.disableGrid |Boolean| 默认为 false| 不绘制X轴网格(即默认绘制网格)|
-|opts.xAxis.type |String | 默认为calibration |X轴网格样式，可选值calibration（刻度）、grid（网格）|
-|opts.xAxis.gridColor| String| 默认为 #cccccc | X轴网格颜色 例如#7cb5ec|
-|opts.xAxis.gridType |String | 默认为 solid| X轴网格线型 'solid'为实线、'dash'为虚线`|
-|opts.xAxis.dashLength |Number | 默认为 4px | X轴网格为虚线时，单段虚线长度 |
-|opts.xAxis.fontColor| String| 默认为 #666666 | X轴数据点颜色 例如#7cb5ec|
-|`opts.xAxis.disabled` |Boolean |默认为 false| `不绘制X轴`|
-|opts.yAxis |Object | |Y轴配置|
-|opts.yAxis.format |Function| | 自定义Y轴文案显示|
-|opts.yAxis.min| Number| | Y轴起始值|
-|opts.yAxis.max| Number | |Y轴终止值|
-|opts.yAxis.title| String | |Y轴title|
-|opts.yAxis.disableGrid |Boolean| 默认为 false| 不绘制Y轴网格(即默认绘制网格)|
-|opts.yAxis.splitNumber |Number | 默认5 |Y轴网格数量|
-|opts.yAxis.gridType |String | 默认为 solid| Y轴网格线型 'solid'为实线、'dash'为虚线|
-|opts.yAxis.dashLength |Number | 默认为 4px | Y轴网格为虚线时，单段虚线长度  |
-|opts.yAxis.gridColor |String | 默认为 solid | Y轴网格颜色 'solid'为实线、''为虚线 |
-|opts.yAxis.fontColor| String | 默认为 #666666 | Y轴数据点颜色 例如#7cb5ec|
-|opts.yAxis.titleFontColor |String | 默认为 #333333 | Y轴title颜色 例如#7cb5ec|
-|opts.yAxis.disabled |Boolean |默认为 false| 不绘制Y轴|
-
-
-### 扩展配置项（圆弧进度条）
-
-| 属性 | 类型 | 默认 |说明|
-| :------ | :-----: | :-----: | :------------ |
-|opts.extra| Object| |其他非通用配置项|
-|opts.extra.arcbar| Number | 默认12px |圆弧进度图相关配置|
-|opts.extra.arcbar.type| String | 默认default |圆弧进度图样式，default为半圆弧，circle为整圆|
-|opts.extra.arcbar.width| Number | 默认12px |圆弧进度图弧线宽度，单位为px|
-|opts.extra.arcbar.backgroundColor| String | 默认#E9E9E9 |圆弧进度图背景颜色|
-|opts.extra.arcbar.startAngle| Number | 默认0.75 |圆弧进度图起始角度，0-2之间，0为3点钟位置，0.5为6点钟，1为9点钟，1.5为12点钟|
-|opts.extra.arcbar.endAngle| Number | 默认0.25 |圆弧进度图结束角度，0-2之间，0为3点钟位置，0.5为6点钟，1为9点钟，1.5为12点钟|
-
-
-### 扩展配置项（仪表盘）
-
-| 属性 | 类型 | 默认 |说明|
-| :------ | :-----: | :-----: | :------------ |
-|opts.extra.gauge| Object | |仪表盘相关配置|
-|opts.extra.gauge.type| String | 默认default |仪表盘样式，default为百度样式，`其他样式开发中`|
-|opts.extra.gauge.width| Number | 默认15px |仪表盘坐标轴（指示盘）线宽度，单位为px|
-|opts.extra.gauge.labelColor| String | 默认#666666|仪表盘刻度尺标签文字颜色|
-|opts.extra.gauge.startAngle| Number | 默认0.75 |仪表盘起始角度，0-2之间，0为3点钟位置，0.5为6点钟，1为9点钟，1.5为12点钟|
-|opts.extra.gauge.endAngle| Number | 默认0.25 |仪表盘结束角度，0-2之间，0为3点钟位置，0.5为6点钟，1为9点钟，1.5为12点钟|
-|opts.extra.gauge.startNumber| Number | 默认0 |仪表盘起始数值|
-|opts.extra.gauge.endNumber| Number | 默认100 |仪表盘结束数值|
-|opts.extra.gauge.splitLine| Object | |仪表盘刻度线配置|
-|opts.extra.gauge.splitLine.fixRadius| Number | 默认0 |仪表盘刻度线径向偏移量|
-|opts.extra.gauge.splitLine.splitNumber| Number | 默认10 |仪表盘刻度线分段总数量|
-|opts.extra.gauge.splitLine.width| Number | 默认15px |仪表盘分割线长度|
-|opts.extra.gauge.splitLine.color| String | 默认#FFFFFF |仪表盘分割线颜色|
-|opts.extra.gauge.splitLine.childNumber| Number | 默认5 |仪表盘子刻度线数量|
-|opts.extra.gauge.splitLine.childWidth| Number | 默认5px |仪表盘子刻度线长度|
-|opts.extra.gauge.pointer| Object | |仪表盘指针配置|
-|opts.extra.gauge.pointer.width| Number | 默认15px |仪表盘指针宽度|
-|opts.extra.gauge.pointer.color| String | 默认auto |仪表盘指针颜色，定义为auto时，随仪表盘背景颜色改变,或者可以指定颜色例如'#7cb5ec'|
-
-
-### 扩展配置项（雷达图）
-
-| 属性 | 类型 | 默认 |说明|
-| :------ | :-----: | :-----: | :------------ |
-|opts.extra.radar| Object | |雷达图相关配置|
-|opts.extra.radar.max| Number|默认为 series |data的最大值，数据区间最大值，用于调整数据显示的比例|
-|opts.extra.radar.labelColor |String|默认为 #666666|各项标识文案的颜色|
-|opts.extra.radar.gridColor |String| 默认为 #cccccc| 雷达图网格颜色|
-
-
-### 扩展配置项（柱状图）
-
-| 属性 | 类型 | 默认 |说明|
-| :------ | :-----: | :-----: | :------------ |
-|opts.extra.column| Object | |柱状图相关配置|
-|`opts.extra.column.type`| Object | 默认group |柱状图类型：`group`分组柱状图，`stack`为堆叠柱状图`未完成开发中`|
-|opts.extra.column.width |Number| | 柱状图每项的图形宽度，单位为px|
-
-
-### 扩展配置项（饼图、圆环图）
-
-| 属性 | 类型 | 默认 |说明|
-| :------ | :-----: | :-----: | :------------ |
-|opts.extra.pie| Object| | 饼图、圆环图相关配置|
-|opts.extra.pie.offsetAngle| Number| 默认为0| 起始角度偏移度数，顺时针方向，起点为3点钟位置（比如要设置起点为12点钟位置，即逆时针偏移90度，传入-90即可）|
-|opts.extra.ringWidth| Number | |ringChart圆环宽度，单位为px`即将变更为opts.extra.pie.ringWidth`|
-
-
-### 扩展配置项（折线图）
-
-| 属性 | 类型 | 默认 |说明|
-| :------ | :-----: | :-----: | :------------ |
-|opts.extra.lineStyle| String| 默认straight | (仅对line, area图表有效) 可选值：curve曲线，straight直线 `即将变更为opts.extra.line.type`|
-
-
-### 扩展配置项（K线图`未完成开发中`）
-
-| 属性 | 类型 | 默认 |说明|
-| :------ | :-----: | :-----: | :------------ |
-|opts.extra.candle| Object | |K线图相关配置|
-|opts.extra.candle.color| Object | |K线图颜色配置|
-|opts.extra.candle.color.upLine| String | 默认#f04864 |K线图为涨时线颜色|
-|opts.extra.candle.color.upFill| String | 默认#f04864 |K线图为涨时填充颜色|
-|opts.extra.candle.color.downLine| String | 默认#2fc25b |K线图为跌时线颜色|
-|opts.extra.candle.color.downFill| String | 默认#2fc25b |K线图为跌时填充颜色|
-|opts.extra.candle.average| Object | |均线设置|
-|opts.extra.candle.average.show | Boolean | 默认false |是否显示均线|
-|opts.extra.candle.average.name | `Array` |  |均线名称（例如['MA5','MA20']）用于下方图例显示|
-|opts.extra.candle.average.day | `Array` |  |均线单位日期（例如[5,20]为显示5日及20日均线）|
-|opts.extra.candle.average.color | `Array` |  |均线颜色，例如['#1890ff', '#2fc25b']|
-
-
-### 扩展配置项（条状图`未完成开发中`）
-
-| 属性 | 类型 | 默认 |说明|
-| :------ | :-----: | :-----: | :------------ |
-|opts.extra.bar| Object | |条状图相关配置`开发中`|
-|opts.extra.bar.type| Object | 默认group |条状图类型：`group`分组条状图，`stack`为堆叠条状图`开发中`|
-|opts.extra.bar.width |Number| | 条状图每项的图形宽度，单位为px`开发中`|
-
-
-### 扩展配置项（辅助线`未完成开发中`）
-
-| 属性 | 类型 | 默认 |说明|
-| :------ | :-----: | :-----: | :------------ |
-|opts.extra.markLine |Object | | 在柱状图、折线图、区域图、K线图中额外增加水平直线，仅在`opts.enableMarkLine`为true时显示|
-|opts.extra.markLine.type |String | 默认为 solid| 线型 'solid'为实线、'dash'为虚线|
-|opts.extra.markLine.dashLength |Number | 默认为 4px | 单段虚线长度  |
-|opts.extra.markLine.data |`Array` | | 辅助线数据，请传入`数组`类型，支持多条辅助线|
-|opts.extra.markLine.data.value |Number | | 辅助线数值|
-|opts.extra.markLine.data.color |String | 默认为 #| 辅助线颜色|
-|opts.extra.markLine.data.label |Boolean| 默认为 true| 是否显示数据标签|
-|opts.extra.markLine.data.align |String| 默认为 right| 数据标签对齐方式，left为左侧显示，right为右侧显示|
-
-
-### 扩展配置项（ToolTip设置`未完成开发中`）
-
-| 属性 | 类型 | 默认 |说明|
-| :------ | :-----: | :-----: | :------------ |
-|opts.extra.tooltip |Object | | ToolTip设置|
-
-
-### 扩展配置项（其他）
-
-| 属性 | 类型 | 默认 |说明|
-| :------ | :-----: | :-----: | :------------ |
-|opts.extra.legendTextColor |String | 默认为 #cccccc | 图例文案颜色 例如#7cb5ec`后期将变更为opts.legend.textColor迁移到基础配置里`|
-
-
-
-## 方法 & 事件
-
-### 方法
-- `updateData(data)` 更新图表数据，data: object，data.categories(可选，具体见参数说明)，data.series(可选，具体见参数说明)，data.title(可选，具体见参数说明)，data.subtitle(可选，具体见参数说明)
-- `stopAnimation() `停止当前正在进行的动画效果，直接展示渲染的最终结果
-- `addEventListener(type, listener) `添加事件监听，type: String事件类型，listener: function 处理方法
-- `getCurrentDataIndex(e) `获取图表中点击时的数据序列编号(-1表示未找到对应的数据区域), e: Object微信小程序标准事件，需要手动的去绑定touch事件，具体可参考wx-charts-demo中column图示例
-- `showToolTip(e, options?)` 图表中展示数据详细内容(目前仅支持line和area图表类型)，e: Object微信小程序标准事件，options: Object可选，tooltip的自定义配置，支持option.background，默认为#000000; option.format, function类型，接受两个传入的参数，seriesItem(Object, 包括seriesItem.name以及seriesItem.data)和category，可自定义tooltip显示内容。具体可参考wx-charts-demo中line图示例
-- `scrollStart(e)`, `scroll(e)`, `scrollEnd(e)`设置支持图表拖拽系列事件(支持line, area, column)，具体参考wx-charts-demo中ScrollLine图示例
-- `zoom(val)`启用滚动条时，放大或缩小屏幕范围内数据数量。
-
-### 事件
-- `renderComplete` 图表渲染完成（如果有动画效果，则动画效果完成时触发）
-
-### 如何使用事件
-```javascript
-let chart = new wxCharts(...);
-chart.addEventListener('renderComplete', () => {
-    // your code here
-});
-```
 
 
 ## 常见问题
