@@ -22,10 +22,10 @@
 		</view>
 		<view class="qiun-charts" >
 			<!--#ifdef MP-ALIPAY -->
-			<canvas canvas-id="canvasColumnMeter" id="canvasColumnMeter" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
+			<canvas canvas-id="canvasColumnMeter" id="canvasColumnMeter" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}" @touchstart="touchColumnMeter"></canvas>
 			<!--#endif-->
 			<!--#ifndef MP-ALIPAY -->
-			<canvas canvas-id="canvasColumnMeter" id="canvasColumnMeter" class="charts"></canvas>
+			<canvas canvas-id="canvasColumnMeter" id="canvasColumnMeter" class="charts" @touchstart="touchColumnMeter"></canvas>
 			<!--#endif-->
 		</view>
 		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
@@ -170,6 +170,7 @@
 	var canvaGauge=null;
 	var canvaCandle=null;
 	var canvaMix=null;
+	var canvaColumnMeter=null;
 	/*下面是服务器返回的数据格式，现已改成从服务器获取数据，以供有些朋友不知道怎么从后台获取数据后调用
 	var Data={
 		Column:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量1',data:[15, {value:20,color:'#f04864'},45, 37, 43, 34]},{name: '成交量2',data:[30, {value:40,color:'#facc14'}, 25, 14, 34, 18]}]},
@@ -244,7 +245,7 @@
 		methods: {
 			getServerData(){
 				uni.request({
-					url: 'https://www.easy-mock.com/mock/5cc586b64fc5576cba3d647b/uni-wx-charts/chartsdata2',
+					url: 'https://www.easy-mock.com/mock/5cc586b64fc5576cba3d647b/uni-wx-charts/chartsdata3',
 					data:{
 					},
 					success: function(res) {
@@ -347,7 +348,7 @@
 				
 			},
 			showColumnMeter(canvasId,chartData){
-				new uCharts({
+				canvaColumnMeter=new uCharts({
 					$this:_self,
 					canvasId: canvasId,
 					type: 'column',
@@ -907,6 +908,13 @@
 			},
 			touchLineB(e){
 				canvaLineB.showToolTip(e, {
+					format: function (item, category) {
+						return category + ' ' + item.name + ':' + item.data 
+					}
+				});
+			},
+			touchColumnMeter(e){
+				canvaColumnMeter.showToolTip(e, {
 					format: function (item, category) {
 						return category + ' ' + item.name + ':' + item.data 
 					}

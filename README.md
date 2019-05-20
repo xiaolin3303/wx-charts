@@ -10,6 +10,12 @@
 
 # `uCharts的发展，离不开各位的支持和帮助！最近很多热心朋友提出很多问题及解决方案，更好的完善uCharts，以帮助更多朋友解决问题，在此感谢大家的付出和贡献！`
 
+# 新增`堆叠图`，`温度计式图表`
+# 新增柱状图、堆叠图、温度计图的`tooltip`效果，具体用法见demo`温度计式图表`。
+# 新增`mix混合图`绘制区域图的功能。
+# 修改demo目录格式，增加单页单图demo，以帮助初学者快速生成图表。
+
+
 ## 引用方法
 `import uCharts from '../../components/u-charts/u-charts.js';`
 
@@ -35,12 +41,12 @@ IOS因demo比较简单无法上架，请自行编译；百度小程序和头条�
 
 # `【开源不易、改造不易、哪(拿)来简单】如本插件解决了您的问题，请一定要回来给个【5星评价】哦，您的支持是我的动力，感谢您的评价！！如遇到问题，请先参见页面最后章节【常见问题】解决，如没有您的问题，请在页面最下面【撰写评论】，尽量不要在【问答】中提问（因有可能会漏掉您的问题）。`
 
-## 新增`堆叠图`，`温度计式图表`
+
 
 
 ## [更新记录](https://www.kancloud.cn/qiun/ucharts/content/%E6%9B%B4%E6%96%B0%E8%AE%B0%E5%BD%95.md)
 
-## 未来计划
+## 未来计划(V1.0至2.0版本)
 - [ ] 2019.xx.xx 计划太多~~~~轮子不好造啊~~~~
 - [ ] 2019.08.xx 计划搭建`uCharts官方网站`，以供初学者快速上手uCharts
 - [ ] 2019.07.xx 计划重建各端demo，以供初学者快速上手uCharts
@@ -53,7 +59,10 @@ IOS因demo比较简单无法上架，请自行编译；百度小程序和头条�
 - [ ] 2019.05.xx 计划加入`辅助线（标记线）`功能，支持`柱状图、折线图、区域图、K线图`
 - [ ] 2019.05.xx 完善K线图及其辅助功能。
 - [ ] 2019.05.xx 计划修复折线图样式为曲线时，个别情况下曲线超出x轴的问题。
-- [ ] 2019.05.21 计划新增堆叠图，温度计图。
+- [ ] 2019.05.20下午 计划新增柱状图、堆叠图、温度计图的`tooltip`效果。
+
+## 未来计划(全新V2.0版本)
+## 2019.5.20重要又浪漫的日期，uCharts团队正式建立了，我们将以追求极致、追求完美的极客精神来打造uCharts。uCharts2.0版本正在前期策划中，将以全新结构重写uCharts，支持多Y轴、多X轴、自定义图例位置、以及更多图表类型，请各位敬请期待。
 
 ## 支持图表类型
 - 饼图   `pie`
@@ -104,6 +113,7 @@ IOS因demo比较简单无法上架，请自行编译；百度小程序和头条�
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/stack.gif?raw=true)
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/meter.gif?raw=true)
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/mix.gif?raw=true)
+![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/mix2.gif?raw=true)
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/candle.gif?raw=true)
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/yibiaopan.gif?raw=true)
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/arcbar.gif?raw=true)

@@ -1474,16 +1474,23 @@ function drawColumnDataPoints(series, opts, config, context) {
 
     var minRange = ranges.pop();
     var maxRange = ranges.shift();
+	var calPoints = [];
+	
     context.save();
     if (opts._scrollDistance_ && opts._scrollDistance_ !== 0 && opts.enableScroll === true) {
         context.translate(opts._scrollDistance_, 0);
     }
-
+	if (opts.tooltip && opts.tooltip.textList && opts.tooltip.textList.length && process === 1) {
+	    drawToolTipSplitLine(opts.tooltip.offset.x, opts, config, context);
+	}
+	
     series.forEach(function (eachSeries, seriesIndex) {
         var data = eachSeries.data;
 		switch (columnOption.type){
 		case 'group':
 			var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
+			var tooltipPoints = getStackDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, seriesIndex, series,process);
+			calPoints.push(tooltipPoints);
 			points = fixColumeData(points, eachSpacing, series.length, seriesIndex, config, opts);
 			points.forEach(function (item, index) {
 				if (item !== null) {
@@ -1500,7 +1507,8 @@ function drawColumnDataPoints(series, opts, config, context) {
 			break;
 		case 'stack':
 			// 绘制堆叠数据图
-        var points = getStackDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, seriesIndex, series,process);
+			var points = getStackDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, seriesIndex, series,process);
+			calPoints.push(points);
 			points = fixColumeStackData(points, eachSpacing, series.length, seriesIndex, config, opts,series);
 			
 			points.forEach(function (item, index) {
@@ -1523,6 +1531,7 @@ function drawColumnDataPoints(series, opts, config, context) {
 		case 'meter':
 		// 绘制温度计数据图
 			var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
+			calPoints.push(points);
 			points = fixColumeMeterData(points, eachSpacing, series.length, seriesIndex, config, opts, columnOption.meter.border);
 			if(seriesIndex==0){
 				points.forEach(function (item, index) {
@@ -1570,6 +1579,7 @@ function drawColumnDataPoints(series, opts, config, context) {
 			switch (columnOption.type){
 				case 'group':
 				var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
+				points = fixColumeData(points, eachSpacing, series.length, seriesIndex, config, opts);
 				drawPointText(points, eachSeries, config, context);
 				break;
 				case 'stack':
@@ -1585,8 +1595,10 @@ function drawColumnDataPoints(series, opts, config, context) {
 	}
 	
     context.restore();
+	
     return {
         xAxisPoints: xAxisPoints,
+		calPoints: calPoints,
         eachSpacing: eachSpacing
     };
 }
@@ -1905,6 +1917,7 @@ function drawMixDataPoints(series, opts, config, context) {
 
     var minRange = ranges.pop();
     var maxRange = ranges.shift();
+	var endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
     var calPoints = [];
 	
 	var columnIndex=0;
@@ -1946,6 +1959,54 @@ function drawMixDataPoints(series, opts, config, context) {
 			columnIndex+=1;
 		}
 		
+		//绘制区域图数据
+		
+		if(eachSeries.type=='area'){
+			var splitPointList = splitPoints(points);
+			splitPointList.forEach(function (points) {
+				// 绘制区域数据
+				context.beginPath();
+				context.setStrokeStyle(eachSeries.color);
+				context.setFillStyle(eachSeries.color);
+				context.setGlobalAlpha(0.2);
+				context.setLineWidth(2*opts.pixelRatio);
+				if (points.length > 1) {
+					var firstPoint = points[0];
+					var lastPoint = points[points.length - 1];
+					context.moveTo(firstPoint.x, firstPoint.y);
+					if (eachSeries.style === 'curve') {
+						points.forEach(function (item, index) {
+							if (index > 0) {
+								var ctrlPoint = createCurveControlPoints(points, index - 1);
+								context.bezierCurveTo(ctrlPoint.ctrA.x, ctrlPoint.ctrA.y, ctrlPoint.ctrB.x, ctrlPoint.ctrB.y, item.x, item.y);
+							}
+						});
+					} else {
+						points.forEach(function (item, index) {
+							if (index > 0) {
+								context.lineTo(item.x, item.y);
+							}
+						});
+					}
+					context.lineTo(lastPoint.x, endY);
+					context.lineTo(firstPoint.x, endY);
+					context.lineTo(firstPoint.x, firstPoint.y);
+				} else {
+					var item = points[0];
+					context.moveTo(item.x - eachSpacing / 2, item.y);
+					context.lineTo(item.x + eachSpacing / 2, item.y);
+					context.lineTo(item.x + eachSpacing / 2, endY);
+					context.lineTo(item.x - eachSpacing / 2, endY);
+					context.moveTo(item.x - eachSpacing / 2, item.y);
+				}
+				context.closePath();
+				context.fill();
+				context.setGlobalAlpha(1);
+			});
+		}
+		
+		
+		
 		// 绘制折线数据图
 		if(eachSeries.type=='line'){
 			var splitPointList = splitPoints(points);
@@ -1958,7 +2019,7 @@ function drawMixDataPoints(series, opts, config, context) {
 					context.arc(points[0].x, points[0].y, 1, 0, 2 * Math.PI);
 				} else {
 					context.moveTo(points[0].x, points[0].y);
-					if (opts.extra.lineStyle === 'curve') {
+					if (eachSeries.style=='curve') {
 						points.forEach(function (item, index) {
 							if (index > 0) {
 								var ctrlPoint = createCurveControlPoints(points, index - 1);
@@ -2880,12 +2941,14 @@ function drawCharts(type, opts, config, context) {
                     drawXAxis(categories, opts, config, context);
                     var _drawColumnDataPoints = drawColumnDataPoints(series, opts, config, context, process),
                         xAxisPoints = _drawColumnDataPoints.xAxisPoints,
+						calPoints = _drawColumnDataPoints.calPoints,
                         eachSpacing = _drawColumnDataPoints.eachSpacing;
-
                     _this.chartData.xAxisPoints = xAxisPoints;
+					_this.chartData.calPoints = calPoints;
                     _this.chartData.eachSpacing = eachSpacing;
                     drawLegend(opts.series, opts, config, context);
                     drawYAxis(series, opts, config, context);
+					drawToolTipBridge(opts, config, context, process);
                     drawCanvas(opts, context);
                 },
                 onAnimationFinish: function onAnimationFinish() {
@@ -3175,7 +3238,7 @@ Charts.prototype.showToolTip = function (e) {
 	var touches= e.mp.changedTouches[0];
 	var _touches$= getTouches(touches, this.opts, e);
 	
-    if (this.opts.type === 'line' || this.opts.type === 'area' || this.opts.type === 'mix') {
+    if (this.opts.type === 'line' || this.opts.type === 'area' || this.opts.type === 'mix' || this.opts.type === 'column') {
         var index = this.getCurrentDataIndex(e);
         var currentOffset = this.scrollOption.currentOffset;
 		
@@ -3184,6 +3247,7 @@ Charts.prototype.showToolTip = function (e) {
             animation: false
         });
         if (index > -1) {
+			
             var seriesData = getSeriesDataItem(this.opts.series, index);
             if (seriesData.length !== 0) {
                 var _getToolTipData = getToolTipData(seriesData, this.chartData.calPoints, index, this.opts.categories, option),

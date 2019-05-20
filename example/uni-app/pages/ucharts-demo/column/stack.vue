@@ -10,7 +10,7 @@
 </template>
 
 <script>
-	import uCharts from '../../components/u-charts/u-charts.js';
+	import uCharts from '@/components/u-charts/u-charts.js';
 	var _self;
 	var canvaColumn=null;
 	/*下面是服务器返回的数据格式
