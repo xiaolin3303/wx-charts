@@ -957,10 +957,11 @@ function getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts,
     return points;
 }
 
-function getStackDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config,seriesIndex, series) {
+function getStackDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config,seriesIndex, stackSeries) {
     var process = arguments.length > 9 && arguments[9] !== undefined ? arguments[9] : 1;
     var points = [];
     var validHeight = opts.height - 2 * config.padding - config.xAxisHeight - config.legendHeight;
+	
     data.forEach(function (item, index) {
         if (item === null) {
             points.push(null);
@@ -970,13 +971,15 @@ function getStackDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, 
             point.x = xAxisPoints[index] + Math.round(eachSpacing / 2);
 			
 			if(seriesIndex>0){
-				var value = item.value || item;
-				var value0 = series[seriesIndex-1].data[index].value || series[seriesIndex-1].data[index];
-				var value3 = value+value0;
-				var height = validHeight * (value3 - minRange) / (maxRange - minRange);
+				var value=0;
+				for(let i=0;i<=seriesIndex;i++){
+					value+=stackSeries[i].data[index];
+				}
+				var value0 = value-item;
+				var height = validHeight * (value - minRange) / (maxRange - minRange);
 				var height0 = validHeight * (value0 - minRange) / (maxRange - minRange);
 			}else{
-				var value = item.value || item;
+				var value = item;
 				var height = validHeight * (value - minRange) / (maxRange - minRange);
 				var height0 = 0;
 			}
@@ -1364,6 +1367,16 @@ function drawToolTipSplitLine(offsetX, opts, config, context) {
     context.stroke();
 }
 
+function drawToolTipSplitArea(offsetX, opts, config, context, eachSpacing) {
+    var startY = config.padding;
+    var endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
+    context.beginPath();
+	context.setFillStyle(hexToRgb('#000000', 0.08));
+	context.rect(offsetX-eachSpacing/2, startY, eachSpacing, endY-startY);
+	context.closePath();
+	context.fill();
+}
+
 function drawToolTip(textList, offset, opts, config, context) {
     var legendWidth = 4*opts.pixelRatio;
     var legendMarginRight = 5*opts.pixelRatio;
@@ -1481,7 +1494,7 @@ function drawColumnDataPoints(series, opts, config, context) {
         context.translate(opts._scrollDistance_, 0);
     }
 	if (opts.tooltip && opts.tooltip.textList && opts.tooltip.textList.length && process === 1) {
-	    drawToolTipSplitLine(opts.tooltip.offset.x, opts, config, context);
+	    drawToolTipSplitArea(opts.tooltip.offset.x, opts, config, context, eachSpacing);
 	}
 	
     series.forEach(function (eachSeries, seriesIndex) {

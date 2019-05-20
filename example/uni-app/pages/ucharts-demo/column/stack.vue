@@ -4,7 +4,7 @@
 			<view class="qiun-title-dot-light">堆叠柱状图</view>
 		</view>
 		<view class="qiun-charts" >
-			<canvas canvas-id="canvasColumnStack" id="canvasColumnStack" class="charts"></canvas>
+			<canvas canvas-id="canvasColumnStack" id="canvasColumnStack" class="charts"  @touchstart="touchColumn"></canvas>
 		</view>
 	</view>
 </template>
@@ -46,7 +46,7 @@
 		methods: {
 			getServerData(){
 				uni.request({
-					url: 'https://www.easy-mock.com/mock/5cc586b64fc5576cba3d647b/uni-wx-charts/chartsdata2',
+					url: 'https://www.easy-mock.com/mock/5cc586b64fc5576cba3d647b/uni-wx-charts/chartsdata3',
 					data:{
 					},
 					success: function(res) {
@@ -74,7 +74,7 @@
 					fontSize:11,
 					background:'#FFFFFF',
 					pixelRatio:_self.pixelRatio,
-					animation: true,
+					animation: false,
 					categories: chartData.categories,
 					series: chartData.series,
 					xAxis: {
@@ -94,6 +94,13 @@
 					  }
 				});
 				
+			},
+			touchColumn(e){
+				canvaColumn.showToolTip(e, {
+					format: function (item, category) {
+						return category + ' ' + item.name + ':' + item.data 
+					}
+				});
 			},
 		}
 	}
