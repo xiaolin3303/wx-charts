@@ -1,6 +1,6 @@
 ## `喜讯！《uCharts高性能跨全端图表》荣获插件大赛一等奖，感谢DCloud以及mpvue团队的鼓励和认可！感谢各位开发者的问题反馈和赞赏！uCharts团队一定会不负众望，为大家打造完美、方便、高性能的图表而奋斗！再次感谢！`
 
-# `重要通知：本项目即将停止在github更新，转至码云平台`
+# `重要通知：本项目已停止在github更新，转至码云平台`
 
 
 ## uCharts高性能跨全端图表
@@ -9,47 +9,28 @@
 - 原插件gitHub地址：<https://github.com/xiaolin3303/wx-charts>
 
 
-## uCharts官方网站
-- https://www.ucharts.cn(已注册，备案中，现无法访问)
-- 后续将在官网提供在线示例及参数说明指引等，以帮助大家方便使用。
+# [uCharts官方网站](https://www.ucharts.cn)
+- https://www.ucharts.cn
+
+# [在线文档](http://doc.ucharts.cn)
+
 
 ## QQ交流群:371774600
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/QQqrcode.png?raw=true)
 
-## 修复横屏模式bug，新增个别图形单页demo
-
-
-# [在线文档(参见API章节)（其他说明完善中）](https://www.kancloud.cn/qiun/ucharts/content)
-
-# [在线文档(参见API章节)（其他说明完善中）](https://www.kancloud.cn/qiun/ucharts/content)
-
-# [在线文档(参见API章节)（其他说明完善中）](https://www.kancloud.cn/qiun/ucharts/content)
 
 
 ## 快速体验
 
 一套代码编到7个平台，依次扫描二维码，亲自体验uCharts图表跨平台效果！
 
-IOS因demo比较简单无法上架，请自行编译；百度小程序和头条小程序审核较严格，可能一时半会不能上线了，大家可以暂时在小程序IDE中自行编译测试。
+IOS因demo比较简单无法上架，请自行编译。
 
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/qrcode.png?raw=true)
 
 
 ## [更新记录](https://www.kancloud.cn/qiun/ucharts/content/%E6%9B%B4%E6%96%B0%E8%AE%B0%E5%BD%95.md)
 
-## 未来计划(V1.0至2.0版本)
-- [ ] 2019.xx.xx 计划太多~~~~轮子不好造啊~~~~
-- [ ] 2019.08.xx 计划搭建`uCharts官方网站`，以供初学者快速上手uCharts
-- [ ] 2019.07.xx 计划重建各端demo，以供初学者快速上手uCharts
-- [ ] 2019.07.xx 计划加入饼图、环形图、雷达图等`ToolTip`事件
-- [ ] 2019.06.xx 计划加入`组件内使用示例`
-- [ ] 2019.06.xx 计划加入`条状图`、`分时图`
-- [ ] 2019.06.xx 计划加入`渐变颜色填充`功能
-- [ ] 2019.05.xx 推迟计划加入`第二种仪表盘样式`,增加[《亲手教您如何改造uCharts，打造您的专属图表》](https://github.com/16cheng/uCharts/wiki/%E4%BA%B2%E6%89%8B%E6%95%99%E6%82%A8%E5%A6%82%E4%BD%95%E6%94%B9%E9%80%A0wx-charts)教程。
-- [ ] 2019.05.xx 计划修改X轴刻度标签`抽稀策略`，以适应K线图及不需要文案旋转的需求
-- [ ] 2019.05.xx 计划加入`辅助线（标记线）`功能，支持`柱状图、折线图、区域图、K线图`
-- [ ] 2019.05.xx 完善K线图及其辅助功能。
-- [ ] 2019.05.xx 计划修复折线图样式为曲线时，个别情况下曲线超出x轴的问题。
 
 ## 未来计划(全新V2.0版本)
 ## 2019.5.20重要又浪漫的日期，uCharts团队正式建立了，我们将以追求极致、追求完美的极客精神来打造uCharts。uCharts2.0版本正在前期策划中，将以全新结构重写uCharts，支持多Y轴、多X轴、自定义图例位置、以及更多图表类型，请各位敬请期待。
@@ -95,9 +76,6 @@ IOS因demo比较简单无法上架，请自行编译；百度小程序和头条�
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/example.gif?raw=true)
 
 - 您会发现这个图表即使在echarts里也不是很好实现，那么就需要我们自己动手去实现。下面就让我们一起来完成，本文旨在抛砖引玉，希望各位朋友能够更好的应用uCharts来完成您的项目，如果您有更好的设计，请提交您的PR到github[uCharts跨端图表](https://github.com/16cheng/uCharts)，帮助更多朋友，感谢您的付出及贡献！
-
-## [uCharts跨端图表改造教程（暂未完成，请关注）](https://github.com/16cheng/uCharts/wiki/%E4%BA%B2%E6%89%8B%E6%95%99%E6%82%A8%E5%A6%82%E4%BD%95%E6%94%B9%E9%80%A0wx-charts)
-
 
 ## 图表示例
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/stack.gif?raw=true)
