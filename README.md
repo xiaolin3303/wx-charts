@@ -96,7 +96,6 @@ IOS因demo比较简单无法上架，请自行编译。
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/radar.gif?raw=true)
 ![](https://github.com/16cheng/uCharts/blob/master/example/uni-app/static/lineB.gif?raw=true)
 
-
 ## 常见问题
 
 各位遇到问题请先参考以下问题，如果仍不能解决，请留言。
