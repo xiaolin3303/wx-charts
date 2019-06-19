@@ -1,13 +1,8 @@
-## `喜讯！《uCharts高性能跨全端图表》荣获插件大赛一等奖，感谢DCloud以及mpvue团队的鼓励和认可！感谢各位开发者的问题反馈和赞赏！uCharts团队一定会不负众望，为大家打造完美、方便、高性能的图表而奋斗！再次感谢！`
-
+# `重要通知：本项目已停止在github更新，转至码云平台`
+# `重要通知：本项目已停止在github更新，转至码云平台`
 # `重要通知：本项目已停止在github更新，转至码云平台`
 
-
-## uCharts高性能跨全端图表
-- 适用于uni-app平台的跨全端图表插件，顾名`uCharts`。
-- 基于`wx-charts`微信小程序图表改造成，感谢原作者`xiaolin3303`。
-- 原插件gitHub地址：<https://github.com/xiaolin3303/wx-charts>
-
+# [码云平台开源地址](https://gitee.com/uCharts/uCharts)
 
 # [uCharts官方网站](https://www.ucharts.cn)
 - https://www.ucharts.cn
@@ -31,9 +26,6 @@ IOS因demo比较简单无法上架，请自行编译。
 
 ## [更新记录](https://www.kancloud.cn/qiun/ucharts/content/%E6%9B%B4%E6%96%B0%E8%AE%B0%E5%BD%95.md)
 
-
-## 未来计划(全新V2.0版本)
-## 2019.5.20重要又浪漫的日期，uCharts团队正式建立了，我们将以追求极致、追求完美的极客精神来打造uCharts。uCharts2.0版本正在前期策划中，将以全新结构重写uCharts，支持多Y轴、多X轴、自定义图例位置、以及更多图表类型，请各位敬请期待。
 
 ## 支持图表类型
 - 饼图   `pie`
