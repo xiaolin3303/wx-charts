@@ -81,3 +81,8 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 # 一些问题的说明汇总
 - [wx-charts自适应屏幕宽度的问题](https://github.com/xiaolin3303/wx-charts/issues/4)
 - [项目中如何具体使用wxCharts](https://github.com/xiaolin3303/wx-charts/issues/28)
+
+# 工作机会
+字节跳动大量招聘前端开发工程师（初级、高级、资深、Leader），感兴趣的朋友请发送简历到我的邮箱 xiaolin3303@163.com
+
+
