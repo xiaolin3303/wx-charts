@@ -5,6 +5,10 @@
 
 **持续优化更新中，请保持关注~ 有任何问题欢迎在[Issues](https://github.com/xiaolin3303/wx-charts/issues)中讨论，[提出issue前请先阅读此须知](https://github.com/xiaolin3303/wx-charts/issues/67)**
 
+
+字节跳动大量招聘前端开发工程师（初级、高级、资深、Leader），坐标北京、上海、深圳、杭州、成都、武汉、广州、南京，感兴趣的朋友请点击[此处](https://job.toutiao.com/referral/pc/position/share/?token=MjsxNTcxOTg1OTAzMzM4OzY3MDY0NTM0ODA3NTQwNzEwNDM7Njc1MTYwOTUzNDc5MDQ1MzUxMg%3D%3D)进行投递
+
+
 # 支持图表类型
 - 饼图   `pie`
 - 圆环图 `ring`
@@ -81,8 +85,3 @@ rollup -c 或者 rollup --config rollup.config.prod.js
 # 一些问题的说明汇总
 - [wx-charts自适应屏幕宽度的问题](https://github.com/xiaolin3303/wx-charts/issues/4)
 - [项目中如何具体使用wxCharts](https://github.com/xiaolin3303/wx-charts/issues/28)
-
-# 工作机会
-字节跳动大量招聘前端开发工程师（初级、高级、资深、Leader），坐标北京、上海、深圳、杭州、成都、武汉、广州、南京，感兴趣的朋友请发送简历到我的邮箱 xiaolin3303@163.com
-
-
