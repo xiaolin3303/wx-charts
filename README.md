@@ -6,7 +6,7 @@
 **持续优化更新中，请保持关注~ 有任何问题欢迎在[Issues](https://github.com/xiaolin3303/wx-charts/issues)中讨论，[提出issue前请先阅读此须知](https://github.com/xiaolin3303/wx-charts/issues/67)**
 
 
-字节跳动大量招聘前端开发工程师（初级、高级、资深、Leader），坐标北京、上海、深圳、杭州、成都、武汉、广州、南京，感兴趣的朋友请点击[此处](https://job.toutiao.com/referral/pc/position/share/?token=MjsxNTcxOTg1OTAzMzM4OzY3MDY0NTM0ODA3NTQwNzEwNDM7Njc1MTYwOTUzNDc5MDQ1MzUxMg%3D%3D)进行投递
+字节跳动大量招聘前端开发工程师（初级、高级、资深、Leader），坐标北京、上海、深圳、杭州、成都、武汉、广州、南京，感兴趣的朋友请点击[此处](https://job.toutiao.com/referral/pc/position/share/?token=MjsxNTcxOTg2MjM0Mzg3OzY3MDY0NTM0ODA3NTQwNzEwNDM7Njc1MTYwOTUzNDc5MDY4Mjg4OA%3D%3D)进行投递
 
 
 # 支持图表类型
