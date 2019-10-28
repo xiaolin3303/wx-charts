@@ -22,7 +22,8 @@ const config = {
     toolTipOpacity: 0.7,
     toolTipLineHeight: 14,
     radarGridCount: 3,
-    radarLabelTextMargin: 15
+    radarLabelTextMargin: 15,
+    isGradient:true //默认渐变色
 }
 
 export default config;

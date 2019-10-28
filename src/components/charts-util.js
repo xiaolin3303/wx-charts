@@ -219,3 +219,24 @@ export function measureText (text, fontSize=10) {
     });
     return width * fontSize / 10;
 }
+
+// area 类型的 区域渐变
+export function gradientSeries(series, opts, context){
+    // 用于防止二次进入
+    if (!series.gradient) {
+        var gradient = context.createLinearGradient(0, 0, 0, opts.height || 200);
+        gradient.addColorStop(0, hexToRgb(series.color, 0.6));
+        gradient.addColorStop(1, hexToRgb(series.color, 0));
+        series.gradient = gradient;
+    }
+}
+// hex 转 rgba
+function hexToRgb(hexValue,opc) {
+    const rgx = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    const hex = hexValue.replace(rgx, (m, r, g, b) => r + r + g + g + b + b);
+    const rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    const r = parseInt(rgb[1], 16);
+    const g = parseInt(rgb[2], 16);
+    const b = parseInt(rgb[3], 16);
+    return `rgba(${r},${g},${b},${opc})`;
+}
