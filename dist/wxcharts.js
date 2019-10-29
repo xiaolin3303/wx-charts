@@ -1942,6 +1942,9 @@ var Charts = function Charts(opts) {
 Charts.prototype.updateData = function () {
     var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
+    if(this.opts.enableScroll == true) {
+        this.opts._scrollDistance_ = this.scrollOption.currentOffset;
+    }
     this.opts.series = data.series || this.opts.series;
     this.opts.categories = data.categories || this.opts.categories;
 
