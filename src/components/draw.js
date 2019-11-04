@@ -36,21 +36,22 @@ export function drawColumnDataPoints (series, opts, config, context, process = 1
         let data = eachSeries.data;
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
         points = fixColumeData(points, eachSpacing, series.length, seriesIndex, config, opts);
-
         // 绘制柱状数据图
-        context.beginPath();
-        context.setFillStyle(eachSeries.color);
         points.forEach(function(item, index) {
-            if (item !== null) { 
+            if (item !== null) {
+                context.beginPath();
+                context.setFillStyle(item.color || eachSeries.color);
                 let startX = item.x - item.width / 2 + 1;
                 let height = opts.height - item.y - config.padding - config.xAxisHeight - config.legendHeight;
                 context.moveTo(startX, item.y);
                 context.rect(startX, item.y, item.width - 2, height);
+                context.closePath();
+                context.fill();
             }
         });
-        context.closePath();
-        context.fill();
+
     });
+    // 绘制数据标签
     series.forEach(function(eachSeries, seriesIndex) {
         let data = eachSeries.data;
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);

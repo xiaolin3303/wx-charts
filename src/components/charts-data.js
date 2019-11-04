@@ -334,8 +334,10 @@ export function getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing
             points.push(null);
         } else {        
             let point = {};
+            point.color = item.color;
             point.x = xAxisPoints[index] + Math.round(eachSpacing / 2);
-            let height = validHeight * (item - minRange) / (maxRange - minRange);
+            let value = item.value || item
+            let height = validHeight * (value - minRange) / (maxRange - minRange);
             height *= process;
             point.y = opts.height - config.xAxisHeight - config.legendHeight - Math.round(height) - config.padding;
             points.push(point);
@@ -347,12 +349,20 @@ export function getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing
 
 export function getYAxisTextList(series, opts, config) {
     let data = dataCombine(series);
+    let sorted = []
     // remove null from data
     data = data.filter((item) => {
-        return item !== null;
+        if(typeof item === 'object') {
+            return item.value !== null;
+        } else {
+            return item !== null
+        }
     });
-    let minData = Math.min.apply(this, data);
-    let maxData = Math.max.apply(this, data);
+    data.map((item)=>{
+        typeof item === 'object' ? sorted.push(item.value) : sorted.push(item)
+    })
+    let minData = Math.min.apply(this, sorted);
+    let maxData = Math.max.apply(this, sorted);
     if (typeof opts.yAxis.min === 'number') {
         minData = Math.min(opts.yAxis.min, minData);
     }
