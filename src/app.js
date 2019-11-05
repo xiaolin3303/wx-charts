@@ -13,6 +13,7 @@ let Charts = function(opts) {
     opts.extra = opts.extra || {};
     opts.legend = opts.legend === false ? false : true;
     opts.animation = opts.animation === false ? false : true;
+    opts.breakOnNull = opts.breakOnNull === false ? false : true;
     let config = assign({}, Config);
     config.yAxisTitleWidth = opts.yAxis.disabled !== true && opts.yAxis.title ? config.yAxisTitleWidth : 0;
     config.pieChartLinePadding = opts.dataLabel === false ? 0 : config.pieChartLinePadding;

@@ -336,8 +336,6 @@ function getSeriesDataItem(series, index) {
     return data;
 }
 
-
-
 function getMaxTextListLength(list) {
     var lengthList = list.map(function (item) {
         return measureText(item);
@@ -466,13 +464,13 @@ function isInExactPieChartArea(currentPoints, center, radius) {
     return Math.pow(currentPoints.x - center.x, 2) + Math.pow(currentPoints.y - center.y, 2) <= Math.pow(radius, 2);
 }
 
-function splitPoints(points) {
+function splitPoints(points, opts) {
     var newPoints = [];
     var items = [];
     points.forEach(function (item, index) {
         if (item !== null) {
             items.push(item);
-        } else {
+        } else if (opts.breakOnNull) {
             if (items.length) {
                 newPoints.push(items);
             }
@@ -849,6 +847,7 @@ function drawRadarLabel(angleList, radius, centerPosition, opts, config, context
 
 function drawPieText(series, opts, config, context, radius, center) {
     var lineRadius = radius + config.pieChartLinePadding;
+    var textRadius = lineRadius + config.pieChartTextPadding;
     var textObjectCollection = [];
     var lastTextObject = null;
 
@@ -1057,6 +1056,8 @@ function drawColumnDataPoints(series, opts, config, context) {
 
     var minRange = ranges.pop();
     var maxRange = ranges.shift();
+    var endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
+
     context.save();
     if (opts._scrollDistance_ && opts._scrollDistance_ !== 0 && opts.enableScroll === true) {
         context.translate(opts._scrollDistance_, 0);
@@ -1125,7 +1126,7 @@ function drawAreaDataPoints(series, opts, config, context) {
         var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
         calPoints.push(points);
 
-        var splitPointList = splitPoints(points);
+        var splitPointList = splitPoints(points, opts);
 
         splitPointList.forEach(function (points) {
             // 绘制区域数据
@@ -1219,7 +1220,7 @@ function drawLineDataPoints(series, opts, config, context) {
         var data = eachSeries.data;
         var points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
         calPoints.push(points);
-        var splitPointList = splitPoints(points);
+        var splitPointList = splitPoints(points, opts);
 
         splitPointList.forEach(function (points, index) {
             context.beginPath();
@@ -1286,8 +1287,6 @@ function drawToolTipBridge(opts, config, context, process) {
 function drawXAxis(categories, opts, config, context) {
     var _getXAxisPoints4 = getXAxisPoints(categories, opts, config),
         xAxisPoints = _getXAxisPoints4.xAxisPoints,
-        startX = _getXAxisPoints4.startX,
-        endX = _getXAxisPoints4.endX,
         eachSpacing = _getXAxisPoints4.eachSpacing;
 
     var startY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
@@ -1401,6 +1400,7 @@ function drawYAxis(series, opts, config, context) {
     var eachSpacing = Math.floor(spacingValid / config.yAxisSplit);
     var startX = config.padding + yAxisTotalWidth;
     var endX = opts.width - config.padding;
+    var startY = config.padding;
     var endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
 
     // set YAxis background
@@ -1441,7 +1441,8 @@ function drawLegend(series, opts, config, context) {
     // legend margin top `config.padding`
 
     var _calLegendData = calLegendData(series, opts, config),
-        legendList = _calLegendData.legendList;
+        legendList = _calLegendData.legendList,
+        legendHeight = _calLegendData.legendHeight;
 
     var padding = 5;
     var marginTop = 8;
@@ -1918,13 +1919,14 @@ var Charts = function Charts(opts) {
     opts.extra = opts.extra || {};
     opts.legend = opts.legend === false ? false : true;
     opts.animation = opts.animation === false ? false : true;
-    var config$$1 = assign({}, config);
-    config$$1.yAxisTitleWidth = opts.yAxis.disabled !== true && opts.yAxis.title ? config$$1.yAxisTitleWidth : 0;
-    config$$1.pieChartLinePadding = opts.dataLabel === false ? 0 : config$$1.pieChartLinePadding;
-    config$$1.pieChartTextPadding = opts.dataLabel === false ? 0 : config$$1.pieChartTextPadding;
+    opts.breakOnNull = opts.breakOnNull === false ? false : true;
+    var config$1 = assign({}, config);
+    config$1.yAxisTitleWidth = opts.yAxis.disabled !== true && opts.yAxis.title ? config$1.yAxisTitleWidth : 0;
+    config$1.pieChartLinePadding = opts.dataLabel === false ? 0 : config$1.pieChartLinePadding;
+    config$1.pieChartTextPadding = opts.dataLabel === false ? 0 : config$1.pieChartTextPadding;
 
     this.opts = opts;
-    this.config = config$$1;
+    this.config = config$1;
     this.context = wx.createCanvasContext(opts.canvasId);
     // store calcuated chart data
     // such as chart point coordinate
@@ -1936,7 +1938,7 @@ var Charts = function Charts(opts) {
         distance: 0
     };
 
-    drawCharts.call(this, opts.type, opts, config$$1, this.context);
+    drawCharts.call(this, opts.type, opts, config$1, this.context);
 };
 
 Charts.prototype.updateData = function () {
