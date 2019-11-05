@@ -89,7 +89,7 @@ export function drawAreaDataPoints (series, opts, config, context, process = 1) 
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
         calPoints.push(points);
 
-        let splitPointList = splitPoints(points);
+        let splitPointList = splitPoints(points, opts);
 
         splitPointList.forEach((points) => {
             // 绘制区域数据
@@ -177,7 +177,7 @@ export function drawLineDataPoints (series, opts, config, context, process = 1) 
         let data = eachSeries.data;
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
         calPoints.push(points);
-        let splitPointList = splitPoints(points);
+        let splitPointList = splitPoints(points, opts);
 
         splitPointList.forEach((points, index) => {
             context.beginPath();

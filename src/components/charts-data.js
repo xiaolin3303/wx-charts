@@ -153,13 +153,13 @@ export function isInExactPieChartArea (currentPoints, center, radius) {
     return Math.pow(currentPoints.x - center.x, 2) + Math.pow(currentPoints.y - center.y, 2) <= Math.pow(radius, 2);
 }
 
-export function splitPoints(points) {
+export function splitPoints(points, opts) {
     let newPoints = [];
     let items = [];
     points.forEach((item, index) => {
         if (item !== null) {
             items.push(item);
-        } else {
+        } else if(opts.breakOnNull){
             if (items.length) {
                 newPoints.push(items);
             }
