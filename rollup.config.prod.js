@@ -12,14 +12,17 @@ let banner = `/*
 `;
 
 export default {
-  entry: 'src/app.js',
-  format: 'cjs',
-  dest: 'dist/wxcharts-min.js',
-  plugins: [
-      babel({
-          exclude: 'node_modules/**',
-      }),
-      uglify()
-  ],
-  banner: banner
+    input: 'src/app.js',
+    output: {
+        format: 'cjs',
+        file: 'dist/wxcharts-min.js',
+        banner: banner,
+    },
+    plugins: [
+        babel({
+            exclude: 'node_modules/**',
+        }),
+        uglify({filter: /\.js$/
+        })
+    ]
 };
