@@ -84,6 +84,10 @@ export function drawAreaDataPoints (series, opts, config, context, process = 1) 
         drawToolTipSplitLine(opts.tooltip.offset.x, opts, config, context);
     }
 
+    // 画连线
+    if (opts.extra.area && opts.extra.area.line) {
+        drawLineDataPoints(series, opts, config, context, process)
+    }
     series.forEach(function(eachSeries, seriesIndex) {
         let data = eachSeries.data;
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
@@ -135,8 +139,10 @@ export function drawAreaDataPoints (series, opts, config, context, process = 1) 
         });
 
         if (opts.dataPointShape !== false) {          
-            let shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
-            drawPointShape(points, eachSeries.color, shape, context);
+            let shape = eachSeries.symbol ? eachSeries.symbol : config.dataPointShape[seriesIndex % config.dataPointShape.length];
+            if (shape !== 'none') {
+                drawPointShape(points, eachSeries.color, shape, context);
+            }
         }
     });
     if (opts.dataLabel !== false && process === 1) {
@@ -172,7 +178,9 @@ export function drawLineDataPoints (series, opts, config, context, process = 1) 
         drawToolTipSplitLine(opts.tooltip.offset.x, opts, config, context);
     }
 
-
+    if (opts.extra.line && opts.extra.line.areaStyle) {
+        drawAreaDataPoints(series, opts, config, context, process)
+    }
     series.forEach(function(eachSeries, seriesIndex) {
         let data = eachSeries.data;
         let points = getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts, config, process);
@@ -208,9 +216,15 @@ export function drawLineDataPoints (series, opts, config, context, process = 1) 
             context.stroke();
         });
 
+        if (eachSeries.areaStyle) {
+            let color = eachSeries.areaStyle.color ? eachSeries.areaStyle.color : eachSeries.color
+            drawLineArea(points, color, opts, config, context)
+        }
         if (opts.dataPointShape !== false) {        
-            let shape = config.dataPointShape[seriesIndex % config.dataPointShape.length];
-            drawPointShape(points, eachSeries.color, shape, context);
+            let shape = eachSeries.symbol ? eachSeries.symbol : config.dataPointShape[seriesIndex % config.dataPointShape.length];
+            if (shape !== 'none') {
+                drawPointShape(points, eachSeries.color, shape, context);
+            }
         }
     });
     if (opts.dataLabel !== false && process === 1) {
@@ -230,6 +244,55 @@ export function drawLineDataPoints (series, opts, config, context, process = 1) 
     };
 }
 
+export function drawLineArea (points, color, opts, config, context) {
+    let { eachSpacing } = getXAxisPoints(opts.categories, opts, config);
+    let endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
+    let splitPointList = splitPoints(points);
+
+    splitPointList.forEach((points) => {
+        // 绘制区域数据
+        context.beginPath();
+        context.setStrokeStyle(color);
+        context.setFillStyle(color);
+        context.setGlobalAlpha(0.6);
+        context.setLineWidth(2);
+        if (points.length > 1) {
+            let firstPoint = points[0];
+            let lastPoint = points[points.length - 1];
+            
+            context.moveTo(firstPoint.x, firstPoint.y);
+            if (opts.extra.lineStyle === 'curve') {
+                points.forEach(function(item, index) {
+                    if (index > 0) {
+                        let ctrlPoint = createCurveControlPoints(points, index - 1);
+                        context.bezierCurveTo(ctrlPoint.ctrA.x, ctrlPoint.ctrA.y, ctrlPoint.ctrB.x,ctrlPoint.ctrB.y, item.x, item.y);
+                    }
+                });
+            } else {
+                points.forEach(function(item, index) {
+                    if (index > 0) {
+                        context.lineTo(item.x, item.y);
+                    }
+                });
+            }
+
+            context.lineTo(lastPoint.x, endY);
+            context.lineTo(firstPoint.x, endY);
+            context.lineTo(firstPoint.x, firstPoint.y);
+        } else {
+            let item = points[0];
+            context.moveTo(item.x - eachSpacing / 2, item.y);
+            context.lineTo(item.x + eachSpacing / 2, item.y);
+            context.lineTo(item.x + eachSpacing / 2, endY);
+            context.lineTo(item.x - eachSpacing / 2, endY);
+            context.moveTo(item.x - eachSpacing / 2, item.y);
+        }
+        context.closePath();
+        context.fill();
+        context.setGlobalAlpha(1);
+    });
+}
+
 export function drawToolTipBridge (opts, config, context, process) {
     context.save();
     if (opts._scrollDistance_ && opts._scrollDistance_ !== 0 && opts.enableScroll === true) {    
@@ -242,6 +305,9 @@ export function drawToolTipBridge (opts, config, context, process) {
 }
 
 export function drawXAxis (categories, opts, config, context) {
+    if (opts.xAxis.disabled === true) {
+        return;
+    }
     let { xAxisPoints, startX, endX, eachSpacing } = getXAxisPoints(categories, opts, config);
     let startY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
     let endY = startY + config.xAxisLineHeight;
@@ -273,15 +339,16 @@ export function drawXAxis (categories, opts, config, context) {
     context.stroke();
 
     // 对X轴列表做抽稀处理
+    let labelFontNumber = opts.xAxis.labelFontNumber || 1.5
     let validWidth = opts.width - 2 * config.padding - config.yAxisWidth - config.yAxisTitleWidth;
-    let maxXAxisListLength = Math.min(categories.length, Math.ceil(validWidth / config.fontSize / 1.5));
+    let maxXAxisListLength = Math.min(categories.length, Math.ceil(validWidth / config.fontSize / labelFontNumber));
     let ratio = Math.ceil(categories.length / maxXAxisListLength);
 
     categories = categories.map((item, index) => {
         return index % ratio !== 0 ? '' : item;
     });
 
-    if (config._xAxisTextAngle_ === 0) {
+    if (config._xAxisTextAngle_ === 0 || opts.xAxis.disabledLabelRotate) {
         context.beginPath();
         context.setFontSize(config.fontSize);
         context.setFillStyle(opts.xAxis.fontColor || '#666666');
