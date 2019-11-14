@@ -20,7 +20,11 @@ let Charts = function(opts) {
 
     this.opts = opts;
     this.config = config;
-    this.context = wx.createCanvasContext(opts.canvasId);
+
+    // https://mp.weixin.qq.com/debug/wxadoc/dev/api/canvas/create-canvas-context.html
+    // componentInstance 自定义组件实例 this ，表示在这个自定义组件下查找拥有 canvas-id 的 <canvas/> 
+    // 如果省略，则不在任何自定义组件内查找
+    this.context = wx.createCanvasContext(opts.canvasId, opts.componentInstance);
     // store calcuated chart data
     // such as chart point coordinate
     this.chartData = {};
