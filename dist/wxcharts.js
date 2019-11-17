@@ -1284,6 +1284,10 @@ function drawToolTipBridge(opts, config, context, process) {
 }
 
 function drawXAxis(categories, opts, config, context) {
+    if (opts.xAxis.disabled === true) {
+        return;
+    }
+
     var _getXAxisPoints4 = getXAxisPoints(categories, opts, config),
         xAxisPoints = _getXAxisPoints4.xAxisPoints,
         startX = _getXAxisPoints4.startX,
@@ -1364,6 +1368,9 @@ function drawXAxis(categories, opts, config, context) {
 }
 
 function drawYAxisGrid(opts, config, context) {
+    if (opts.yAxis.disableGrid === true) {
+        return;
+    }
     var spacingValid = opts.height - 2 * config.padding - config.xAxisHeight - config.legendHeight;
     var eachSpacing = Math.floor(spacingValid / config.yAxisSplit);
     var yAxisTotalWidth = config.yAxisWidth + config.yAxisTitleWidth;
