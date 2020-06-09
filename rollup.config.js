@@ -11,13 +11,15 @@ let banner = `/*
 `;
 
 export default {
-  entry: 'src/app.js',
-  format: 'cjs',
-  dest: 'dist/wxcharts.js',
-  plugins: [
-      babel({
-          exclude: 'node_modules/**',
-      })
-  ],
-  banner: banner
+    input: 'src/app.js',
+    output: {
+        file: 'dist/wxcharts.js',
+        format: 'cjs',
+        banner: banner,
+    },
+    plugins: [
+        babel({
+            exclude: 'node_modules/**',
+        })
+    ],
 };
