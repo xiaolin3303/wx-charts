@@ -33,6 +33,20 @@ let util = {
 
         return !flag;
     },
+    sparseArray: function (arr, num) {
+        const numIdx = []; // 所需数量的索引
+        if (num > 1) {
+            let group = num - 1;  // 把数组分成除去头尾剩余的num - 1组
+            let length = arr.length;
+            let groupIdx = parseInt(length / group);
+            numIdx.push(0);
+            for (let i = 1; i < group; i++) {
+                numIdx.push(i * groupIdx)
+            }
+            numIdx.push(length - 1);
+        } 
+        return numIdx;
+    }
 }
 
 export default util;

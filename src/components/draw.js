@@ -263,9 +263,17 @@ export function drawXAxis (categories, opts, config, context) {
                 }
             });
         } else {
+            const tickCountArr = Util.sparseArray(xAxisPoints, opts.tickCount) // x轴下划线索引
             xAxisPoints.forEach(function(item, index) {
-                context.moveTo(item, startY);
-                context.lineTo(item, endY);
+                if (opts.tickCount > 1) {
+                    if (tickCountArr.includes(index)) {
+                        context.moveTo(item, startY);
+                        context.lineTo(item, endY);
+                    }
+                } else {
+                    context.moveTo(item, startY);
+                    context.lineTo(item, endY);
+                }
             });
         }
     }
@@ -277,8 +285,17 @@ export function drawXAxis (categories, opts, config, context) {
     let maxXAxisListLength = Math.min(categories.length, Math.ceil(validWidth / config.fontSize / 1.5));
     let ratio = Math.ceil(categories.length / maxXAxisListLength);
 
+    const tickCountArr2 = Util.sparseArray(categories, opts.tickCount) // x轴文字索引
     categories = categories.map((item, index) => {
-        return index % ratio !== 0 ? '' : item;
+        if (opts.tickCount > 1) {
+            if (tickCountArr2.includes(index)) {
+                return item
+            } else {
+                return ''
+            }
+        } else {
+            return index % ratio !== 0 ? '' : item;
+        }
     });
 
     if (config._xAxisTextAngle_ === 0) {
