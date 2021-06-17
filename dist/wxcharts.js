@@ -1,12 +1,3 @@
-/*
- * charts for WeChat small app v1.0
- *
- * https://github.com/xiaolin3303/wx-charts
- * 2016-11-28
- *
- * Designed and built with all the love of Web
- */
-
 'use strict';
 
 var config = {
@@ -92,6 +83,20 @@ var util = {
         var flag = obj2.start.x > obj1.end.x || obj2.end.x < obj1.start.x || obj2.end.y > obj1.start.y || obj2.start.y < obj1.end.y;
 
         return !flag;
+    },
+    sparseArray: function sparseArray(arr, num) {
+        var numIdx = []; // 所需数量的索引
+        if (num > 1) {
+            var group = num - 1; // 把数组分成除去头尾剩余的num - 1组
+            var length = arr.length;
+            var groupIdx = parseInt(length / group);
+            numIdx.push(0);
+            for (var i = 1; i < group; i++) {
+                numIdx.push(i * groupIdx);
+            }
+            numIdx.push(length - 1);
+        }
+        return numIdx;
     }
 };
 
@@ -335,8 +340,6 @@ function getSeriesDataItem(series, index) {
 
     return data;
 }
-
-
 
 function getMaxTextListLength(list) {
     var lengthList = list.map(function (item) {
@@ -849,6 +852,7 @@ function drawRadarLabel(angleList, radius, centerPosition, opts, config, context
 
 function drawPieText(series, opts, config, context, radius, center) {
     var lineRadius = radius + config.pieChartLinePadding;
+    lineRadius + config.pieChartTextPadding;
     var textObjectCollection = [];
     var lastTextObject = null;
 
@@ -1057,6 +1061,8 @@ function drawColumnDataPoints(series, opts, config, context) {
 
     var minRange = ranges.pop();
     var maxRange = ranges.shift();
+    opts.height - config.padding - config.xAxisHeight - config.legendHeight;
+
     context.save();
     if (opts._scrollDistance_ && opts._scrollDistance_ !== 0 && opts.enableScroll === true) {
         context.translate(opts._scrollDistance_, 0);
@@ -1286,8 +1292,6 @@ function drawToolTipBridge(opts, config, context, process) {
 function drawXAxis(categories, opts, config, context) {
     var _getXAxisPoints4 = getXAxisPoints(categories, opts, config),
         xAxisPoints = _getXAxisPoints4.xAxisPoints,
-        startX = _getXAxisPoints4.startX,
-        endX = _getXAxisPoints4.endX,
         eachSpacing = _getXAxisPoints4.eachSpacing;
 
     var startY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
@@ -1310,9 +1314,17 @@ function drawXAxis(categories, opts, config, context) {
                 }
             });
         } else {
+            var tickCountArr = util.sparseArray(xAxisPoints, opts.tickCount); // x轴下划线索引
             xAxisPoints.forEach(function (item, index) {
-                context.moveTo(item, startY);
-                context.lineTo(item, endY);
+                if (opts.tickCount > 1) {
+                    if (tickCountArr.includes(index)) {
+                        context.moveTo(item, startY);
+                        context.lineTo(item, endY);
+                    }
+                } else {
+                    context.moveTo(item, startY);
+                    context.lineTo(item, endY);
+                }
             });
         }
     }
@@ -1324,8 +1336,17 @@ function drawXAxis(categories, opts, config, context) {
     var maxXAxisListLength = Math.min(categories.length, Math.ceil(validWidth / config.fontSize / 1.5));
     var ratio = Math.ceil(categories.length / maxXAxisListLength);
 
+    var tickCountArr2 = util.sparseArray(categories, opts.tickCount); // x轴文字索引
     categories = categories.map(function (item, index) {
-        return index % ratio !== 0 ? '' : item;
+        if (opts.tickCount > 1) {
+            if (tickCountArr2.includes(index)) {
+                return item;
+            } else {
+                return '';
+            }
+        } else {
+            return index % ratio !== 0 ? '' : item;
+        }
     });
 
     if (config._xAxisTextAngle_ === 0) {
@@ -1401,6 +1422,7 @@ function drawYAxis(series, opts, config, context) {
     var eachSpacing = Math.floor(spacingValid / config.yAxisSplit);
     var startX = config.padding + yAxisTotalWidth;
     var endX = opts.width - config.padding;
+    config.padding;
     var endY = opts.height - config.padding - config.xAxisHeight - config.legendHeight;
 
     // set YAxis background
@@ -1442,6 +1464,7 @@ function drawLegend(series, opts, config, context) {
 
     var _calLegendData = calLegendData(series, opts, config),
         legendList = _calLegendData.legendList;
+        _calLegendData.legendHeight;
 
     var padding = 5;
     var marginTop = 8;
@@ -1918,13 +1941,14 @@ var Charts = function Charts(opts) {
     opts.extra = opts.extra || {};
     opts.legend = opts.legend === false ? false : true;
     opts.animation = opts.animation === false ? false : true;
-    var config$$1 = assign({}, config);
-    config$$1.yAxisTitleWidth = opts.yAxis.disabled !== true && opts.yAxis.title ? config$$1.yAxisTitleWidth : 0;
-    config$$1.pieChartLinePadding = opts.dataLabel === false ? 0 : config$$1.pieChartLinePadding;
-    config$$1.pieChartTextPadding = opts.dataLabel === false ? 0 : config$$1.pieChartTextPadding;
+    opts.tickCount = opts.tickCount || null;
+    var config$1 = assign({}, config);
+    config$1.yAxisTitleWidth = opts.yAxis.disabled !== true && opts.yAxis.title ? config$1.yAxisTitleWidth : 0;
+    config$1.pieChartLinePadding = opts.dataLabel === false ? 0 : config$1.pieChartLinePadding;
+    config$1.pieChartTextPadding = opts.dataLabel === false ? 0 : config$1.pieChartTextPadding;
 
     this.opts = opts;
-    this.config = config$$1;
+    this.config = config$1;
     this.context = wx.createCanvasContext(opts.canvasId);
     // store calcuated chart data
     // such as chart point coordinate
@@ -1936,7 +1960,7 @@ var Charts = function Charts(opts) {
         distance: 0
     };
 
-    drawCharts.call(this, opts.type, opts, config$$1, this.context);
+    drawCharts.call(this, opts.type, opts, config$1, this.context);
 };
 
 Charts.prototype.updateData = function () {
