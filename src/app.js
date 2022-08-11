@@ -5,7 +5,7 @@ import Event from './util/event';
 import { findCurrentIndex, findRadarChartCurrentIndex, findPieChartCurrentIndex, getSeriesDataItem, getToolTipData } from  './components/charts-data'
 import { calValidDistance } from './components/charts-util';
 
-let Charts = function(opts) {
+let Charts = function(opts, self) {
     opts.title = opts.title || {};
     opts.subtitle = opts.subtitle || {};
     opts.yAxis = opts.yAxis || {};
@@ -20,7 +20,7 @@ let Charts = function(opts) {
 
     this.opts = opts;
     this.config = config;
-    this.context = wx.createCanvasContext(opts.canvasId);
+    this.context = self ? wx.createCanvasContext(opts.canvasId, self) : wx.createCanvasContext(opts.canvasId);
     // store calcuated chart data
     // such as chart point coordinate
     this.chartData = {};
