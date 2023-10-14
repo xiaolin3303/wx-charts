@@ -14,74 +14,152 @@ export function drawToolTipSplitLine(offsetX, opts, config, context) {
 }
 
 export function drawToolTip(textList, offset, opts, config, context) {
-    let legendWidth = 4;
-    let legendMarginRight = 5;
-    let arrowWidth = 8;
-    let isOverRightBorder = false;
+    var legendWidth = 4;
+    var legendMarginRight = 5;
+    // var legendMarginRight = 0;
+    var arrowWidth = 8;
+    var showAtLeftSide = false;
     offset = assign({
         x: 0,
         y: 0
     }, offset);
     offset.y -= 8;
-    let textWidth = textList.map((item) => {
-        return measureText(item.text);
-    });
 
-    let toolTipWidth = legendWidth + legendMarginRight + 4 * config.toolTipPadding + Math.max.apply(null, textWidth);
-    let toolTipHeight = 2 * config.toolTipPadding + textList.length * config.toolTipLineHeight;
-
-    // if beyond the right border
-    if (offset.x - Math.abs(opts._scrollDistance_) + arrowWidth + toolTipWidth > opts.width) {
-        isOverRightBorder = true;
+    // 1. set the rect is shown on left or right according half of the window width
+    // 2. set the rect width that can shown on window
+    // 3. split textLine if it's width is bigger than widthCanShown
+    // 4. draw rect, legend and text according splited texts
+    let systemInfo, widthCanShow
+    try {
+      systemInfo = wx.getSystemInfoSync();
+    } catch (e) {
+      console.error('getSystemInfoSync failed!');
     }
+    if (offset.x > systemInfo.windowWidth/2) {
+      showAtLeftSide = true;
+      widthCanShow = offset.x - 2 * config.toolTipPadding - arrowWidth
+    } else {
+      widthCanShow = systemInfo.windowWidth - offset.x - 2 * config.toolTipPadding - arrowWidth
+    }
+    
+    // split texts
+    let splitedTextList = []
+    let splitedTextLineCount = 0
+    let maxTextWidth = 0
+    for(let i = 0; i < textList.length; i++) {
+      let textItem = textList[i]
+      let splitedTextItemList = splitItemText(textItem, legendWidth, legendMarginRight, config.toolTipPadding, widthCanShow)
+      splitedTextList.push(splitedTextItemList)
+      let oneItemTextWidth = splitedTextItemList.map(function (item) {
+        return measureText(item.text);
+      })
+      let maxOneItemWidth = Math.max.apply(null, oneItemTextWidth)
+      if (maxOneItemWidth > maxTextWidth) {
+        maxTextWidth = maxOneItemWidth
+      }
+      splitedTextLineCount += splitedTextItemList.length
+    }
+
+    var toolTipWidth = getToolTipTotalWith(maxTextWidth, legendWidth, legendMarginRight, config.toolTipPadding)
+    var toolTipHeight = 2 * config.toolTipPadding + splitedTextLineCount * config.toolTipLineHeight;
 
     // draw background rect
     context.beginPath();
     context.setFillStyle(opts.tooltip.option.background || config.toolTipBackground);
     context.setGlobalAlpha(config.toolTipOpacity);
-    if (isOverRightBorder) {
+    if (showAtLeftSide) {
         context.moveTo(offset.x, offset.y + 10);
         context.lineTo(offset.x - arrowWidth, offset.y + 10 - 5);
         context.lineTo(offset.x - arrowWidth, offset.y + 10 + 5);
         context.moveTo(offset.x, offset.y + 10);
         context.fillRect(offset.x - toolTipWidth - arrowWidth, offset.y, toolTipWidth, toolTipHeight);
-    } else {    
+    } else {
         context.moveTo(offset.x, offset.y + 10);
         context.lineTo(offset.x + arrowWidth, offset.y + 10 - 5);
         context.lineTo(offset.x + arrowWidth, offset.y + 10 + 5);
         context.moveTo(offset.x, offset.y + 10);
         context.fillRect(offset.x + arrowWidth, offset.y, toolTipWidth, toolTipHeight);
     }
-
     context.closePath();
     context.fill();
     context.setGlobalAlpha(1);
 
     // draw legend
-    textList.forEach((item, index) => {
-        context.beginPath();
-        context.setFillStyle(item.color);
-        let startX = offset.x + arrowWidth + 2 * config.toolTipPadding;
-        let startY = offset.y + (config.toolTipLineHeight - config.fontSize) / 2 + config.toolTipLineHeight * index + config.toolTipPadding;
-        if (isOverRightBorder) {
-            startX = offset.x - toolTipWidth - arrowWidth + 2 * config.toolTipPadding;
-        }
-        context.fillRect(startX, startY, legendWidth, config.fontSize);
-        context.closePath();
+    let legendLineCount = 0
+    splitedTextList.forEach(function (item, index) {
+      context.beginPath();
+      context.setFillStyle(item[0].color);
+      var startX = offset.x + arrowWidth + 2 * config.toolTipPadding;
+      var startY = offset.y + (config.toolTipLineHeight - config.fontSize) / 2 + config.toolTipLineHeight * legendLineCount + config.toolTipPadding;
+      if (showAtLeftSide) {
+          startX = offset.x - toolTipWidth - arrowWidth + 2 * config.toolTipPadding;
+      }
+      legendLineCount += item.length
+      context.fillRect(startX, startY, legendWidth, config.fontSize * item.length);
+
+      context.closePath();
     });
 
     // draw text list
+    legendLineCount = 0
     context.beginPath();
     context.setFontSize(config.fontSize);
     context.setFillStyle('#ffffff');
-    textList.forEach((item, index) => {
-        let startX = offset.x + arrowWidth + 2 * config.toolTipPadding + legendWidth + legendMarginRight;
-        if (isOverRightBorder) {
-            startX = offset.x - toolTipWidth - arrowWidth + 2 * config.toolTipPadding +  + legendWidth + legendMarginRight;
+    splitedTextList.forEach(function (listItem, listIndex) {
+      listItem.forEach(function(item, index) {
+        var startX = offset.x + arrowWidth + 2 * config.toolTipPadding + legendWidth + legendMarginRight;
+        if (showAtLeftSide) {
+            startX = offset.x - toolTipWidth - arrowWidth + 2 * config.toolTipPadding + +legendWidth + legendMarginRight;
         }
-        let startY = offset.y + (config.toolTipLineHeight - config.fontSize) / 2 + config.toolTipLineHeight * index + config.toolTipPadding;
+        var startY = offset.y + (config.toolTipLineHeight - config.fontSize) / 2 + config.toolTipLineHeight * legendLineCount + config.toolTipPadding;
         context.fillText(item.text, startX, startY + config.fontSize);
+        legendLineCount++
+      })
     });
     context.stroke();
     context.closePath();
+}
+
+function splitItemText(textItem, legendWidth, legendMarginRight, toolTipPadding, widthCanShow) {
+  let splitedTextItemList = []
+  let splitedItem = textItem
+  for(;splitedItem.text.length > 0;) {
+    let result = getToolTipPartText(splitedItem, legendWidth, legendMarginRight, toolTipPadding, widthCanShow)
+    splitedTextItemList.push(result.partTextItem)
+    splitedItem = result.remainTextItem
+  }
+  return splitedTextItemList
+}
+
+function getToolTipTotalWith(textItemWidth, legendWidth, legendMarginRight, toolTipPadding) {
+  return textItemWidth + legendWidth + legendMarginRight + 4 * toolTipPadding
+}
+
+function getToolTipPartText(textItem, legendWidth, legendMarginRight, toolTipPadding, widthCanShow) {
+  let textItemWidth = measureText(textItem.text)
+  let totalWidth = getToolTipTotalWith(textItemWidth, legendWidth, legendMarginRight, toolTipPadding)
+  let itemLen = textItem.text.length
+
+  let color = textItem.color
+  let partText, remainText
+  let partTextItem, remainTextItem
+  if (totalWidth > widthCanShow) {
+    let multis = totalWidth/widthCanShow
+    let partLen = itemLen / multis
+    for (let i = partLen; i > 0; i--) {
+      partText = textItem.text.substring(0, i)
+      let partTextWidth = measureText(partText)
+      let partToolTipTotalWidth = getToolTipTotalWith(partTextWidth, legendWidth, legendMarginRight, toolTipPadding)
+      if (partToolTipTotalWidth <= widthCanShow) {
+        remainText = textItem.text.substring(i)
+        break
+      }
+    }
+  } else {
+    partText = textItem.text
+    remainText = ""
+  }
+  partTextItem = {text: partText, color: color}
+  remainTextItem = {text: remainText, color: color}
+  return {partTextItem, remainTextItem}
 }
