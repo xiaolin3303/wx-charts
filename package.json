@@ -3,12 +3,11 @@
   "version": "1.0.0",
   "description": "charts for wechat small app",
   "main": "src/app.js",
-  "dependencies": {},
   "devDependencies": {
     "babel-plugin-external-helpers": "^6.18.0",
     "babel-preset-es2015": "^6.18.0",
     "rollup-plugin-babel": "^2.6.1",
-    "rollup-plugin-uglify": "^1.0.1"
+    "rollup-plugin-uglify": "^1.0.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -22,5 +21,9 @@
     "wechat charts"
   ],
   "author": "xiaolin",
-  "license": "MIT"
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "rollup-plugin-terser": "^7.0.2"
+  }
 }
